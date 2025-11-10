@@ -1,5 +1,5 @@
 Class {
-	#name : 'PannSar',
+	#name : 'PannCellAgregate',
 	#superclass : 'CMSpatialEntityAggregate',
 	#instVars : [
 		'name',
@@ -11,37 +11,37 @@ Class {
 }
 
 { #category : 'accessing' }
-PannSar >> name [
+PannCellAgregate >> name [
 
 	^ name
 ]
 
 { #category : 'accessing' }
-PannSar >> name: anObject [
+PannCellAgregate >> name: anObject [
 
 	name := anObject
 ]
 
 { #category : 'accessing' }
-PannSar >> naturalDeathRate [
+PannCellAgregate >> naturalDeathRate [
 
 	^ naturalDeathRate
 ]
 
 { #category : 'accessing' }
-PannSar >> naturalDeathRate: anObject [
+PannCellAgregate >> naturalDeathRate: anObject [
 
 	naturalDeathRate := anObject
 ]
 
 { #category : 'accessing' }
-PannSar >> recruitCapacity [
+PannCellAgregate >> recruitCapacity [
 
 	^ recruitCapacity
 ]
 
 { #category : 'accessing' }
-PannSar >> recruitCapacity: anObject [
+PannCellAgregate >> recruitCapacity: anObject [
 
 	recruitCapacity := anObject
 ]

@@ -11,13 +11,13 @@ Class {
 	#package : 'PannEcol-Model'
 }
 
-{ #category : 'accessing' }
+{ #category : 'ecological methods  ' }
 PannCohort >> aging [ 
 
 	shellfishAge := shellfishAge + 1.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'ecological methods  ' }
 PannCohort >> death [
 
 	| M N0 t sare |
@@ -31,7 +31,7 @@ PannCohort >> death [
 shellfishDensity := N0 * ((M * t) negated exp). 
 ]
 
-{ #category : 'accessing' }
+{ #category : 'ecological methods  ' }
 PannCohort >> grow [
 
 	| LInfinity K t0 |
@@ -41,14 +41,6 @@ PannCohort >> grow [
 	t0 := 0.0.            "theoritical initial age"
 	
 	shellfishSize := LInfinity * (1 - ((K negated * (shellfishAge - t0)) exp)).
-
-]
-
-{ #category : 'accessing' }
-PannCohort >> naturalDeath [
-
-
-
 
 ]
 

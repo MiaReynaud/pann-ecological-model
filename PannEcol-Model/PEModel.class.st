@@ -41,14 +41,14 @@ PEModel >> applyStatesFromMatrix: aMatrix [
 { #category : 'init  ' }
 PEModel >> buildSare1 [
 	
-	self releaseAggregateType: PannSar .
+	self releaseAggregateType: PannCellAgregate .
 	self
-		createAggregates: PannSar 
-		from: PannPlo
+		createAggregates: PannCellAgregate 
+		from: PannCell
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ PannSar) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ PannCellAgregate) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributes1.
@@ -112,7 +112,7 @@ PEModel >> initMatrix1 [
 	
 	"add shellfish on every mudflat cell"
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: PannShellfishPop locatedAt: cell ].
+		self newEntity: PannPopulation locatedAt: cell ].
 	
 		self buildSare1. 
 
@@ -123,7 +123,7 @@ PEModel >> initialiseSareAttributes1 [
 
 	| sare |
 	
-	sare := ( self @@ PannSar ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ PannCellAgregate ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 200. "20 000 1cm shellfishes are recruited every year, so 109 every two days "
 	sare naturalDeathRate: 0.
@@ -139,7 +139,7 @@ PEModel >> isRecruitDay [
 PEModel >> numberOfCohorts [ 
 	<probeNamed: 'Number of cohorts' color: '00B44C'>
 	| pop |
-	pop := (self @@ PannShellfishPop) first.
+	pop := (self @@ PannPopulation) first.
 	^ pop cohortsCounter .
 ]
 
@@ -147,7 +147,7 @@ PEModel >> numberOfCohorts [
 PEModel >> sareNamed: aString [
 "to access a sare by his name"
 
-	^(self @@ PannSar) detect: [ :each | each name = aString ]
+	^(self @@ PannCellAgregate) detect: [ :each | each name = aString ]
 ]
 
 { #category : 'probes ' }
@@ -183,7 +183,7 @@ PEModel >> step [
 		s death.
 		 ].
 	
-	self @@ PannShellfishPop do: [:s | 
+	self @@ PannPopulation do: [:s | 
 		s recruit.
 		s cohortDeath.
 		s actualizeCohortsCounter.

@@ -1,5 +1,5 @@
 Class {
-	#name : 'PannShellfishPop',
+	#name : 'PannPopulation',
 	#superclass : 'CMAgent',
 	#instVars : [
 		'cohorts',
@@ -9,8 +9,8 @@ Class {
 	#package : 'PannEcol-Model'
 }
 
-{ #category : 'initialization' }
-PannShellfishPop >> actualizeCohortsCounter [
+{ #category : 'cohort counter ' }
+PannPopulation >> actualizeCohortsCounter [
 	
 	| aliveCohorts |
 	
@@ -19,8 +19,8 @@ PannShellfishPop >> actualizeCohortsCounter [
 	aliveCohorts do: [ :c | cohortsCounter := cohortsCounter + 1	].
 ]
 
-{ #category : 'initialization' }
-PannShellfishPop >> cohortDeath [
+{ #category : 'ecological methods  ' }
+PannPopulation >> cohortDeath [
 
 	| sparseCohorts |
 	sparseCohorts := (self cohorts) select: [ :c | c shellfishDensity < 2 ].
@@ -28,31 +28,31 @@ PannShellfishPop >> cohortDeath [
 ]
 
 { #category : 'accessing' }
-PannShellfishPop >> cohorts [
+PannPopulation >> cohorts [
 
 	^ cohorts
 ]
 
 { #category : 'accessing' }
-PannShellfishPop >> cohorts: anObject [
+PannPopulation >> cohorts: anObject [
 
 	cohorts := anObject
 ]
 
 { #category : 'accessing' }
-PannShellfishPop >> cohortsCounter [
+PannPopulation >> cohortsCounter [
 
 	^ cohortsCounter
 ]
 
 { #category : 'accessing' }
-PannShellfishPop >> cohortsCounter: anObject [
+PannPopulation >> cohortsCounter: anObject [
 
 	cohortsCounter := anObject
 ]
 
 { #category : 'initialization' }
-PannShellfishPop >> initialize [ 
+PannPopulation >> initialize [ 
 
 	super initialize .
 
@@ -69,31 +69,23 @@ PannShellfishPop >> initialize [
     		yourself ]."
 ]
 
-{ #category : 'initialization' }
-PannShellfishPop >> isRecruitDay [
+{ #category : 'cohort counter ' }
+PannPopulation >> isRecruitDay [
 "send true if its first of december"
 
 	^ (self cormasModel currentDayOfMonth = 1)  and: (self cormasModel currentMonth = 12)
 ]
 
-{ #category : 'initialization' }
-PannShellfishPop >> recruit [ 
+{ #category : 'ecological methods  ' }
+PannPopulation >> recruit [ 
 
 	self isRecruitDay ifTrue: [
 		| newCohort |
 		newCohort := ( self cormasModel newEntity: PannCohort )
-			shellfishAge: 0;
+			shellfishAge: 41; "according to the function a shellfish of 3mm is 41 days old"
 			shellfishSize: 3; "in mm"
 			shellfishDensity: 250 ; "in ind/m²"
 			yourself.
 	cohorts add: newCohort.
 	].
-	
-	
-"The code bellow was the recruit method when there where classes of cohorts"	
-"	| numberOfNewborns |
-	
-	numberOfNewborns := self cell sare recruitCapacity.
-	
-	cohorts first densityOfShellfish: cohorts first densityOfShellfish + numberOfNewborns."
 ]

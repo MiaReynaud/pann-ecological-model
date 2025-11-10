@@ -1,5 +1,5 @@
 Class {
-	#name : 'PannPlo',
+	#name : 'PannCell',
 	#superclass : 'CMCell',
 	#instVars : [
 		'state'
@@ -9,25 +9,25 @@ Class {
 }
 
 { #category : 'accessing' }
-PannPlo >> beMudflat [
+PannCell >> beMudflat [
 
 	state := #mudflat
 ]
 
 { #category : 'accessing' }
-PannPlo >> initialize [ 
+PannCell >> initialize [ 
 
 	super initialize.
 ]
 
 { #category : 'accessing' }
-PannPlo >> isMudflat [
+PannCell >> isMudflat [
 
 	^ state = #mudflat
 ]
 
 { #category : 'accessing' }
-PannPlo >> pov [ 
+PannCell >> pov [ 
 
 	<pov>
 	
@@ -38,27 +38,27 @@ PannPlo >> pov [
 ]
 
 { #category : 'accessing' }
-PannPlo >> sare [
+PannCell >> sare [
     "Return a sare to which this plot belongs"
-    ^ self getAggregateType: PannSar
+    ^ self getAggregateType: PannCellAgregate
 ]
 
 { #category : 'accessing' }
-PannPlo >> shellfishPopulation [
+PannCell >> shellfishPopulation [
 	"this method returns you the shellfish population in the cell "
 
-	^ (self occupantsOfClass: PannShellfishPop) first. "there can only be 1 population of shellfish on the cell, not more, not 0"
+	^ (self occupantsOfClass: PannPopulation) first. "there can only be 1 population of shellfish on the cell, not more, not 0"
 		
 ]
 
 { #category : 'accessing' }
-PannPlo >> state [
+PannCell >> state [
 
 	^ state
 ]
 
 { #category : 'accessing' }
-PannPlo >> state: anObject [
+PannCell >> state: anObject [
 
 	state := anObject
 ]
