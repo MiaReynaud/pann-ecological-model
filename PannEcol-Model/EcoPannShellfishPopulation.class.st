@@ -1,5 +1,5 @@
 Class {
-	#name : 'PannPopulation',
+	#name : 'EcoPannShellfishPopulation',
 	#superclass : 'CMAgent',
 	#instVars : [
 		'cohorts',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'cohort counter ' }
-PannPopulation >> actualizeCohortsCounter [
+EcoPannShellfishPopulation >> actualizeCohortsCounter [
 	
 	| aliveCohorts |
 	
@@ -20,7 +20,7 @@ PannPopulation >> actualizeCohortsCounter [
 ]
 
 { #category : 'ecological methods  ' }
-PannPopulation >> cohortDeath [
+EcoPannShellfishPopulation >> cohortDeath [
 
 	| sparseCohorts |
 	sparseCohorts := (self cohorts) select: [ :c | c shellfishDensity < 2 ].
@@ -28,31 +28,31 @@ PannPopulation >> cohortDeath [
 ]
 
 { #category : 'accessing' }
-PannPopulation >> cohorts [
+EcoPannShellfishPopulation >> cohorts [
 
 	^ cohorts
 ]
 
 { #category : 'accessing' }
-PannPopulation >> cohorts: anObject [
+EcoPannShellfishPopulation >> cohorts: anObject [
 
 	cohorts := anObject
 ]
 
 { #category : 'accessing' }
-PannPopulation >> cohortsCounter [
+EcoPannShellfishPopulation >> cohortsCounter [
 
 	^ cohortsCounter
 ]
 
 { #category : 'accessing' }
-PannPopulation >> cohortsCounter: anObject [
+EcoPannShellfishPopulation >> cohortsCounter: anObject [
 
 	cohortsCounter := anObject
 ]
 
 { #category : 'initialization' }
-PannPopulation >> initialize [ 
+EcoPannShellfishPopulation >> initialize [ 
 
 	super initialize .
 
@@ -70,21 +70,25 @@ PannPopulation >> initialize [
 ]
 
 { #category : 'cohort counter ' }
-PannPopulation >> isRecruitDay [
+EcoPannShellfishPopulation >> isRecruitDay [
 "send true if its first of december"
 
 	^ (self cormasModel currentDayOfMonth = 1)  and: (self cormasModel currentMonth = 12)
 ]
 
+{ #category : 'accessing' }
+EcoPannShellfishPopulation >> numberOfShellfishes [ 
+
+	^ cohorts sum: [ : each | each numberOfShellfishes ].
+]
+
 { #category : 'ecological methods  ' }
-PannPopulation >> recruit [ 
+EcoPannShellfishPopulation >> recruit [ 
 
 	self isRecruitDay ifTrue: [
 		| newCohort |
-		newCohort := ( self cormasModel newEntity: PannCohort )
-			shellfishAge: 41; "according to the function a shellfish of 3mm is 41 days old"
-			shellfishSize: 3; "in mm"
-			shellfishDensity: 250 ; "in ind/m²"
+		newCohort := ( self cormasModel newEntity: EcoPannShellfishCohort )
+			population: self;
 			yourself.
 	cohorts add: newCohort.
 	].

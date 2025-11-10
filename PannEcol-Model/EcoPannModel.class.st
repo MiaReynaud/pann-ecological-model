@@ -1,5 +1,5 @@
 Class {
-	#name : 'PEModel',
+	#name : 'EcoPannModel',
 	#superclass : 'CMAbstractModel',
 	#instVars : [
 		'currentDayOfMonth',
@@ -11,19 +11,19 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-PEModel class >> modelName [
+EcoPannModel class >> modelName [
 
 	^ 'PannEcol'
 ]
 
 { #category : 'accessing' }
-PEModel class >> prefix [
+EcoPannModel class >> prefix [
 
 	^ 'PE'
 ]
 
 { #category : 'init  ' }
-PEModel >> applyStatesFromMatrix: aMatrix [
+EcoPannModel >> applyStatesFromMatrix: aMatrix [
 
 	| rows cols value cell |
     rows := aMatrix size.
@@ -39,16 +39,16 @@ PEModel >> applyStatesFromMatrix: aMatrix [
 ]
 
 { #category : 'init  ' }
-PEModel >> buildSare1 [
+EcoPannModel >> buildSare1 [
 	
-	self releaseAggregateType: PannCellAgregate .
+	self releaseAggregateType: EcoPannSare .
 	self
-		createAggregates: PannCellAgregate 
-		from: PannCell
+		createAggregates: EcoPannSare 
+		from: EcoPannPlot
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ PannCellAgregate) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributes1.
@@ -56,43 +56,43 @@ PEModel >> buildSare1 [
 ]
 
 { #category : 'accessing' }
-PEModel >> currentDayOfMonth [
+EcoPannModel >> currentDayOfMonth [
 
 	^ currentDayOfMonth
 ]
 
 { #category : 'accessing' }
-PEModel >> currentDayOfMonth: anObject [
+EcoPannModel >> currentDayOfMonth: anObject [
 
 	currentDayOfMonth := anObject
 ]
 
 { #category : 'accessing' }
-PEModel >> currentMonth [
+EcoPannModel >> currentMonth [
 
 	^ currentMonth
 ]
 
 { #category : 'accessing' }
-PEModel >> currentMonth: anObject [
+EcoPannModel >> currentMonth: anObject [
 
 	currentMonth := anObject
 ]
 
 { #category : 'accessing' }
-PEModel >> dayCounter [
+EcoPannModel >> dayCounter [
 
 	^ dayCounter
 ]
 
 { #category : 'accessing' }
-PEModel >> dayCounter: anObject [
+EcoPannModel >> dayCounter: anObject [
 
 	dayCounter := anObject
 ]
 
 { #category : 'init  ' }
-PEModel >> initMatrix1 [
+EcoPannModel >> initMatrix1 [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 
 	<init>
@@ -108,50 +108,52 @@ PEModel >> initMatrix1 [
 		neighbourhood: 6
 		closed: true.
 		
+	self cells do: [ : each | each area: 1]. "define the size of a cell in m²"
+		
  	self applyStatesFromMatrix: self stateMatrix1.
 	
 	"add shellfish on every mudflat cell"
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: PannPopulation locatedAt: cell ].
+		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
 	
 		self buildSare1. 
 
 ]
 
 { #category : 'init  ' }
-PEModel >> initialiseSareAttributes1 [
+EcoPannModel >> initialiseSareAttributes1 [
 
 	| sare |
 	
-	sare := ( self @@ PannCellAgregate ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 200. "20 000 1cm shellfishes are recruited every year, so 109 every two days "
-	sare naturalDeathRate: 0.
+	sare naturalDeathRate: 0.00219.
 ]
 
 { #category : 'time   ' }
-PEModel >> isRecruitDay [
+EcoPannModel >> isRecruitDay [
 
 	^ (currentDayOfMonth = 1)  and: (currentMonth = 12)
 ]
 
 { #category : 'probes ' }
-PEModel >> numberOfCohorts [ 
+EcoPannModel >> numberOfCohorts [ 
 	<probeNamed: 'Number of cohorts' color: '00B44C'>
 	| pop |
-	pop := (self @@ PannPopulation) first.
+	pop := (self @@ EcoPannShellfishPopulation) first.
 	^ pop cohortsCounter .
 ]
 
 { #category : 'init  ' }
-PEModel >> sareNamed: aString [
+EcoPannModel >> sareNamed: aString [
 "to access a sare by his name"
 
-	^(self @@ PannCellAgregate) detect: [ :each | each name = aString ]
+	^(self @@ EcoPannSare) detect: [ :each | each name = aString ]
 ]
 
 { #category : 'probes ' }
-PEModel >> sizeOfCohorts [
+EcoPannModel >> sizeOfCohorts [
 
 "<probeNamed: 'Size of the super individual of the cohort (mm)' color: '0000FF'>
     
@@ -161,7 +163,7 @@ PEModel >> sizeOfCohorts [
 ]
 
 { #category : 'init  ' }
-PEModel >> stateMatrix1 [
+EcoPannModel >> stateMatrix1 [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(
@@ -170,20 +172,20 @@ PEModel >> stateMatrix1 [
 ]
 
 { #category : 'step  ' }
-PEModel >> step [
+EcoPannModel >> step [
 	"one simulation day"
 	
 	<control>
 	
 	self updateDate.
 
-	self @@ PannCohort do: [:s | 
+	self @@ EcoPannShellfishCohort do: [:s | 
 		s aging.
 		s grow.
 		s death.
 		 ].
 	
-	self @@ PannPopulation do: [:s | 
+	self @@ EcoPannShellfishPopulation do: [:s | 
 		s recruit.
 		s cohortDeath.
 		s actualizeCohortsCounter.
@@ -192,7 +194,7 @@ PEModel >> step [
 ]
 
 { #category : 'time   ' }
-PEModel >> updateDate [
+EcoPannModel >> updateDate [
     "Move forward one day and update the month accordingly"
     | daysInMonth |
 
