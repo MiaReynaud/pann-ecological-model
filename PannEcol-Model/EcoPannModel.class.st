@@ -33,9 +33,45 @@ EcoPannModel >> applyStatesFromMatrix: aMatrix [
         1 to: cols do: [ :j |
             cell := self cellAt: i at: j.
             value := (aMatrix at: i) at: j.
-        
-           
-				value = 2 ifTrue: [ cell beMudflat ] ] ].
+
+            value = 0 ifTrue: [ cell beSea ].
+            value = 1 ifTrue: [ cell beVillage ].
+				value = 2 ifTrue: [ cell beMudflat ].
+				value = 3 ifTrue: [ cell beMangrove ] ] ].
+]
+
+{ #category : 'init 30x30 cells grid' }
+EcoPannModel >> buildSareOf30x30CellsGrid [
+	
+	self releaseAggregateType: EcoPannSare .
+	self
+		createAggregates: EcoPannSare 
+		from: EcoPannPlot
+		verifying: [ :aCell | aCell isMudflat ]
+		minimumSize: 1.
+		
+	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+		agg initNeighbourhood ].
+	
+	self initialiseSareAttributesOf30x30CellsGrid .
+	
+]
+
+{ #category : 'init 70x70 cells grid' }
+EcoPannModel >> buildSareOf70x70CellsGrid [
+	
+	self releaseAggregateType: EcoPannSare .
+	self
+		createAggregates: EcoPannSare 
+		from: EcoPannPlot
+		verifying: [ :aCell | aCell isMudflat ]
+		minimumSize: 1.
+		
+	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+		agg initNeighbourhood ].
+	
+	self initialiseSareAttributesOf70x70CellsGrid .
+	
 ]
 
 { #category : 'init single cell grid' }
@@ -55,6 +91,23 @@ EcoPannModel >> buildSareOfSingleCellGrid [
 	
 ]
 
+{ #category : 'init single sare grid' }
+EcoPannModel >> buildSareOfSingleSareGrid [
+	
+	self releaseAggregateType: EcoPannSare .
+	self
+		createAggregates: EcoPannSare 
+		from: EcoPannPlot
+		verifying: [ :aCell | aCell isMudflat ]
+		minimumSize: 1.
+		
+	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+		agg initNeighbourhood ].
+	
+	self initialiseSareAttributesOfSingleSareGrid.
+	
+]
+
 { #category : 'accessing' }
 EcoPannModel >> currentDayOfMonth [
 
@@ -71,6 +124,68 @@ EcoPannModel >> currentMonth [
 EcoPannModel >> dayCounter [
 
 	^ dayCounter
+]
+
+{ #category : 'init 30x30 cells grid' }
+EcoPannModel >> init30x30CellsGrid [
+	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
+	
+	"In this grid, one cell is 1m²"
+
+	<init>
+	
+	currentDayOfMonth := 1.
+	currentMonth := 11. "simulation starts in nov"
+	dayCounter  := 0.
+	
+	"create grid"
+	self
+		createGridNumberOfRows: 30
+		numberOfColumns: 30
+		neighbourhood: 6
+		closed: true.
+		
+	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
+		
+ 	self applyStatesFromMatrix: self stateMatrixOf30x30CellsGrid .
+	
+	"add shellfish on every mudflat cell"
+	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
+		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
+	
+		self buildSareOf30x30CellsGrid . 
+
+]
+
+{ #category : 'init 70x70 cells grid' }
+EcoPannModel >> init70x70CellsGrid [
+	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
+	
+	"In this grid, one cell is 1m²"
+
+	<init>
+	
+	currentDayOfMonth := 1.
+	currentMonth := 11. "simulation starts in nov"
+	dayCounter  := 0.
+	
+	"create grid"
+	self
+		createGridNumberOfRows: 70
+		numberOfColumns: 70
+		neighbourhood: 6
+		closed: true.
+		
+	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
+		
+ 	self applyStatesFromMatrix: self stateMatrixOf70x70CellsGrid .
+	
+	"add shellfish on every mudflat cell"
+	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
+		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
+	
+		self buildSareOf70x70CellsGrid . 
+
 ]
 
 { #category : 'init single cell grid' }
@@ -94,7 +209,7 @@ EcoPannModel >> initSingleCellGrid [
 		
 	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
 		
- 	self applyStatesFromMatrix: self stateMatrixOfSingleCell.
+ 	self applyStatesFromMatrix: self stateMatrixOfSingleCellGrid.
 	
 	"add shellfish on every mudflat cell"
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
@@ -104,6 +219,119 @@ EcoPannModel >> initSingleCellGrid [
 
 ]
 
+{ #category : 'init single sare grid' }
+EcoPannModel >> initSingleSareGrid [
+	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
+	
+	"In this grid, one cell is 1m²"
+
+	<init>
+	
+	currentDayOfMonth := 1.
+	currentMonth := 11. "simulation starts in nov"
+	dayCounter  := 0.
+	
+	"create grid"
+	self
+		createGridNumberOfRows: 5
+		numberOfColumns: 5
+		neighbourhood: 6
+		closed: true.
+		
+	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
+		
+ 	self applyStatesFromMatrix: self stateMatrixOfSingleSareGrid.
+	
+	"add shellfish on every mudflat cell"
+	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
+		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
+	
+		self buildSareOfSingleSareGrid. 
+
+]
+
+{ #category : 'init 30x30 cells grid' }
+EcoPannModel >> initialiseSareAttributesOf30x30CellsGrid [
+
+	| sare |
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare name: 'amacala 1'.
+	sare recruitCapacity: 200. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
+	sare name: 'anewanew 1'.
+	sare recruitCapacity: 175. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
+	sare name: 'mbina'.
+	sare recruitCapacity: 150. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 4]. 
+	sare name: 'anewanew 2'.
+	sare recruitCapacity: 125. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 5]. 
+	sare name: 'amacala 2'.
+	sare recruitCapacity: 100. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+]
+
+{ #category : 'init 70x70 cells grid' }
+EcoPannModel >> initialiseSareAttributesOf70x70CellsGrid [
+
+	| sare |
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare name: 'amacala 1'.
+	sare recruitCapacity: 200. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
+	sare name: 'anewanew 1'.
+	sare recruitCapacity: 175. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
+	sare name: 'mbina'.
+	sare recruitCapacity: 150. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 4]. 
+	sare name: 'anewanew 2'.
+	sare recruitCapacity: 125. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 5]. 
+	sare name: 'amacala 2'.
+	sare recruitCapacity: 100. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+]
+
 { #category : 'init single cell grid' }
 EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
 
@@ -111,7 +339,20 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 200. "20 000 1cm shellfishes are recruited every year, so 109 every two days "
+	sare recruitCapacity: 200.
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+]
+
+{ #category : 'init single sare grid' }
+EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
+
+	| sare |
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare name: 'amacala 1'.
+	sare recruitCapacity: 200.
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
@@ -148,12 +389,141 @@ EcoPannModel >> sizeOfCohorts [
     ^ cohorts first shellfishSize."
 ]
 
+{ #category : 'init 30x30 cells grid' }
+EcoPannModel >> stateMatrixOf30x30CellsGrid [
+    "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
+
+    ^ #(
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 0 0 3 3 3 3 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 0 0 0 0 3 3 3 3 3 3 3 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 1 2 2 2 0 0 0 0 0 0 3 3 3 3 3 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 3 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 3 3 3 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 0 0)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 0 0 0 2 2 2 0 0 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 0 0 0 0 0 3 3)
+		(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+    )
+]
+
+{ #category : 'init 70x70 cells grid' }
+EcoPannModel >> stateMatrixOf70x70CellsGrid [
+    "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
+
+    ^ #(
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3 3 0 0 0 0 3 3 3 3 3 3 3 0 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3 3 0 0 0 0 0 3 3 3 3 3 0 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 0 0 3 3 0 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 3 3 0 0 0 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 3 3 3 3 0 0 0)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 3 3 0 0 0 0)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+	(0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3)
+	(0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 0 0 3 3 3 3 0 3 0 0 3 3 3 3 3 0 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 0 3 3 3 3 0 3 3 0 3 3 0 0 0 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 0 3 3 0 3 3 3 0 3 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 0 3 0 3 3 3 3 0 0 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 0 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 0 3 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 0 0 3 3 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 0 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 0 0 0)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3 3 0 3 3 0 0 0 0 0 0)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 3 3 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 0 0 0 0 0 0 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 0 3 0 0 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 3 0 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 0 3 0 0 0 0 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 0 3 3 0 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 0 0)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 0 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 2 2 2 2 2 2 2 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 0 0 0 0 2 2 2 2 2 2 2 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 2 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 0 3 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3)
+	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+	)
+]
+
 { #category : 'init single cell grid' }
-EcoPannModel >> stateMatrixOfSingleCell [
+EcoPannModel >> stateMatrixOfSingleCellGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(
 		(2)
+    )
+]
+
+{ #category : 'init single sare grid' }
+EcoPannModel >> stateMatrixOfSingleSareGrid [
+    "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
+
+    ^ #(
+		(0 0 0 0 0)
+		(0 1 2 0 0)
+		(0 2 2 0 3)
+		(0 0 0 0 3)
+		(0 0 0 3 3)
     )
 ]
 

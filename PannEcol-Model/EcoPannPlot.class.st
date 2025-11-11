@@ -22,9 +22,27 @@ EcoPannPlot >> area: anObject [
 ]
 
 { #category : 'accessing' }
+EcoPannPlot >> beMangrove [
+
+	state := #mangrove
+]
+
+{ #category : 'accessing' }
 EcoPannPlot >> beMudflat [
 
 	state := #mudflat
+]
+
+{ #category : 'accessing' }
+EcoPannPlot >> beSea [
+
+	state := #sea
+]
+
+{ #category : 'accessing' }
+EcoPannPlot >> beVillage [
+
+	state := #village
 ]
 
 { #category : 'accessing' }
@@ -35,9 +53,27 @@ EcoPannPlot >> initialize [
 ]
 
 { #category : 'accessing' }
+EcoPannPlot >> isMangrove [
+
+	^ state = #mangrove
+]
+
+{ #category : 'accessing' }
 EcoPannPlot >> isMudflat [
 
 	^ state = #mudflat
+]
+
+{ #category : 'accessing' }
+EcoPannPlot >> isSea [
+
+	^ state = #sea
+]
+
+{ #category : 'accessing' }
+EcoPannPlot >> isVillage [
+
+	^ state = #village
 ]
 
 { #category : 'accessing' }
@@ -51,8 +87,10 @@ EcoPannPlot >> pov [
 
 	<pov>
 	
+	state = #sea ifTrue: [ ^ CMPointOfView color: '70EAFF' ].
+	state = #village ifTrue: [ ^ CMPointOfView color: '8F1437' ].
 	state = #mudflat ifTrue: [ ^ CMPointOfView color: 'FFFCB3' ].
-
+	state = #mangrove ifTrue: [ ^ CMPointOfView color: '0DB370' ].
 	
 	^ super pov. "if no state, super pov by default"
 ]
