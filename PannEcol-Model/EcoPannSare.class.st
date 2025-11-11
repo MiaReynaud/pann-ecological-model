@@ -4,11 +4,25 @@ Class {
 	#instVars : [
 		'name',
 		'recruitCapacity',
-		'naturalDeathRate'
+		'naturalDeathRate',
+		'growthRate',
+		'maxShellfishLength'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
+
+{ #category : 'accessing' }
+EcoPannSare >> growthRate [
+
+	^ growthRate
+]
+
+{ #category : 'accessing' }
+EcoPannSare >> growthRate: anObject [
+
+	growthRate := anObject
+]
 
 { #category : 'accessing' }
 EcoPannSare >> initialize [ 
@@ -19,6 +33,20 @@ EcoPannSare >> initialize [
 	name := 'not named'.
 	recruitCapacity := 0.
 	naturalDeathRate := 0.
+	growthRate := 0.
+	maxShellfishLength := 0.
+]
+
+{ #category : 'accessing' }
+EcoPannSare >> maxShellfishLength [
+
+	^ maxShellfishLength
+]
+
+{ #category : 'accessing' }
+EcoPannSare >> maxShellfishLength: anObject [
+
+	maxShellfishLength := anObject
 ]
 
 { #category : 'accessing' }

@@ -74,8 +74,10 @@ EcoPannModel >> dayCounter [
 ]
 
 { #category : 'init single cell grid' }
-EcoPannModel >> initMatrixOfSingleCellGrid [
+EcoPannModel >> initSingleCellGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
+	
+	"In this grid, one cell is 1m²"
 
 	<init>
 	
@@ -90,7 +92,7 @@ EcoPannModel >> initMatrixOfSingleCellGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 1]. "define the size of a cell in m²"
+	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCell.
 	
@@ -111,6 +113,8 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 200. "20 000 1cm shellfishes are recruited every year, so 109 every two days "
 	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
 ]
 
 { #category : 'time   ' }
@@ -164,7 +168,7 @@ EcoPannModel >> step [
 	self @@ EcoPannShellfishCohort do: [:s | 
 		s aging.
 		s grow.
-		s death.
+		s naturalDeath.
 		 ].
 	
 	self @@ EcoPannShellfishPopulation do: [:s | 

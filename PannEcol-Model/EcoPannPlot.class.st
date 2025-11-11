@@ -31,7 +31,7 @@ EcoPannPlot >> beMudflat [
 EcoPannPlot >> initialize [ 
 
 	super initialize.
-	area := 1. "m²" "just to avoid problems, but will be overwriten by the gridInitMethod using the accessor area:"
+	area := 1. "m²" "just to avoid problems, but will be overwriten by the grid init method using the accessor area:"
 ]
 
 { #category : 'accessing' }
