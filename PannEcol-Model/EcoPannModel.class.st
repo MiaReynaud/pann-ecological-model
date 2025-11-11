@@ -38,8 +38,8 @@ EcoPannModel >> applyStatesFromMatrix: aMatrix [
 				value = 2 ifTrue: [ cell beMudflat ] ] ].
 ]
 
-{ #category : 'init  ' }
-EcoPannModel >> buildSare1 [
+{ #category : 'init single cell grid' }
+EcoPannModel >> buildSareOfSingleCellGrid [
 	
 	self releaseAggregateType: EcoPannSare .
 	self
@@ -51,7 +51,7 @@ EcoPannModel >> buildSare1 [
 	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
-	self initialiseSareAttributes1.
+	self initialiseSareAttributesOfSingleCellGrid.
 	
 ]
 
@@ -62,21 +62,9 @@ EcoPannModel >> currentDayOfMonth [
 ]
 
 { #category : 'accessing' }
-EcoPannModel >> currentDayOfMonth: anObject [
-
-	currentDayOfMonth := anObject
-]
-
-{ #category : 'accessing' }
 EcoPannModel >> currentMonth [
 
 	^ currentMonth
-]
-
-{ #category : 'accessing' }
-EcoPannModel >> currentMonth: anObject [
-
-	currentMonth := anObject
 ]
 
 { #category : 'accessing' }
@@ -85,14 +73,8 @@ EcoPannModel >> dayCounter [
 	^ dayCounter
 ]
 
-{ #category : 'accessing' }
-EcoPannModel >> dayCounter: anObject [
-
-	dayCounter := anObject
-]
-
-{ #category : 'init  ' }
-EcoPannModel >> initMatrix1 [
+{ #category : 'init single cell grid' }
+EcoPannModel >> initMatrixOfSingleCellGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 
 	<init>
@@ -110,18 +92,18 @@ EcoPannModel >> initMatrix1 [
 		
 	self cells do: [ : each | each area: 1]. "define the size of a cell in m²"
 		
- 	self applyStatesFromMatrix: self stateMatrix1.
+ 	self applyStatesFromMatrix: self stateMatrixOfSingleCell.
 	
 	"add shellfish on every mudflat cell"
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
 		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
 	
-		self buildSare1. 
+		self buildSareOfSingleCellGrid. 
 
 ]
 
-{ #category : 'init  ' }
-EcoPannModel >> initialiseSareAttributes1 [
+{ #category : 'init single cell grid' }
+EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
 
 	| sare |
 	
@@ -162,8 +144,8 @@ EcoPannModel >> sizeOfCohorts [
     ^ cohorts first shellfishSize."
 ]
 
-{ #category : 'init  ' }
-EcoPannModel >> stateMatrix1 [
+{ #category : 'init single cell grid' }
+EcoPannModel >> stateMatrixOfSingleCell [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(

@@ -20,25 +20,25 @@ EcoPannShellfishCohort >> aging [
 { #category : 'ecological methods  ' }
 EcoPannShellfishCohort >> death [
 
-	| M N0 t |
+	| initialDensity dailyMortalityRate cohortAge |
 	
-	N0 :=  self sare recruitCapacity.             "initial density"
-	M := self sare naturalDeathRate.     			 	"daily mortality rate. Comes from Abdou Karim data analysed with TropFishR"
-	t := shellfishAge.            "cohort age"
+	initialDensity :=  self sare recruitCapacity.    "N0"
+	dailyMortalityRate := self sare naturalDeathRate.	"M" 	"Comes from Abdou Karim data analysed with TropFishR"
+	cohortAge := shellfishAge.         "t"
 	
-shellfishDensity := N0 * ((M * t) negated exp). 
+shellfishDensity := initialDensity * ((dailyMortalityRate * cohortAge) negated exp). 
 ]
 
 { #category : 'ecological methods  ' }
 EcoPannShellfishCohort >> grow [
 
-	| LInfinity K t0 |
+	| maxLength growthRate theoriticalInitialAge |
 	
-	LInfinity := 38.      "in mm"
-	K := 0.00203.             "growth rate"
-	t0 := 0.0.            "theoritical initial age"
+	maxLength := 38.      		 		 "LInfinity"     "in mm"
+	growthRate := 0.00203.             "K"
+	theoriticalInitialAge := 0.0.      "t0"
 	
-	shellfishSize := LInfinity * (1 - ((K negated * (shellfishAge - t0)) exp)).
+	shellfishSize := maxLength * (1 - ((growthRate negated * (shellfishAge - theoriticalInitialAge)) exp)).
 
 ]
 
