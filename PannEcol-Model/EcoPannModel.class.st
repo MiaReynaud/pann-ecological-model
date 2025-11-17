@@ -23,6 +23,22 @@ EcoPannModel class >> prefix [
 ]
 
 { #category : 'init  ' }
+EcoPannModel >> addFishers [
+
+	self
+		createN: 1
+		randomlyLocatedEntities: EcoPannFisher 
+		constrainedBy: [ :aCell | aCell state = #village ].
+]
+
+{ #category : 'init  ' }
+EcoPannModel >> addShellfishes [
+
+	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
+		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
+]
+
+{ #category : 'init  ' }
 EcoPannModel >> applyStatesFromMatrix: aMatrix [
 
 	| rows cols value cell |
@@ -91,6 +107,23 @@ EcoPannModel >> buildSareOfSingleCellGrid [
 	
 ]
 
+{ #category : 'init single cell with village grid' }
+EcoPannModel >> buildSareOfSingleCellWithVillageGrid [
+	
+	self releaseAggregateType: EcoPannSare .
+	self
+		createAggregates: EcoPannSare 
+		from: EcoPannPlot
+		verifying: [ :aCell | aCell isMudflat ]
+		minimumSize: 1.
+		
+	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+		agg initNeighbourhood ].
+	
+	self initialiseSareAttributesOfSingleCellWithVillageGrid.
+	
+]
+
 { #category : 'init single sare grid' }
 EcoPannModel >> buildSareOfSingleSareGrid [
 	
@@ -149,10 +182,7 @@ EcoPannModel >> init30x30CellsGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOf30x30CellsGrid .
 	
-	"add shellfish on every mudflat cell"
-	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
-	
+		self addShellfishes.	
 		self buildSareOf30x30CellsGrid . 
 
 ]
@@ -207,7 +237,7 @@ EcoPannModel >> initSingleCellGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
+	self cells do: [ : each | each area: 500000]. "define the size of a cell to 500 000 m²"
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellGrid.
 	
@@ -216,6 +246,41 @@ EcoPannModel >> initSingleCellGrid [
 		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
 	
 		self buildSareOfSingleCellGrid. 
+
+		self addFishers.
+
+]
+
+{ #category : 'init single cell with village grid' }
+EcoPannModel >> initSingleCellWithVillageGrid [
+	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
+	
+	"In this grid, one cell is 1m²"
+
+	<init>
+	
+	currentDayOfMonth := 1.
+	currentMonth := 11. "simulation starts in nov"
+	dayCounter  := 0.
+	
+	"create grid"
+	self
+		createGridNumberOfRows: 1
+		numberOfColumns: 2
+		neighbourhood: 6
+		closed: true.
+		
+	self cells do: [ : each | each area: 500000]. "define the size of a cell to 500 000 m²"
+		
+ 	self applyStatesFromMatrix: self stateMatrixOfSingleCellWithVillageGrid.
+	
+	"add shellfish on every mudflat cell"
+	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
+		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
+	
+		self buildSareOfSingleCellWithVillageGrid. 
+
+		self addFishers.
 
 ]
 
@@ -345,6 +410,19 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
 	sare maxShellfishLength: 38.
 ]
 
+{ #category : 'init single cell with village grid' }
+EcoPannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
+
+	| sare |
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare name: 'amacala 1'.
+	sare recruitCapacity: 200.
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+]
+
 { #category : 'init single sare grid' }
 EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
 
@@ -358,18 +436,14 @@ EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
 	sare maxShellfishLength: 38.
 ]
 
-{ #category : 'time   ' }
-EcoPannModel >> isRecruitDay [
-
-	^ (currentDayOfMonth = 1)  and: (currentMonth = 12)
-]
-
 { #category : 'probes ' }
 EcoPannModel >> numberOfCohorts [ 
-	<probeNamed: 'Number of cohorts' color: '00B44C'>
+
+"	<probeNamed: 'Number of cohorts' color: '00B44C'>
+	
 	| pop |
 	pop := (self @@ EcoPannShellfishPopulation) first.
-	^ pop cohortsCounter .
+	^ pop cohortsCounter ."
 ]
 
 { #category : 'init  ' }
@@ -514,6 +588,15 @@ EcoPannModel >> stateMatrixOfSingleCellGrid [
     )
 ]
 
+{ #category : 'init single cell with village grid' }
+EcoPannModel >> stateMatrixOfSingleCellWithVillageGrid [
+    "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
+
+    ^ #(
+		(2 1)
+    )
+]
+
 { #category : 'init single sare grid' }
 EcoPannModel >> stateMatrixOfSingleSareGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
@@ -545,7 +628,20 @@ EcoPannModel >> step [
 		s recruit.
 		s cohortDeath.
 		s actualizeCohortsCounter.
-		 ].
+		].
+	
+	(self shuffled: (self @@ EcoPannFisher)) do: [ :s |
+		s fish.
+		].
+	
+"	(self isFishingPeriod and: [ self isMbissa ]) ifTrue: [ 
+		(self shuffled: (self @@ EcoPannFisher))
+			do: #goToFishingSpot;
+			do: #fish.
+		] ifFalse: [
+		(self shuffled: (self @@ EcoPannFisher))
+			do: #goToVillage.
+		]."
 	
 ]
 

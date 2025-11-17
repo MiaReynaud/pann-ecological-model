@@ -22,9 +22,9 @@ EcoPannShellfishCohort >> grow [
 
 	| maxLength growthRate theoriticalInitialAge |
 	
-	maxLength := self sare maxShellfishLength.      		 		 "LInfinity"     "in mm"
+	maxLength := self sare maxShellfishLength.      "LInfinity"     "in mm"
 	growthRate := self sare growthRate.             "K"
-	theoriticalInitialAge := 0.0.      "t0"
+	theoriticalInitialAge := 0.0.      				  "t0"
 	
 	shellfishSize := maxLength * (1 - ((growthRate negated * (shellfishAge - theoriticalInitialAge)) exp)).
 
@@ -68,7 +68,37 @@ EcoPannShellfishCohort >> sare [
 ]
 
 { #category : 'accessing' }
+EcoPannShellfishCohort >> shellfishAge [
+
+	^ shellfishAge
+]
+
+{ #category : 'accessing' }
+EcoPannShellfishCohort >> shellfishAge: anObject [
+
+	shellfishAge := anObject
+]
+
+{ #category : 'accessing' }
 EcoPannShellfishCohort >> shellfishDensity [
 
 	^ shellfishDensity
+]
+
+{ #category : 'accessing' }
+EcoPannShellfishCohort >> shellfishDensity: anObject [
+
+	shellfishDensity := anObject
+]
+
+{ #category : 'accessing' }
+EcoPannShellfishCohort >> shellfishSize [
+
+	^ shellfishSize
+]
+
+{ #category : 'accessing' }
+EcoPannShellfishCohort >> shellfishSize: anObject [
+
+	shellfishSize := anObject
 ]
