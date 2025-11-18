@@ -61,6 +61,14 @@ EcoPannShellfishCohort >> population: anObject [
 	population := anObject
 ]
 
+{ #category : 'fishing methods ' }
+EcoPannShellfishCohort >> removeShellfish: aNumber [
+ "remove this number of shellfishes from the cohort"
+
+	shellfishDensity := shellfishDensity - (aNumber / population cell area).
+
+]
+
 { #category : 'ecological methods  ' }
 EcoPannShellfishCohort >> sare [ 
 

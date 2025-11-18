@@ -38,26 +38,7 @@ EcoPannShellfishPopulation >> dailyFishableQuantity [
 
 	 ^ 10000. "we estimate that each woman can only cover 400m² per day. She only collects 50% of available shellfish in this area. Since the total area of a mudflat cell is 5000m², the total number of available shellfish in the cell (or in the population, it's the same because a cell has only one population and a population is on only one cell) should be multiplied by (400/5000)*0.5 = 1/25  "
 	
-	"fishingHoursPerDay * fishedAreaPerHour (56m² that will evolve depending on the fisher eficiency) * self populationFishableDensity"
-]
-
-{ #category : 'ecological methods  ' }
-EcoPannShellfishPopulation >> extractShellfish [
-
-	| numberOfShellfishesToExtract exctractedFromCohort totalExtracted |
-	
-	totalExtracted := 0. 
-	numberOfShellfishesToExtract := self dailyFishableQuantity.
-	
-	cohorts reversed do: [ :cohort | "we reverse it so that the fishers take the bigest ones in priority"
-		exctractedFromCohort := cohort shellfishDensity min: numberOfShellfishesToExtract.
-		cohort shellfishDensity: cohort shellfishDensity - exctractedFromCohort.
-		numberOfShellfishesToExtract := numberOfShellfishesToExtract - exctractedFromCohort.
-		totalExtracted := totalExtracted + exctractedFromCohort ].
-	
-	^ totalExtracted
-	
-
+	"In the end, will have to replace with : ^ fishingHoursPerDay * fishedAreaPerHour (56m² that will evolve depending on the fisher eficiency) * self populationFishableDensity"
 ]
 
 { #category : 'initialization' }

@@ -2,7 +2,13 @@ Class {
 	#name : 'EcoPannFisher',
 	#superclass : 'CMAgent',
 	#instVars : [
-		'dailyEarnings'
+		'dailyEarnings',
+		'fishedAreaPerHour',
+		'numberOfFishingDayPerMbissa',
+		'fishingHoursPerDay',
+		'numberOfExtractedShellfishToday',
+		'freshBiomassOfExtractedShellfishToday',
+		'driedFleshOfExtractedShellfishToday'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -14,25 +20,41 @@ EcoPannFisher >> dailyEarnings [
 	^ dailyEarnings
 ]
 
-{ #category : 'initialization' }
+{ #category : 'fishing activity' }
 EcoPannFisher >> earnMoneyOutOfFishing [
 
-	| numberOfCollectedShellfish weightOfAShellfish weightOfShellfishForOneDriedKilogramOfFlesh priceOfAKgOfDriedShellfishFlesh |
+	| weightOfAShellfish weightOfShellfishForOneDriedKilogramOfFlesh priceOfAKgOfDriedShellfishFlesh |
 	
 	weightOfAShellfish := 10. "g"
 	weightOfShellfishForOneDriedKilogramOfFlesh := 40000. "g"
 	priceOfAKgOfDriedShellfishFlesh := 3000. "FCFA"
-
-   numberOfCollectedShellfish := self cell shellfishPopulation extractShellfish.
 	
-	dailyEarnings := ((numberOfCollectedShellfish * weightOfAShellfish) / weightOfShellfishForOneDriedKilogramOfFlesh) * priceOfAKgOfDriedShellfishFlesh. "FCFA"
+	dailyEarnings := ((numberOfExtractedShellfishToday * weightOfAShellfish) / weightOfShellfishForOneDriedKilogramOfFlesh) * priceOfAKgOfDriedShellfishFlesh. "FCFA"
 ]
 
-{ #category : 'initialization' }
+{ #category : 'fishing activity' }
+EcoPannFisher >> extractShellfish [ 
+
+    | cohorts fishingRate shellfishToExtractFromCohort |
+
+	cohorts := self cell shellfishPopulation cohorts.     
+
+	fishingRate := fishingHoursPerDay * fishedAreaPerHour.
+
+	numberOfExtractedShellfishToday := cohorts sum: [:cohort |
+      shellfishToExtractFromCohort := fishingRate * cohort shellfishDensity.
+		cohort removeShellfish: shellfishToExtractFromCohort.
+		shellfishToExtractFromCohort
+		].
+
+]
+
+{ #category : 'fishing activity' }
 EcoPannFisher >> fish [
 
 	(self isFishingPeriod and: [ self isMbissa ]) ifTrue: [ 
 		self goToFishingSpot.
+		self extractShellfish.
 		self earnMoneyOutOfFishing.
 		]
 		ifFalse: [
@@ -40,7 +62,7 @@ EcoPannFisher >> fish [
 		].
 ]
 
-{ #category : 'initialization' }
+{ #category : 'fishing activity' }
 EcoPannFisher >> goToFishingSpot [
 	"The fisher go to the fishing spot where she think she will earn the most"
 	
@@ -74,6 +96,9 @@ EcoPannFisher >> goToVillage [
 EcoPannFisher >> initialize [ 
 
 	super initialize.
+	fishedAreaPerHour := 56. "m²/h"
+	numberOfFishingDayPerMbissa := 6.
+	fishingHoursPerDay := 4. "h"
 ]
 
 { #category : 'time    ' }
@@ -87,7 +112,7 @@ EcoPannFisher >> isMbissa [
     "Return true if the current day is within a mbissa"
  
 	| cycleLength mbissaLength cycleDay |
-	mbissaLength := 10.
+	mbissaLength := numberOfFishingDayPerMbissa.
 	cycleLength := 15.
 	cycleDay := (self cormasModel dayCounter - 1 \\ cycleLength) + 1.
 	^ cycleDay <= mbissaLength
