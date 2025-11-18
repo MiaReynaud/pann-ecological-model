@@ -24,6 +24,7 @@ EcoPannShellfishPopulation >> cohortDeath [
 
 	| sparseCohorts |
 	sparseCohorts := (self cohorts) select: [ :c | c shellfishDensity < 2 ].
+	sparseCohorts do: [ :c | c shellfishDensity: 0].
 	sparseCohorts do: [ :c | c die	].
 ]
 
@@ -31,6 +32,12 @@ EcoPannShellfishPopulation >> cohortDeath [
 EcoPannShellfishPopulation >> cohorts [
 
 	^ cohorts
+]
+
+{ #category : 'accessing' }
+EcoPannShellfishPopulation >> cohortsCounter [
+
+	^ cohortsCounter
 ]
 
 { #category : 'ecological methods  ' }

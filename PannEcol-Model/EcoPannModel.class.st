@@ -417,7 +417,7 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 200.
+	sare recruitCapacity: 50.
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
@@ -439,11 +439,11 @@ EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
 { #category : 'probes ' }
 EcoPannModel >> numberOfCohorts [ 
 
-"	<probeNamed: 'Number of cohorts' color: '00B44C'>
+	<probeNamed: 'Number of cohorts' color: '00B44C'>
 	
 	| pop |
 	pop := (self @@ EcoPannShellfishPopulation) first.
-	^ pop cohortsCounter ."
+	^ pop cohortsCounter .
 ]
 
 { #category : 'init  ' }
@@ -620,7 +620,8 @@ EcoPannModel >> step [
 
 	self @@ EcoPannShellfishCohort do: [:s | 
 		s aging.
-		s grow.
+		s growSize.
+		s growBiomass.
 		s naturalDeath.
 		 ].
 	

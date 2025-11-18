@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'shellfishAge',
 		'shellfishSize',
+		'shellfishTotalBiomass',
 		'shellfishDensity',
 		'population'
 	],
@@ -18,7 +19,19 @@ EcoPannShellfishCohort >> aging [
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishCohort >> grow [
+EcoPannShellfishCohort >> growBiomass [
+
+	| a b |
+	
+	a := 0.08.
+	b := 2.72.
+
+	shellfishTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
+
+]
+
+{ #category : 'ecological methods  ' }
+EcoPannShellfishCohort >> growSize [
 
 	| maxLength growthRate theoriticalInitialAge |
 	
@@ -32,10 +45,17 @@ EcoPannShellfishCohort >> grow [
 
 { #category : 'initialize  ' }
 EcoPannShellfishCohort >> initialize [ 
+
+	| a b |
+
 	super initialize.
 	shellfishAge := 41. "according to the function a shellfish of 3mm is 41 days old"
 	shellfishSize := 3. "in mm"
 	shellfishDensity := 250. "in ind/m²"
+	
+	a := 0.08.
+	b := 2.72.
+	shellfishTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
 ]
 
 { #category : 'ecological methods  ' }
@@ -109,4 +129,10 @@ EcoPannShellfishCohort >> shellfishSize [
 EcoPannShellfishCohort >> shellfishSize: anObject [
 
 	shellfishSize := anObject
+]
+
+{ #category : 'accessing' }
+EcoPannShellfishCohort >> shellfishTotalBiomass [
+
+	^ shellfishTotalBiomass
 ]
