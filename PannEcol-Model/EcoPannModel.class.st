@@ -453,6 +453,22 @@ EcoPannModel >> sareNamed: aString [
 	^(self @@ EcoPannSare) detect: [ :each | each name = aString ]
 ]
 
+{ #category : 'collect data' }
+EcoPannModel >> saveCellDataToCsv [
+    | folder file |
+     "Provide the path to a folder where you want to save your data"
+    folder := 'D:\data_pann' asFileReference.
+
+   "If your folder does not exist, it will be created"
+    folder ensureCreateDirectory.
+    
+    self cells
+        select: [ :each | each isMudflat ]
+        thenDo: [ :each |
+            file := folder / ('data-mudflat', each id asString, '.csv').
+            each saveDataToCsv: file ].
+]
+
 { #category : 'probes ' }
 EcoPannModel >> sizeOfCohorts [
 
@@ -634,6 +650,10 @@ EcoPannModel >> step [
 	(self shuffled: (self @@ EcoPannFisher)) do: [ :s |
 		s fish.
 		].
+	
+	 self cells
+        select: [ :each | each isMudflat ]
+        thenDo: [ :each | each collectData ].
 	
 "	(self isFishingPeriod and: [ self isMbissa ]) ifTrue: [ 
 		(self shuffled: (self @@ EcoPannFisher))

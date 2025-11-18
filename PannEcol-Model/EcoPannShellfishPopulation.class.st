@@ -22,10 +22,12 @@ EcoPannShellfishPopulation >> actualizeCohortsCounter [
 { #category : 'ecological methods  ' }
 EcoPannShellfishPopulation >> cohortDeath [
 
-	| sparseCohorts |
-	sparseCohorts := (self cohorts) select: [ :c | c shellfishDensity < 2 ].
-	sparseCohorts do: [ :c | c shellfishDensity: 0].
-	sparseCohorts do: [ :c | c die	].
+	| cohortsToBeKilled |
+	
+	cohortsToBeKilled :=	cohorts select: [ :c | c shellfishDensity < 2 ].
+	cohortsToBeKilled do: [ :c |
+			c die.
+			cohorts remove: c ]
 ]
 
 { #category : 'accessing' }
