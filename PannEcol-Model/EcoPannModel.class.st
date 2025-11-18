@@ -455,18 +455,18 @@ EcoPannModel >> sareNamed: aString [
 
 { #category : 'collect data' }
 EcoPannModel >> saveCellDataToCsv [
-  "  | folder file |
-     ""Provide the path to a folder where you want to save your data""
-    folder := 'C:/Mia/Change/Me/Desktop/data/' asFileReference.
+    | folder file |
+     "Provide the path to a folder where you want to save your data"
+    folder := 'D:\data_pann' asFileReference.
 
-    ""If your folder does not exist, it will be created""
+   "If your folder does not exist, it will be created"
     folder ensureCreateDirectory.
     
     self cells
         select: [ :each | each isMudflat ]
         thenDo: [ :each |
-            file := (folder / 'data-mudflat', each id asString, '.csv').
-            each saveDataToCsv: file ]."
+            file := folder / ('data-mudflat', each id asString, '.csv').
+            each saveDataToCsv: file ].
 ]
 
 { #category : 'probes ' }
