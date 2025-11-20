@@ -183,7 +183,8 @@ EcoPannModel >> init30x30CellsGrid [
  	self applyStatesFromMatrix: self stateMatrixOf30x30CellsGrid .
 	
 		self addShellfishes.	
-		self buildSareOf30x30CellsGrid . 
+		self buildSareOf30x30CellsGrid.
+		self addFishers.
 
 ]
 
@@ -210,11 +211,9 @@ EcoPannModel >> init70x70CellsGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOf70x70CellsGrid .
 	
-	"add shellfish on every mudflat cell"
-	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
-	
-		self buildSareOf70x70CellsGrid . 
+	self addShellfishes.
+	self buildSareOf70x70CellsGrid.
+	self addFishers.
 
 ]
 
@@ -241,14 +240,8 @@ EcoPannModel >> initSingleCellGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellGrid.
 	
-	"add shellfish on every mudflat cell"
-	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
-	
-		self buildSareOfSingleCellGrid. 
-
-		self addFishers.
-
+	self addShellfishes.	
+	self buildSareOfSingleCellGrid.
 ]
 
 { #category : 'init single cell with village grid' }
@@ -274,12 +267,8 @@ EcoPannModel >> initSingleCellWithVillageGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellWithVillageGrid.
 	
-	"add shellfish on every mudflat cell"
-	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
-	
+		self addShellfishes.
 		self buildSareOfSingleCellWithVillageGrid. 
-
 		self addFishers.
 
 ]
@@ -307,11 +296,9 @@ EcoPannModel >> initSingleSareGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleSareGrid.
 	
-	"add shellfish on every mudflat cell"
-	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
-	
+		self addShellfishes.	
 		self buildSareOfSingleSareGrid. 
+		self addFishers.
 
 ]
 
@@ -322,35 +309,35 @@ EcoPannModel >> initialiseSareAttributesOf30x30CellsGrid [
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 200. 
+	sare recruitCapacity: 100. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
 	sare name: 'anewanew 1'.
-	sare recruitCapacity: 175. 
+	sare recruitCapacity: 50. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
 	sare name: 'mbina'.
-	sare recruitCapacity: 150. 
+	sare recruitCapacity: 40. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 4]. 
 	sare name: 'anewanew 2'.
-	sare recruitCapacity: 125. 
+	sare recruitCapacity: 25. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 5]. 
 	sare name: 'amacala 2'.
-	sare recruitCapacity: 100. 
+	sare recruitCapacity: 10. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
@@ -363,35 +350,35 @@ EcoPannModel >> initialiseSareAttributesOf70x70CellsGrid [
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 200. 
+	sare recruitCapacity: 100. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
 	sare name: 'anewanew 1'.
-	sare recruitCapacity: 175. 
+	sare recruitCapacity: 50. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
 	sare name: 'mbina'.
-	sare recruitCapacity: 150. 
+	sare recruitCapacity: 40. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 4]. 
 	sare name: 'anewanew 2'.
-	sare recruitCapacity: 125. 
+	sare recruitCapacity: 25. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 5]. 
 	sare name: 'amacala 2'.
-	sare recruitCapacity: 100. 
+	sare recruitCapacity: 10. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
@@ -404,7 +391,7 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 200.
+	sare recruitCapacity: 50.
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
@@ -430,7 +417,7 @@ EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 200.
+	sare recruitCapacity: 50.
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
