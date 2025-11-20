@@ -19,6 +19,65 @@ EcoPannShellfishPopulation >> actualizeCohortsCounter [
 	aliveCohorts do: [ :c | cohortsCounter := cohortsCounter + 1	].
 ]
 
+{ #category : 'charts' }
+EcoPannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
+	
+	| chart plot |
+	
+	xCollection ifEmpty: [ ^ RSCompositeChart new ].
+	
+	chart := RSCompositeChart new.
+			
+	plot := RSBarPlot new x: xCollection y: yCollection.
+	plot color: CMColor olympic.
+	plot barSize: 10.
+	chart add: plot.
+
+	chart build.
+	plot bars @ RSPopup.
+	
+	^ chart
+]
+
+{ #category : 'charts' }
+EcoPannShellfishPopulation >> buildChartScatterPlotX: xCollection y: yCollection [
+	
+	| chart plot |
+	
+	xCollection ifEmpty: [ ^ RSCompositeChart new ].
+	
+	chart := RSCompositeChart new.
+			
+	plot := RSScatterPlot new x: xCollection y: yCollection.
+	plot color: CMColor olympic.
+	chart add: plot.
+
+	chart build.
+	
+	^ chart
+]
+
+{ #category : 'charts' }
+EcoPannShellfishPopulation >> buildMonthlyWeightChart [
+
+	^ self
+		buildChartBoxPlotX: (cohorts collect: [:c | c shellfishSize])
+		y: (cohorts collect: [:c | c shellfishDensity]).
+]
+
+{ #category : 'charts' }
+EcoPannShellfishPopulation >> buildSizeDistributionChart [
+
+	| sortedCohorts |
+
+	sortedCohorts := cohorts asSortedCollection:
+		[:a :b | a shellfishSize < b shellfishSize ].
+
+	^ self
+		buildChartBoxPlotX: (sortedCohorts collect: [:c | c shellfishSize])
+		y: (sortedCohorts collect: [:c | c shellfishDensity]).
+]
+
 { #category : 'ecological methods  ' }
 EcoPannShellfishPopulation >> cohortDeath [
 
@@ -68,6 +127,16 @@ EcoPannShellfishPopulation >> initialize [
     		yourself ]."
 ]
 
+{ #category : 'charts' }
+EcoPannShellfishPopulation >> inspectorCharts: aBuilder [
+
+	<inspectorPresentationOrder: 10 title: 'Charts'>
+	
+	^ (aBuilder instantiate: SpRoassalInspectorPresenter)
+		canvas: self buildSizeDistributionChart canvas;
+		yourself
+]
+
 { #category : 'cohort counter ' }
 EcoPannShellfishPopulation >> isRecruitDay [
 "send true if its first of december"
@@ -97,4 +166,15 @@ EcoPannShellfishPopulation >> recruit [
 			yourself.
 	cohorts add: newCohort.
 	].
+]
+
+{ #category : 'charts' }
+EcoPannShellfishPopulation >> weightStats [
+
+	| weights |
+    
+	weights := cohorts collect: #shellfishTotalBiomass.
+   weights ifEmpty: [ ^ { 0 . 0 . 0 } ]. 
+
+   ^ { ((weights mean) - (weights standardDeviation)) . weights mean . ((weights mean) + (weights standardDeviation)) } "sdmin . mean . sdmax"
 ]

@@ -86,6 +86,15 @@ EcoPannSare >> plots [
 ]
 
 { #category : 'accessing' }
+EcoPannSare >> populations [
+
+	| populations |
+	populations := self plots collect: #shellfishPopulation.
+	
+	^ populations.
+]
+
+{ #category : 'accessing' }
 EcoPannSare >> recruitCapacity [
 
 	^ recruitCapacity
