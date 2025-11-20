@@ -2,10 +2,15 @@ Extension { #name : 'EcoPannShellfishPopulation' }
 
 { #category : '*PannEcol-Model-Charts' }
 EcoPannShellfishPopulation >> buildChart [
-	
+
+	| sortedCohorts |
+
+	sortedCohorts := cohorts asSortedCollection:
+		[:a :b | a shellfishSize < b shellfishSize ].
+
 	^ self
-		buildChartX: (cohorts collect: [ :cohort | cohort shellfishSize ])
-		y: (cohorts collect: [ :cohort | cohort shellfishDensity ])
+		buildChartX: (sortedCohorts collect: [:c | c shellfishSize])
+		y: (sortedCohorts collect: [:c | c shellfishDensity]).
 ]
 
 { #category : '*PannEcol-Model-Charts' }
