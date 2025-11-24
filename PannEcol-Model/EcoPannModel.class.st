@@ -142,6 +142,12 @@ EcoPannModel >> buildSareOfSingleSareGrid [
 ]
 
 { #category : 'accessing' }
+EcoPannModel >> cohorts [
+
+	^ self @@ EcoPannShellfishCohort
+]
+
+{ #category : 'accessing' }
 EcoPannModel >> currentDayOfMonth [
 
 	^ currentDayOfMonth
@@ -157,6 +163,12 @@ EcoPannModel >> currentMonth [
 EcoPannModel >> dayCounter [
 
 	^ dayCounter
+]
+
+{ #category : 'accessing' }
+EcoPannModel >> fishers [
+
+	^ self @@ EcoPannFisher
 ]
 
 { #category : 'init 30x30 cells grid' }
@@ -423,6 +435,12 @@ EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
 	sare maxShellfishLength: 38.
 ]
 
+{ #category : 'accessing' }
+EcoPannModel >> mudflats [
+
+	^ self cells select: [ :each | each isMudflat ]
+]
+
 { #category : 'probes ' }
 EcoPannModel >> numberOfCohorts [ 
 
@@ -431,6 +449,12 @@ EcoPannModel >> numberOfCohorts [
 	| pop |
 	pop := (self @@ EcoPannShellfishPopulation) first.
 	^ pop cohortsCounter .
+]
+
+{ #category : 'accessing' }
+EcoPannModel >> populations [
+
+	^ self @@ EcoPannShellfishPopulation
 ]
 
 { #category : 'init  ' }
@@ -622,43 +646,15 @@ EcoPannModel >> stateMatrixOfSingleSareGrid [
 { #category : 'step  ' }
 EcoPannModel >> step [
 	"one simulation day"
-	
-	<control>
-	
-	self updateDate.
 
-	self @@ EcoPannShellfishCohort do: [:s | 
-		s aging.
-		s growSize.
-		s growBiomass.
-		s naturalDeath.
-		 ].
+	<control>
+	self updateDate.
 	
-	self @@ EcoPannShellfishPopulation do: [:s | 
-		s recruit.
-		s cohortDeath.
-		s actualizeCohortsCounter.
-		].
+	self cohorts do: [ :cohort | cohort step ].
+	self populations do: [ :population | population step ].
+	(self shuffled: self fishers) do: [ :fisher | fisher step ].
 	
-	(self shuffled: (self @@ EcoPannFisher)) do: [ :fisher |
-		fisher shouldFish
-			ifTrue: [ fisher fish ]
-			ifFalse: [ fisher goToVillage ]
-		].
-	
-	 self cells
-        select: [ :each | each isMudflat ]
-        thenDo: [ :each | each collectData ].
-	
-"	(self isFishingPeriod and: [ self isMbissa ]) ifTrue: [ 
-		(self shuffled: (self @@ EcoPannFisher))
-			do: #goToFishingSpot;
-			do: #fish.
-		] ifFalse: [
-		(self shuffled: (self @@ EcoPannFisher))
-			do: #goToVillage.
-		]."
-	
+	self mudflats do: [ :each | each collectData ]
 ]
 
 { #category : 'time   ' }

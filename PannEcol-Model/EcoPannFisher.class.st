@@ -14,7 +14,7 @@ Class {
 	#package : 'PannEcol-Model'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'decisions' }
 EcoPannFisher >> chooseSareToFishOn [
 	<playableAction>
 	^ self selectRandomlyFrom: cormasModel sares
@@ -140,8 +140,15 @@ EcoPannFisher >> pov [
 		size: 0.5
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'decisions' }
 EcoPannFisher >> shouldFish [
 	<playableAction>
 	^ self isFishingPeriod and: [ self isMbissa ]
+]
+
+{ #category : 'control' }
+EcoPannFisher >> step [
+	self shouldFish
+			ifTrue: [ self fish ]
+			ifFalse: [ self goToVillage].
 ]

@@ -136,3 +136,12 @@ EcoPannShellfishCohort >> shellfishTotalBiomass [
 
 	^ shellfishTotalBiomass
 ]
+
+{ #category : 'step   ' }
+EcoPannShellfishCohort >> step [ 
+
+	self aging.
+	self growSize.
+	self growBiomass.
+	self naturalDeath.
+]

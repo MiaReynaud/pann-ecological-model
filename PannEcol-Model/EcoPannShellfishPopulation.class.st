@@ -168,6 +168,14 @@ EcoPannShellfishPopulation >> recruit [
 	].
 ]
 
+{ #category : 'step    ' }
+EcoPannShellfishPopulation >> step [ 
+
+	self recruit.
+	self cohortDeath.
+	self actualizeCohortsCounter.
+]
+
 { #category : 'charts' }
 EcoPannShellfishPopulation >> weightStats [
 
