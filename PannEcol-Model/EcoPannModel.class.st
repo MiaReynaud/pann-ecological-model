@@ -437,7 +437,13 @@ EcoPannModel >> numberOfCohorts [
 EcoPannModel >> sareNamed: aString [
 "to access a sare by his name"
 
-	^(self @@ EcoPannSare) detect: [ :each | each name = aString ]
+	^ self sares detect: [ :each | each name = aString ]
+]
+
+{ #category : 'init  ' }
+EcoPannModel >> sares [
+
+	^ self @@ EcoPannSare
 ]
 
 { #category : 'collect data' }
@@ -634,8 +640,10 @@ EcoPannModel >> step [
 		s actualizeCohortsCounter.
 		].
 	
-	(self shuffled: (self @@ EcoPannFisher)) do: [ :s |
-		s fish.
+	(self shuffled: (self @@ EcoPannFisher)) do: [ :fisher |
+		fisher shouldFish
+			ifTrue: [ fisher fish ]
+			ifFalse: [ fisher goToVillage ]
 		].
 	
 	 self cells

@@ -14,6 +14,12 @@ Class {
 	#package : 'PannEcol-Model'
 }
 
+{ #category : 'as yet unclassified' }
+EcoPannFisher >> chooseSareToFishOn [
+	<playableAction>
+	^ self selectRandomlyFrom: cormasModel sares
+]
+
 { #category : 'accessing' }
 EcoPannFisher >> dailyEarnings [
 
@@ -61,30 +67,21 @@ EcoPannFisher >> extractShellfish [
 
 { #category : 'fishing activity' }
 EcoPannFisher >> fish [
-
-	(self isFishingPeriod and: [ self isMbissa ]) ifTrue: [ 
-		self goToFishingSpot.
-		self extractShellfish.
-		self earnMoneyOutOfFishing.
-		]
-		ifFalse: [
-		self goToVillage.
-		].
+	self goToFishingSpot.
+	self extractShellfish.
+	self earnMoneyOutOfFishing
 ]
 
 { #category : 'fishing activity' }
 EcoPannFisher >> goToFishingSpot [
 	"The fisher go to the fishing spot where she think she will earn the most"
-	
-	<action>
-	| fishingSpot |
-	
-	fishingSpot := self selectRandomlyFrom: 
-		(cormasModel cells select: [ :c | c state = #mudflat ]).
-	
-	self moveTo: fishingSpot.
-	
 
+	<action>
+	| sare fishingSpot |
+	sare := self chooseSareToFishOn.
+	fishingSpot := self selectRandomlyFrom: sare plots.
+
+	self moveTo: fishingSpot
 ]
 
 { #category : 'initialization' }
@@ -141,4 +138,10 @@ EcoPannFisher >> pov [
 		color: 'FF9D00'
 		shape: #triangle 
 		size: 0.5
+]
+
+{ #category : 'as yet unclassified' }
+EcoPannFisher >> shouldFish [
+	<playableAction>
+	^ self isFishingPeriod and: [ self isMbissa ]
 ]
