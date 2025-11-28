@@ -29,9 +29,13 @@ EcoPannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
 	chart := RSCompositeChart new.
 			
 	plot := RSBarPlot new x: xCollection y: yCollection.
-	plot color: CMColor olympic.
+	plot color: CMColor black.
 	plot barSize: 10.
 	chart add: plot.
+	
+	chart title: 'Distribution des tailles'.
+	chart xlabel: 'Taille (mm)'.
+	chart ylabel: 'Densité (individus/m²)'.
 
 	chart build.
 	plot bars @ RSPopup.
@@ -42,7 +46,7 @@ EcoPannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
 { #category : 'charts' }
 EcoPannShellfishPopulation >> buildChartScatterPlotX: xCollection y: yCollection [
 	
-	| chart plot |
+"	| chart plot |
 	
 	xCollection ifEmpty: [ ^ RSCompositeChart new ].
 	
@@ -54,15 +58,15 @@ EcoPannShellfishPopulation >> buildChartScatterPlotX: xCollection y: yCollection
 
 	chart build.
 	
-	^ chart
+	^ chart"
 ]
 
 { #category : 'charts' }
 EcoPannShellfishPopulation >> buildMonthlyWeightChart [
 
-	^ self
+"	^ self
 		buildChartBoxPlotX: (cohorts collect: [:c | c shellfishSize])
-		y: (cohorts collect: [:c | c shellfishDensity]).
+		y: (cohorts collect: [:c | c shellfishDensity])."
 ]
 
 { #category : 'charts' }
@@ -179,10 +183,10 @@ EcoPannShellfishPopulation >> step [
 { #category : 'charts' }
 EcoPannShellfishPopulation >> weightStats [
 
-	| weights |
+"	| weights |
     
 	weights := cohorts collect: #shellfishTotalBiomass.
    weights ifEmpty: [ ^ { 0 . 0 . 0 } ]. 
 
-   ^ { ((weights mean) - (weights standardDeviation)) . weights mean . ((weights mean) + (weights standardDeviation)) } "sdmin . mean . sdmax"
+   ^ { ((weights mean) - (weights standardDeviation)) . weights mean . ((weights mean) + (weights standardDeviation)) } ""sdmin . mean . sdmax"""
 ]
