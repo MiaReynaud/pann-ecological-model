@@ -34,5 +34,9 @@ Metacello new
 Metacello new
     baseline: 'PannEcolModel';
     repository: 'github://MiaReynaud/pann-ecological-model:game';
+    onConflict: [ :e | e useIncoming ];
+    onUpgrade: [ :e | e useIncoming ];
+    onWarning: [ :e | e load ];
+    ignoreImage;
     load
 ```
