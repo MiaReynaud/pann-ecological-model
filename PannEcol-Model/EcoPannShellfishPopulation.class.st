@@ -44,32 +44,6 @@ EcoPannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
 ]
 
 { #category : 'charts' }
-EcoPannShellfishPopulation >> buildChartScatterPlotX: xCollection y: yCollection [
-	
-"	| chart plot |
-	
-	xCollection ifEmpty: [ ^ RSCompositeChart new ].
-	
-	chart := RSCompositeChart new.
-			
-	plot := RSScatterPlot new x: xCollection y: yCollection.
-	plot color: CMColor olympic.
-	chart add: plot.
-
-	chart build.
-	
-	^ chart"
-]
-
-{ #category : 'charts' }
-EcoPannShellfishPopulation >> buildMonthlyWeightChart [
-
-"	^ self
-		buildChartBoxPlotX: (cohorts collect: [:c | c shellfishSize])
-		y: (cohorts collect: [:c | c shellfishDensity])."
-]
-
-{ #category : 'charts' }
 EcoPannShellfishPopulation >> buildSizeDistributionChart [
 
 	| sortedCohorts |
@@ -178,15 +152,4 @@ EcoPannShellfishPopulation >> step [
 	self recruit.
 	self cohortDeath.
 	self actualizeCohortsCounter.
-]
-
-{ #category : 'charts' }
-EcoPannShellfishPopulation >> weightStats [
-
-"	| weights |
-    
-	weights := cohorts collect: #shellfishTotalBiomass.
-   weights ifEmpty: [ ^ { 0 . 0 . 0 } ]. 
-
-   ^ { ((weights mean) - (weights standardDeviation)) . weights mean . ((weights mean) + (weights standardDeviation)) } ""sdmin . mean . sdmax"""
 ]

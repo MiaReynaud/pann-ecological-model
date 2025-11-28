@@ -652,6 +652,7 @@ EcoPannModel >> step [
 	
 	self cohorts do: [ :cohort | cohort step ].
 	self populations do: [ :population | population step ].
+	self sares do: [ :sare | sare step ].
 	(self shuffled: self fishers) do: [ :fisher | fisher step ].
 	
 	self mudflats do: [ :each | each collectData ]

@@ -6,11 +6,50 @@ Class {
 		'recruitCapacity',
 		'naturalDeathRate',
 		'growthRate',
-		'maxShellfishLength'
+		'maxShellfishLength',
+		'numberOfShellfishesHistory'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
+
+{ #category : 'charts ' }
+EcoPannSare >> buildStockOverTimeChart [
+	
+    ^ self
+		buildChartBoxPlotX: ((1 to: numberOfShellfishesHistory size ) asArray)
+		y: (numberOfShellfishesHistory asArray).
+]
+
+{ #category : 'charts ' }
+EcoPannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
+
+    | chart plot |
+
+    xCollection ifEmpty: [ ^ RSCompositeChart new ].
+
+    chart := RSCompositeChart new.
+
+    plot := RSLinePlot new
+        x: xCollection
+        y: yCollection.
+
+    plot color: CMColor black.
+
+    chart add: plot.
+
+    chart title: 'Évolution du stock de coquillages'.
+    chart xlabel: 'Step'.
+    chart ylabel: 'Stock (nombre de individus)'.
+
+    chart build.
+
+
+    plot points @ RSPopup.
+
+    ^ chart
+
+]
 
 { #category : 'accessing' }
 EcoPannSare >> growthRate [
@@ -35,6 +74,17 @@ EcoPannSare >> initialize [
 	naturalDeathRate := 0.
 	growthRate := 0.
 	maxShellfishLength := 0.
+	numberOfShellfishesHistory := OrderedCollection new.
+]
+
+{ #category : 'charts ' }
+EcoPannSare >> inspectorCharts: aBuilder [
+
+	<inspectorPresentationOrder: 10 title: 'Charts'>
+	
+	^ (aBuilder instantiate: SpRoassalInspectorPresenter)
+		canvas: self buildStockOverTimeChart canvas;
+		yourself
 ]
 
 { #category : 'accessing' }
@@ -104,4 +154,10 @@ EcoPannSare >> recruitCapacity [
 EcoPannSare >> recruitCapacity: anObject [
 
 	recruitCapacity := anObject
+]
+
+{ #category : 'step     ' }
+EcoPannSare >> step [
+
+	numberOfShellfishesHistory add: self numberOfShellfishes.
 ]
