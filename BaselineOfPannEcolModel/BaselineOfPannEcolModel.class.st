@@ -11,7 +11,12 @@ BaselineOfPannEcolModel >> baseline: spec [
 	<baseline>
 	spec for: #common do: [
 		spec
-			package: 'PannEcol-Model';
+			baseline: 'CormasGameServer'
+			with: [ spec repository: 'github://cormas/cormas-game-server:main' ].
+		
+		spec
+			package: 'PannEcol-Model'
+			with: [ spec requires: #('CormasGameServer') ];
 		
 			package: 'PannEcol-Model-Charts'
 			with: [ spec requires: #('PannEcol-Model') ] ]
