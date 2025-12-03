@@ -90,6 +90,23 @@ EcoPannModel >> buildSareOf70x70CellsGrid [
 	
 ]
 
+{ #category : 'init game grid' }
+EcoPannModel >> buildSareOfGameGrid [
+	
+	self releaseAggregateType: EcoPannSare .
+	self
+		createAggregates: EcoPannSare 
+		from: EcoPannPlot
+		verifying: [ :aCell | aCell isMudflat ]
+		minimumSize: 1.
+		
+	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+		agg initNeighbourhood ].
+	
+	self initialiseSareAttributesOfGameGrid .
+	
+]
+
 { #category : 'init single cell grid' }
 EcoPannModel >> buildSareOfSingleCellGrid [
 	
@@ -200,8 +217,8 @@ EcoPannModel >> init30x30CellsGrid [
 
 ]
 
-{ #category : 'init 70x70 cells grid' }
-EcoPannModel >> init70x70CellsGrid [
+{ #category : 'init game grid' }
+EcoPannModel >> initGameGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
 	"In this grid, one cell is 1m²"
@@ -214,17 +231,17 @@ EcoPannModel >> init70x70CellsGrid [
 	
 	"create grid"
 	self
-		createGridNumberOfRows: 70
-		numberOfColumns: 70
+		createGridNumberOfRows: 9
+		numberOfColumns: 9
 		neighbourhood: 6
 		closed: true.
 		
 	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
 		
- 	self applyStatesFromMatrix: self stateMatrixOf70x70CellsGrid .
+ 	self applyStatesFromMatrix: self stateMatrixOfGameGrid .
 	
 	self addShellfishes.
-	self buildSareOf70x70CellsGrid.
+	self buildSareOfGameGrid.
 	self addFishers.
 
 ]
@@ -357,6 +374,47 @@ EcoPannModel >> initialiseSareAttributesOf30x30CellsGrid [
 
 { #category : 'init 70x70 cells grid' }
 EcoPannModel >> initialiseSareAttributesOf70x70CellsGrid [
+
+	| sare |
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare name: 'amacala 1'.
+	sare recruitCapacity: 100. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
+	sare name: 'anewanew 1'.
+	sare recruitCapacity: 50. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
+	sare name: 'mbina'.
+	sare recruitCapacity: 40. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 4]. 
+	sare name: 'anewanew 2'.
+	sare recruitCapacity: 25. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+	
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 5]. 
+	sare name: 'amacala 2'.
+	sare recruitCapacity: 10. 
+	sare naturalDeathRate: 0.00219.
+	sare growthRate: 0.00203.
+	sare maxShellfishLength: 38.
+]
+
+{ #category : 'init game grid' }
+EcoPannModel >> initialiseSareAttributesOfGameGrid [
 
 	| sare |
 	
@@ -610,6 +668,24 @@ EcoPannModel >> stateMatrixOf70x70CellsGrid [
 	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3)
 	(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
 	)
+]
+
+{ #category : 'init game grid' }
+EcoPannModel >> stateMatrixOfGameGrid [
+    "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
+	"9x9 grid"
+
+    ^ #(
+		(0 0 0 0 0 0 0 0 0)
+		(0 2 0 0 0 0 0 0 0)
+		(0 0 0 0 0 0 0 0 3)
+		(0 0 2 0 0 0 0 0 3)
+		(0 0 0 0 1 0 0 3 3)
+		(0 0 0 2 0 2 0 3 3)
+		(0 0 0 0 0 0 0 0 3)
+		(0 0 0 0 3 0 2 0 3)
+		(0 0 0 3 3 3 0 0 3)
+    )
 ]
 
 { #category : 'init single cell grid' }
