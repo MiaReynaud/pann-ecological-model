@@ -72,6 +72,12 @@ EcoPannFisher >> fish [
 	self earnMoneyOutOfFishing
 ]
 
+{ #category : 'accessing' }
+EcoPannFisher >> freshBiomassOfExtractedShellfishToday [
+
+	^ freshBiomassOfExtractedShellfishToday
+]
+
 { #category : 'fishing activity' }
 EcoPannFisher >> goToFishingSpot [
 	"The fisher go to the fishing spot where she think she will earn the most"
@@ -106,6 +112,7 @@ EcoPannFisher >> initialize [
 	fishedAreaPerHour := 56. "m²/h"
 	numberOfFishingDayPerMbissa := 6.
 	fishingHoursPerDay := 4. "h"
+	numberOfExtractedShellfishToday := 0.
 ]
 
 { #category : 'time    ' }
@@ -129,6 +136,12 @@ EcoPannFisher >> isMbissa [
 EcoPannFisher >> isNotFishingPeriod [
     "Return true if the current month is within the no-fishing period (Jul–Oct)"
     ^ (self cormasModel currentMonth between: 7 and: 10)
+]
+
+{ #category : 'accessing' }
+EcoPannFisher >> numberOfExtractedShellfishToday [
+
+	^ numberOfExtractedShellfishToday
 ]
 
 { #category : 'initialization' }

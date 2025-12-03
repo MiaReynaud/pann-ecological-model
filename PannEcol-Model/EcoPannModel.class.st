@@ -26,7 +26,7 @@ EcoPannModel class >> prefix [
 EcoPannModel >> addFishers [
 
 	self
-		createN: 50
+		createN: 1
 		randomlyLocatedEntities: EcoPannFisher 
 		constrainedBy: [ :aCell | aCell state = #village ].
 ]
@@ -188,6 +188,17 @@ EcoPannModel >> fishers [
 	^ self @@ EcoPannFisher
 ]
 
+{ #category : 'probes ' }
+EcoPannModel >> freshBiomassOfExtractedShellfish [
+
+<probeNamed: 'Total fresh biomass of extracted shellfish' color: 'CC2E85'>
+    
+    | fishers |
+    fishers := self @@ EcoPannFisher.
+
+    ^ fishers sum: [ :f | f freshBiomassOfExtractedShellfishToday ifNil: [ 0 ] ]
+]
+
 { #category : 'init 30x30 cells grid' }
 EcoPannModel >> init30x30CellsGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
@@ -292,7 +303,7 @@ EcoPannModel >> initSingleCellWithVillageGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 500000]. "define the size of a cell to 500 000 m²"
+	self cells do: [ : each | each area: 1]. "define the size of a cell to 1 m²"
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellWithVillageGrid.
 	
@@ -474,7 +485,7 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 50.
+	sare recruitCapacity: 50. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
@@ -507,6 +518,43 @@ EcoPannModel >> numberOfCohorts [
 	| pop |
 	pop := (self @@ EcoPannShellfishPopulation) first.
 	^ pop cohortsCounter .
+]
+
+{ #category : 'probes ' }
+EcoPannModel >> numberOfExtractedShellfish [
+
+<probeNamed: 'Number of extracted shellfish' color: '00FFF3'>
+    
+    | fishers |
+    fishers := self @@ EcoPannFisher.
+
+    ^ fishers sum: [ :f | f numberOfExtractedShellfishToday ifNil: [ 0 ] ]
+]
+
+{ #category : 'probes ' }
+EcoPannModel >> numberOfShellfishInCohort [
+
+<probeNamed: 'Number of shellfish in the first cohort of the first population' color: '0000FF'>
+    
+    | cohorts |
+    cohorts := (self @@ EcoPannShellfishCohort).
+ 
+ 	^ cohorts
+        ifEmpty: [ 0 ]
+        ifNotEmpty: [ cohorts first numberOfShellfishes ]
+]
+
+{ #category : 'probes ' }
+EcoPannModel >> numberOfShellfishInPopulation [
+
+<probeNamed: 'Number of shellfish in the first population' color: 'E67E22'>
+    
+    | population |
+    population := (self @@ EcoPannShellfishPopulation ).
+ 
+ 	^ population 
+        ifEmpty: [ 0 ]
+        ifNotEmpty: [ population first numberOfShellfishes ]
 ]
 
 { #category : 'accessing' }
