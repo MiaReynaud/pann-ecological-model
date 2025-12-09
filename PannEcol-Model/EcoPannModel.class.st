@@ -303,7 +303,7 @@ EcoPannModel >> initSingleCellWithVillageGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 1]. "define the size of a cell to 1 m²"
+	self cells do: [ : each | each area: 70000]. "define the size of a cell to 1 m²"
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellWithVillageGrid.
 	

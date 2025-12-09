@@ -60,13 +60,20 @@ EcoPannShellfishCohort >> initialize [
 { #category : 'ecological methods  ' }
 EcoPannShellfishCohort >> naturalDeath [
 
-	| initialDensity dailyMortalityRate cohortAge |
+	| dailyMortalityRate |
 	
-	initialDensity :=  self sare recruitCapacity.    "N0"
 	dailyMortalityRate := self sare naturalDeathRate.	"M" 	"Comes from Abdou Karim data analysed with TropFishR"
-	cohortAge := shellfishAge.         "t"
+
+    shellfishDensity := shellfishDensity * (dailyMortalityRate negated exp).
+
+
+"	| initialDensity dailyMortalityRate cohortAge |
 	
-shellfishDensity := initialDensity * ((dailyMortalityRate * cohortAge) negated exp). 
+	dailyMortalityRate := self sare naturalDeathRate.	""M"" 	""Comes from Abdou Karim data analysed with TropFishR""
+	cohortAge := shellfishAge.         ""t""
+	initialDensity :=  self sare recruitCapacity.    ""N0""
+	
+shellfishDensity := initialDensity * ((dailyMortalityRate * cohortAge) negated exp). "
 ]
 
 { #category : 'initialize  ' }
