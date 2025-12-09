@@ -204,7 +204,7 @@ EcoPannModel >> fishers [
 { #category : 'probes ' }
 EcoPannModel >> freshBiomassOfExtractedShellfish [
 
-<probeNamed: 'Total fresh biomass of extracted shellfish' color: 'CC2E85'>
+<probeNamed: ' Fresh biomass extracted today by all the fishers' color: 'CC2E85'>
     
     | fishers |
     fishers := self @@ EcoPannFisher.

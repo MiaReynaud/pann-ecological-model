@@ -163,8 +163,12 @@ EcoPannFisher >> shouldFish [
 	^ self isFishingPeriod and: [ self isMbissa ]
 ]
 
-{ #category : 'control' }
+{ #category : 'step      ' }
 EcoPannFisher >> step [
+	
+	freshBiomassOfExtractedShellfishToday := 0.
+   numberOfExtractedShellfishToday := 0.
+	
 	self shouldFish
 			ifTrue: [ self fish ]
 			ifFalse: [ self goToVillage].
