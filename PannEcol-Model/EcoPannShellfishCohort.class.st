@@ -51,7 +51,6 @@ EcoPannShellfishCohort >> initialize [
 	super initialize.
 	shellfishAge := 41. "according to the function a shellfish of 3mm is 41 days old"
 	shellfishSize := 3. "in mm"
-	shellfishDensity := 0. "in ind/m²"
 	
 	a := 0.08.
 	b := 2.72.

@@ -142,7 +142,7 @@ EcoPannShellfishPopulation >> recruit [
 		recruitDensity := self sare recruitCapacity.
 		newCohort := ( self cormasModel newEntity: EcoPannShellfishCohort )
 			population: self;
-			shellfishDensity: recruitDensity;
+			shellfishDensity: recruitDensity; "in ind/m²"
 			yourself.
 	cohorts add: newCohort.
 	].
