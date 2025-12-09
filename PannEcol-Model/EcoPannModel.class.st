@@ -183,9 +183,22 @@ EcoPannModel >> dayCounter [
 ]
 
 { #category : 'probes ' }
+EcoPannModel >> densityOfShellfishInCohort [
+
+<probeNamed: 'Density of shellfish in the first cohort of the first population (ind/m²)' color: 'B784FF'>
+    
+    | cohorts |
+    cohorts := (self @@ EcoPannShellfishCohort).
+ 
+ 	^ cohorts
+        ifEmpty: [ 0 ]
+        ifNotEmpty: [ cohorts first shellfishDensity ]
+]
+
+{ #category : 'probes ' }
 EcoPannModel >> densityOfShellfishInPopulation [
 
-<probeNamed: 'Density of shellfish in the first population' color: 'F3A5FF'>
+<probeNamed: 'Density of shellfish in the first population ind/m²' color: 'F3A5FF'>
     
     | population |
     population := (self @@ EcoPannShellfishPopulation ).
@@ -204,7 +217,7 @@ EcoPannModel >> fishers [
 { #category : 'probes ' }
 EcoPannModel >> freshBiomassOfExtractedShellfish [
 
-<probeNamed: ' Fresh biomass extracted today by all the fishers' color: 'CC2E85'>
+<probeNamed: ' Fresh biomass extracted today by all the fishers (g)' color: 'CC2E85'>
     
     | fishers |
     fishers := self @@ EcoPannFisher.
@@ -608,11 +621,14 @@ EcoPannModel >> saveCellDataToCsv [
 { #category : 'probes ' }
 EcoPannModel >> sizeOfCohorts [
 
-"<probeNamed: 'Size of the super individual of the cohort (mm)' color: '0000FF'>
+<probeNamed: 'Size of the super individual of the cohort (mm)' color: '0000FF'>
     
     | cohorts |
-    cohorts := (self @@ PannCohort).
-    ^ cohorts first shellfishSize."
+    cohorts := (self @@ EcoPannShellfishCohort).
+ 
+ 	^ cohorts
+        ifEmpty: [ 0 ]
+        ifNotEmpty: [ cohorts first shellfishSize ]
 ]
 
 { #category : 'init 30x30 cells grid' }
