@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'shellfishAge',
 		'shellfishSize',
-		'shellfishTotalBiomass',
+		'oneIndividualTotalBiomass',
 		'shellfishDensity',
 		'population'
 	],
@@ -26,7 +26,7 @@ EcoPannShellfishCohort >> growBiomass [
 	a := 0.08.
 	b := 2.72.
 
-	shellfishTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
+	oneIndividualTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
 
 ]
 
@@ -55,7 +55,7 @@ EcoPannShellfishCohort >> initialize [
 	
 	a := 0.08.
 	b := 2.72.
-	shellfishTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
+	oneIndividualTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
 ]
 
 { #category : 'ecological methods  ' }
@@ -73,6 +73,12 @@ shellfishDensity := initialDensity * ((dailyMortalityRate * cohortAge) negated e
 { #category : 'initialize  ' }
 EcoPannShellfishCohort >> numberOfShellfishes [
 	^ population cell area * shellfishDensity.
+]
+
+{ #category : 'accessing' }
+EcoPannShellfishCohort >> oneIndividualTotalBiomass [
+
+	^ oneIndividualTotalBiomass
 ]
 
 { #category : 'accessing' }
@@ -129,12 +135,6 @@ EcoPannShellfishCohort >> shellfishSize [
 EcoPannShellfishCohort >> shellfishSize: anObject [
 
 	shellfishSize := anObject
-]
-
-{ #category : 'accessing' }
-EcoPannShellfishCohort >> shellfishTotalBiomass [
-
-	^ shellfishTotalBiomass
 ]
 
 { #category : 'step   ' }

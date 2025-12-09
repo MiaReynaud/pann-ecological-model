@@ -41,22 +41,26 @@ EcoPannFisher >> earnMoneyOutOfFishing [
 { #category : 'fishing activity' }
 EcoPannFisher >> extractShellfish [ 
 
-    | cohorts fishingRate numberOfShellfishToExtractFromThatCohort freshBiomassOfExtractedShellfishTodayFromThatCohort |
+    | cohorts numberOfSquareMetersToFish numberOfShellfishToExtractFromThatCohort freshBiomassOfExtractedShellfishTodayFromThatCohort |
 
 	cohorts := self cell shellfishPopulation cohorts.     
 
-	fishingRate := fishingHoursPerDay * fishedAreaPerHour.
-
+	numberOfSquareMetersToFish := fishingHoursPerDay * fishedAreaPerHour.
+	
 	freshBiomassOfExtractedShellfishToday := cohorts sum: [:cohort |
-      numberOfShellfishToExtractFromThatCohort := fishingRate * cohort shellfishDensity.
-		freshBiomassOfExtractedShellfishTodayFromThatCohort := numberOfShellfishToExtractFromThatCohort * cohort shellfishTotalBiomass. "g"
+      numberOfShellfishToExtractFromThatCohort :=
+      (numberOfSquareMetersToFish * cohort shellfishDensity)
+           min: cohort numberOfShellfishes. 
+		freshBiomassOfExtractedShellfishTodayFromThatCohort := numberOfShellfishToExtractFromThatCohort * cohort oneIndividualTotalBiomass. "g"
 		freshBiomassOfExtractedShellfishTodayFromThatCohort 
 		].
 
 	"driedFleshOfExtractedShellfishToday := (0.02 * (cohort shellfishSize raisedTo: 2.42)) * shellfishToExtractFromCohort." "g"
 
 	numberOfExtractedShellfishToday := cohorts sum: [:cohort |
-      numberOfShellfishToExtractFromThatCohort := fishingRate * cohort shellfishDensity.
+      numberOfShellfishToExtractFromThatCohort := numberOfShellfishToExtractFromThatCohort :=
+      (numberOfSquareMetersToFish * cohort shellfishDensity)
+           min: cohort numberOfShellfishes. 
 		cohort removeShellfish: numberOfShellfishToExtractFromThatCohort.
 		numberOfShellfishToExtractFromThatCohort
 		].
