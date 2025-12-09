@@ -87,6 +87,12 @@ EcoPannShellfishPopulation >> dailyFishableQuantity [
 	"In the end, will have to replace with : ^ fishingHoursPerDay * fishedAreaPerHour (56m² that will evolve depending on the fisher eficiency) * self populationFishableDensity"
 ]
 
+{ #category : 'accessing' }
+EcoPannShellfishPopulation >> densityOfShellfishes [ 
+
+	^ self numberOfShellfishes / self cell area .
+]
+
 { #category : 'initialization' }
 EcoPannShellfishPopulation >> initialize [ 
 

@@ -182,6 +182,19 @@ EcoPannModel >> dayCounter [
 	^ dayCounter
 ]
 
+{ #category : 'probes ' }
+EcoPannModel >> densityOfShellfishInPopulation [
+
+<probeNamed: 'Density of shellfish in the first population' color: 'F3A5FF'>
+    
+    | population |
+    population := (self @@ EcoPannShellfishPopulation ).
+ 
+ 	^ population 
+        ifEmpty: [ 0 ]
+        ifNotEmpty: [ population first densityOfShellfishes ]
+]
+
 { #category : 'accessing' }
 EcoPannModel >> fishers [
 
