@@ -138,12 +138,20 @@ EcoPannShellfishPopulation >> numberOfShellfishes [
 EcoPannShellfishPopulation >> recruit [ 
 
 	self isRecruitDay ifTrue: [
-		| newCohort |
+		| newCohort recruitDensity |
+		recruitDensity := self sare recruitCapacity.
 		newCohort := ( self cormasModel newEntity: EcoPannShellfishCohort )
 			population: self;
+			shellfishDensity: recruitDensity;
 			yourself.
 	cohorts add: newCohort.
 	].
+]
+
+{ #category : 'ecological methods  ' }
+EcoPannShellfishPopulation >> sare [ 
+
+	^ self cell sare.
 ]
 
 { #category : 'step    ' }
