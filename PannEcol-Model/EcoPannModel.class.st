@@ -26,7 +26,7 @@ EcoPannModel class >> prefix [
 EcoPannModel >> addFishers [
 
 	self
-		createN: 1
+		createN: 100
 		randomlyLocatedEntities: EcoPannFisher 
 		constrainedBy: [ :aCell | aCell state = #village ].
 ]
@@ -244,12 +244,41 @@ EcoPannModel >> init30x30CellsGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
+	self cells do: [ : each | each area: 5000]. "define the size of a cell to 1m²"
 		
  	self applyStatesFromMatrix: self stateMatrixOf30x30CellsGrid .
 	
 		self addShellfishes.	
 		self buildSareOf30x30CellsGrid.
+		self addFishers.
+
+]
+
+{ #category : 'init 70x70 cells grid' }
+EcoPannModel >> init70x70CellsGrid [
+	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
+	
+	"In this grid, one cell is 1m²"
+
+	<init>
+	
+	currentDayOfMonth := 1.
+	currentMonth := 11. "simulation starts in nov"
+	dayCounter  := 0.
+	
+	"create grid"
+	self
+		createGridNumberOfRows: 70
+		numberOfColumns: 70
+		neighbourhood: 6
+		closed: true.
+		
+	self cells do: [ : each | each area: 5000]. "define the size of a cell to 1m²"
+		
+ 	self applyStatesFromMatrix: self stateMatrixOf70x70CellsGrid .
+	
+		self addShellfishes.	
+		self buildSareOf70x70CellsGrid.
 		self addFishers.
 
 ]
@@ -273,7 +302,7 @@ EcoPannModel >> initGameGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
+	self cells do: [ : each | each area: 500000]. "define the size of a cell to 1m²"
 		
  	self applyStatesFromMatrix: self stateMatrixOfGameGrid .
 	

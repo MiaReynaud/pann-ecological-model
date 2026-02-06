@@ -87,7 +87,7 @@ EcoPannPlot >> collectData [
 EcoPannPlot >> initialize [ 
 
 	super initialize.
-	area := 1. "m²" "just to avoid problems, but will be overwriten by the grid init method using the accessor area:"
+	area := 5000. "m²" "just to avoid problems, but will be overwriten by the grid init method using the accessor area:"
    data := OrderedCollection new.
 ]
 

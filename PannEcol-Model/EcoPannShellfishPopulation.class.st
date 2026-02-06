@@ -61,7 +61,7 @@ EcoPannShellfishPopulation >> cohortDeath [
 
 	| cohortsToBeKilled |
 	
-	cohortsToBeKilled :=	cohorts select: [ :c | c shellfishDensity < 2 ].
+	cohortsToBeKilled :=	cohorts select: [ :c | c shellfishDensity < 0.01 ].
 	cohortsToBeKilled do: [ :c |
 			c die.
 			cohorts remove: c ]
