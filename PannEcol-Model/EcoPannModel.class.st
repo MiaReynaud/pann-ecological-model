@@ -26,9 +26,9 @@ EcoPannModel class >> prefix [
 EcoPannModel >> addFishers [
 
 	self
-		createN: 100
-		randomlyLocatedEntities: EcoPannFisher 
-		constrainedBy: [ :aCell | aCell state = #village ].
+		create: 100
+		randomlyLocatedEntitiesOfClass: EcoPannFisher
+		constrainedBy: [ :aCell | aCell state = #village ]
 ]
 
 { #category : 'init  ' }

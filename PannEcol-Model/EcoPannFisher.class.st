@@ -41,32 +41,28 @@ EcoPannFisher >> earnMoneyOutOfFishing [
 { #category : 'fishing activity' }
 EcoPannFisher >> extractShellfish [ 
 
-    | cohorts numberOfSquareMetersToFish numberOfShellfishToExtractFromThatCohort freshBiomassOfExtractedShellfishTodayFromThatCohort |
+    | cohorts numberOfSquareMetersToFish numberOfShellfishToExtractFromThatCohort |
 
 	cohorts := self cell shellfishPopulation cohorts.     
 
 	numberOfSquareMetersToFish := fishingHoursPerDay * fishedAreaPerHour.
 	
-	freshBiomassOfExtractedShellfishToday := cohorts sum: [:cohort |
-      numberOfShellfishToExtractFromThatCohort :=
-      (numberOfSquareMetersToFish * cohort shellfishDensity)
-           min: cohort numberOfShellfishes. 
-		freshBiomassOfExtractedShellfishTodayFromThatCohort := numberOfShellfishToExtractFromThatCohort * cohort oneIndividualTotalBiomass. "g"
-		freshBiomassOfExtractedShellfishTodayFromThatCohort 
-		].
-
-	"driedFleshOfExtractedShellfishToday := (0.02 * (cohort shellfishSize raisedTo: 2.42)) * shellfishToExtractFromCohort." "g"
-
-	numberOfExtractedShellfishToday := cohorts sum: [:cohort |
-      numberOfShellfishToExtractFromThatCohort := numberOfShellfishToExtractFromThatCohort :=
-      (numberOfSquareMetersToFish * cohort shellfishDensity)
-           min: cohort numberOfShellfishes. 
-		cohort removeShellfish: numberOfShellfishToExtractFromThatCohort.
-		numberOfShellfishToExtractFromThatCohort
-		].
+	freshBiomassOfExtractedShellfishToday := 0.
+	numberOfExtractedShellfishToday := 0.
 	
+	cohorts do: [ :cohort | 
+		numberOfShellfishToExtractFromThatCohort :=
+			(numberOfSquareMetersToFish * cohort shellfishDensity)
+           min: cohort numberOfShellfishes.
 
-
+		freshBiomassOfExtractedShellfishToday := freshBiomassOfExtractedShellfishToday +
+			(numberOfShellfishToExtractFromThatCohort * cohort oneIndividualTotalBiomass). "g"
+			
+		numberOfExtractedShellfishToday := numberOfExtractedShellfishToday +
+			numberOfShellfishToExtractFromThatCohort.
+			
+		cohort removeShellfish: numberOfShellfishToExtractFromThatCohort.
+		]
 ]
 
 { #category : 'fishing activity' }
