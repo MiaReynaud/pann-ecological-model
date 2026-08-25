@@ -10,9 +10,39 @@ Class {
 		'freshBiomassOfExtractedShellfishToday',
 		'driedFleshOfExtractedShellfishToday'
 	],
+	#classInstVars : [
+		'minShellfishSize',
+		'maxShellfishSize'
+	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
+
+{ #category : 'accessing' }
+EcoPannFisher class >> maxShellfishSize [
+	<parameterIntegerDefault: 1000>
+
+	^ maxShellfishSize
+]
+
+{ #category : 'accessing' }
+EcoPannFisher class >> maxShellfishSize: anObject [
+
+	maxShellfishSize := anObject
+]
+
+{ #category : 'accessing' }
+EcoPannFisher class >> minShellfishSize [
+	<parameterIntegerDefault: 0>
+
+	^ minShellfishSize
+]
+
+{ #category : 'accessing' }
+EcoPannFisher class >> minShellfishSize: anObject [
+
+	minShellfishSize := anObject
+]
 
 { #category : 'decisions' }
 EcoPannFisher >> chooseSareToFishOn [
@@ -41,7 +71,7 @@ EcoPannFisher >> earnMoneyOutOfFishing [
 { #category : 'fishing activity' }
 EcoPannFisher >> extractShellfish [ 
 
-    | cohorts numberOfSquareMetersToFish numberOfShellfishToExtractFromThatCohort |
+    | cohorts selectedCohorts numberOfSquareMetersToFish numberOfShellfishToExtractFromThatCohort |
 
 	cohorts := self cell shellfishPopulation cohorts.     
 
@@ -50,7 +80,13 @@ EcoPannFisher >> extractShellfish [
 	freshBiomassOfExtractedShellfishToday := 0.
 	numberOfExtractedShellfishToday := 0.
 	
-	cohorts do: [ :cohort | 
+	selectedCohorts := cohorts select: [ :cohort |
+		cohort shellfishSize 
+			between: self class minShellfishSize
+			and: self class maxShellfishSize
+	].
+	
+	selectedCohorts do: [ :cohort | 
 		numberOfShellfishToExtractFromThatCohort :=
 			(numberOfSquareMetersToFish * cohort shellfishDensity)
            min: cohort numberOfShellfishes.
