@@ -59,9 +59,11 @@ EcoPannShellfishPopulation >> buildSizeDistributionChart [
 { #category : 'ecological methods  ' }
 EcoPannShellfishPopulation >> cohortDeath [
 
-	| cohortsToBeKilled |
+	| cohortsToBeKilled densityLimitToKillCohort |
 	
-	cohortsToBeKilled :=	cohorts select: [ :c | c shellfishDensity < 0.01 ].
+	densityLimitToKillCohort := 0.01.
+	
+	cohortsToBeKilled :=	cohorts select: [ :c | c shellfishDensity < densityLimitToKillCohort ].
 	cohortsToBeKilled do: [ :c |
 			c die.
 			cohorts remove: c ]
