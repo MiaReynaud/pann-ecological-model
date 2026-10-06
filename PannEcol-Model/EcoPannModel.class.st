@@ -568,11 +568,11 @@ EcoPannModel >> mudflats [
 { #category : 'probes ' }
 EcoPannModel >> numberOfCohorts [ 
 
-	<probeNamed: 'Number of cohorts' color: '00B44C'>
+	<probeNamed: 'Average number of cohorts' color: '00B44C'>
 	
-	| pop |
-	pop := (self @@ EcoPannShellfishPopulation) first.
-	^ pop cohortsCounter .
+    | pops |
+    pops := self @@ EcoPannShellfishPopulation.
+    ^ (pops collect: [:pop | pop cohortsCounter]) average
 ]
 
 { #category : 'probes ' }

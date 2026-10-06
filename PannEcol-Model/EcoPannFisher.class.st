@@ -8,7 +8,8 @@ Class {
 		'fishingHoursPerDay',
 		'numberOfExtractedShellfishToday',
 		'freshBiomassOfExtractedShellfishToday',
-		'driedFleshOfExtractedShellfishToday'
+		'driedFleshOfExtractedShellfishToday',
+		'earningsHistory'
 	],
 	#classInstVars : [
 		'minShellfishSize',
@@ -44,6 +45,42 @@ EcoPannFisher class >> minShellfishSize: anObject [
 	minShellfishSize := anObject
 ]
 
+{ #category : 'charts' }
+EcoPannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
+
+    | chart plot |
+
+    xCollection ifEmpty: [ ^ RSCompositeChart new ].
+
+    chart := RSCompositeChart new.
+
+    plot := RSLinePlot new
+        x: xCollection
+        y: yCollection.
+
+    plot color: CMColor black.
+
+    chart add: plot.
+
+    chart title: 'Évolution des revenus'.
+    chart xlabel: 'Temps de simulation'.
+    chart ylabel: 'Revenu (FCFA)'.
+
+    chart build.
+
+    ^ chart
+]
+
+{ #category : 'charts' }
+EcoPannFisher >> buildEarningsChart [
+
+	^ self
+        buildChartBoxPlotX:
+            (earningsHistory collect: [:point | point key])
+        y:
+            (earningsHistory collect: [:point | point value]).
+]
+
 { #category : 'decisions' }
 EcoPannFisher >> chooseSareToFishOn [
 	<playableAction>
@@ -66,6 +103,18 @@ EcoPannFisher >> earnMoneyOutOfFishing [
 	priceOfAKgOfDriedShellfishFlesh := 3000. "FCFA"
 	
 	dailyEarnings := ((numberOfExtractedShellfishToday * weightOfAShellfish) / weightOfShellfishForOneDriedKilogramOfFlesh) * priceOfAKgOfDriedShellfishFlesh. "FCFA"
+]
+
+{ #category : 'fishing activity' }
+EcoPannFisher >> earningsHistory [
+
+	^ earningsHistory
+]
+
+{ #category : 'fishing activity' }
+EcoPannFisher >> earningsHistory: anObject [
+
+	earningsHistory := anObject
 ]
 
 { #category : 'fishing activity' }
@@ -105,7 +154,8 @@ EcoPannFisher >> extractShellfish [
 EcoPannFisher >> fish [
 	self goToFishingSpot.
 	self extractShellfish.
-	self earnMoneyOutOfFishing
+	self earnMoneyOutOfFishing.
+
 ]
 
 { #category : 'accessing' }
@@ -149,6 +199,17 @@ EcoPannFisher >> initialize [
 	numberOfFishingDayPerMbissa := 6.
 	fishingHoursPerDay := 3. "h"
 	numberOfExtractedShellfishToday := 0.
+	earningsHistory := OrderedCollection new.
+]
+
+{ #category : 'charts' }
+EcoPannFisher >> inspectorCharts: aBuilder [
+
+    <inspectorPresentationOrder: 10 title: 'Charts'>
+
+	^ (aBuilder instantiate: SpRoassalInspectorPresenter)
+		canvas: self buildEarningsChart canvas;
+		yourself
 ]
 
 { #category : 'time    ' }
@@ -189,6 +250,13 @@ EcoPannFisher >> pov [
 		size: 0.5
 ]
 
+{ #category : 'fishing activity' }
+EcoPannFisher >> recordEarnings [
+
+    earningsHistory add:
+        (self cormasModel dayCounter -> dailyEarnings).
+]
+
 { #category : 'decisions' }
 EcoPannFisher >> shouldFish [
 	<playableAction>
@@ -200,8 +268,11 @@ EcoPannFisher >> step [
 	
 	freshBiomassOfExtractedShellfishToday := 0.
    numberOfExtractedShellfishToday := 0.
+	dailyEarnings := 0.
 	
 	self shouldFish
 			ifTrue: [ self fish ]
 			ifFalse: [ self goToVillage].
+			
+	self recordEarnings.
 ]
