@@ -127,7 +127,8 @@ EcoPannShellfishPopulation >> inspectorCharts: aBuilder [
 EcoPannShellfishPopulation >> isRecruitDay [
 "send true if its first of december"
 
-	^ (self cormasModel currentDayOfMonth = 1)  and: (self cormasModel currentMonth = 12)
+	^ (self cormasModel currentDayOfMonth = 1)  
+			and: (self cormasModel currentMonth = 12)
 	
 "if broken, add this method to model : 
 

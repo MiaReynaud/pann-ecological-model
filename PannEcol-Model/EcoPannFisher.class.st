@@ -147,7 +147,7 @@ EcoPannFisher >> initialize [
 	super initialize.
 	fishedAreaPerHour := 56. "m²/h"
 	numberOfFishingDayPerMbissa := 6.
-	fishingHoursPerDay := 4. "h"
+	fishingHoursPerDay := 3. "h"
 	numberOfExtractedShellfishToday := 0.
 ]
 
