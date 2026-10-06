@@ -188,6 +188,8 @@ EcoPannFisher >> goToVillage [
 	
 	self moveTo: village.
 	
+	dailyEarnings := 1000.
+	
 
 ]
 
