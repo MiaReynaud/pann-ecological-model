@@ -7,10 +7,12 @@ To install this model into a fresh Pharo image open the Playground (Ctrl+OP) and
 
 ### Agent-Based Simulation
 
+Run this in Pharo 13:
+
 ```st
 "Install Cormas"
 Metacello new
-    repository: 'github://cormas/cormas';
+    repository: 'github://cormas/cormas:v0.97';
     baseline: 'Cormas';
     load.
 
