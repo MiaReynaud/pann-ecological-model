@@ -274,7 +274,7 @@ EcoPannFisher >> step [
 	
 	self shouldFish
 			ifTrue: [ self fish ]
-			ifFalse: [ self goToVillage].
+			ifFalse: [ self goToVillage]. 
 			
 	self recordEarnings.
 ]
