@@ -12,7 +12,7 @@ Run this in Pharo 13:
 ```st
 "Install Cormas"
 Metacello new
-    repository: 'github://cormas/cormas:v0.97';
+    repository: 'github://cormas/cormas:v0.98';
     baseline: 'Cormas';
     load.
 
