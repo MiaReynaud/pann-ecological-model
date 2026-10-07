@@ -176,25 +176,6 @@ EcoPannFisher >> goToFishingSpot [
 ]
 
 { #category : 'initialization' }
-EcoPannFisher >> goToVillage [
-	"The fisher go to the fishing spot where she think she will earn the most"
-	
-	<action>
-	| village earningFromAWorkingDayInVillage |
-	
-	earningFromAWorkingDayInVillage := 1000.
-	
-	village := self selectRandomlyFrom: 
-		(cormasModel cells select: [ :c | c state = #village ]).
-	
-	self moveTo: village.
-	
-	dailyEarnings := earningFromAWorkingDayInVillage.
-	
-
-]
-
-{ #category : 'initialization' }
 EcoPannFisher >> initialize [ 
 
 	super initialize.
@@ -280,7 +261,7 @@ EcoPannFisher >> step [
 	self recordEarnings.
 ]
 
-{ #category : 'initialization' }
+{ #category : 'village activity' }
 EcoPannFisher >> workInVillage [
 	"The fisher go to the fishing spot where she think she will earn the most"
 	
