@@ -58,8 +58,6 @@ EcoPannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
         x: xCollection
         y: yCollection.
 
-    plot color: CMColor black.
-
     chart add: plot.
 
     chart title: 'Évolution des revenus'.
@@ -67,6 +65,7 @@ EcoPannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
     chart ylabel: 'Revenu (FCFA)'.
 
     chart build.
+	plot line @ RSPopup.
 
     ^ chart
 ]
@@ -181,14 +180,16 @@ EcoPannFisher >> goToVillage [
 	"The fisher go to the fishing spot where she think she will earn the most"
 	
 	<action>
-	| village |
+	| village earningFromAWorkingDayInVillage |
+	
+	earningFromAWorkingDayInVillage := 1000.
 	
 	village := self selectRandomlyFrom: 
 		(cormasModel cells select: [ :c | c state = #village ]).
 	
 	self moveTo: village.
 	
-	dailyEarnings := 1000.
+	dailyEarnings := earningFromAWorkingDayInVillage.
 	
 
 ]
