@@ -47,38 +47,22 @@ EcoPannFisher class >> minShellfishSize: anObject [
 
 { #category : 'charts' }
 EcoPannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
+	| x y chart plot |
 
-    | chart plot |
+	x := xCollection ifEmpty: [ #(0) ].
+	y := yCollection ifEmpty: [ #(0) ].
 
-    xCollection ifEmpty: [ ^ RSCompositeChart new ].
+	chart := RSCompositeChart new.
+	plot := RSLinePlot new x: x y: y.
+	plot color: CMColor azure.
+	plot width: 1.5.
+	chart add: plot.
 
-    chart := RSCompositeChart new.
+	chart title: 'Évolution des revenus'.
+	chart xlabel: 'Temps de simulation'.
+	chart ylabel: 'Revenu (FCFA)'.
 
-    plot := RSLinePlot new
-        x: xCollection
-        y: yCollection.
-
-    plot color: CMColor black.
-
-    chart add: plot.
-
-    chart title: 'Évolution des revenus'.
-    chart xlabel: 'Temps de simulation'.
-    chart ylabel: 'Revenu (FCFA)'.
-
-    chart build.
-
-    ^ chart
-]
-
-{ #category : 'charts' }
-EcoPannFisher >> buildEarningsChart [
-
-	^ self
-        buildChartBoxPlotX:
-            (earningsHistory collect: [:point | point key])
-        y:
-            (earningsHistory collect: [:point | point value]).
+	^ chart
 ]
 
 { #category : 'decisions' }
@@ -204,16 +188,6 @@ EcoPannFisher >> initialize [
 	earningsHistory := OrderedCollection new.
 ]
 
-{ #category : 'charts' }
-EcoPannFisher >> inspectorCharts: aBuilder [
-
-    <inspectorPresentationOrder: 10 title: 'Charts'>
-
-	^ (aBuilder instantiate: SpRoassalInspectorPresenter)
-		canvas: self buildEarningsChart canvas;
-		yourself
-]
-
 { #category : 'time    ' }
 EcoPannFisher >> isFishingPeriod [
     "Return true if the current month is within the fishing period (Nov–Jun)"
@@ -263,6 +237,20 @@ EcoPannFisher >> recordEarnings [
 EcoPannFisher >> shouldFish [
 	<playableAction>
 	^ self isFishingPeriod and: [ self isMbissa ]
+]
+
+{ #category : 'charts' }
+EcoPannFisher >> showCharts [
+	<action>
+	
+	| chart |
+	
+	chart := self
+		buildChartBoxPlotX: (earningsHistory collect: [ :point | point key ] )
+		y: (earningsHistory collect: [ :point | point value ] ).
+	
+	chart build.
+	chart canvas openWithTitle: self asString
 ]
 
 { #category : 'step      ' }
