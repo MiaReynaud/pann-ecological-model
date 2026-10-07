@@ -275,7 +275,26 @@ EcoPannFisher >> step [
 	
 	self shouldFish
 			ifTrue: [ self fish ]
-			ifFalse: [ self goToVillage]. 
+			ifFalse: [ self workInVillage]. 
 			
 	self recordEarnings.
+]
+
+{ #category : 'initialization' }
+EcoPannFisher >> workInVillage [
+	"The fisher go to the fishing spot where she think she will earn the most"
+	
+	<action>
+	| village earningFromAWorkingDayInVillage |
+	
+	earningFromAWorkingDayInVillage := 1000.
+	
+	village := self selectRandomlyFrom: 
+		(cormasModel cells select: [ :c | c state = #village ]).
+	
+	self moveTo: village.
+	
+	dailyEarnings := earningFromAWorkingDayInVillage.
+	
+
 ]
