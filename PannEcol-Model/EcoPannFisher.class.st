@@ -4,8 +4,6 @@ Class {
 	#instVars : [
 		'dailyEarnings',
 		'fishedAreaPerHour',
-		'numberOfFishingDayPerMbissa',
-		'fishingHoursPerDay',
 		'numberOfExtractedShellfishToday',
 		'freshBiomassOfExtractedShellfishToday',
 		'driedFleshOfExtractedShellfishToday',
@@ -13,11 +11,26 @@ Class {
 	],
 	#classInstVars : [
 		'minShellfishSize',
-		'maxShellfishSize'
+		'maxShellfishSize',
+		'numberOfFishingDayPerMbissa',
+		'fishingHoursPerDay'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
+
+{ #category : 'accessing' }
+EcoPannFisher class >> fishingHoursPerDay [
+	<parameterIntegerDefault: 3>
+
+	^ fishingHoursPerDay
+]
+
+{ #category : 'accessing' }
+EcoPannFisher class >> fishingHoursPerDay: anObject [
+
+	fishingHoursPerDay := anObject
+]
 
 { #category : 'accessing' }
 EcoPannFisher class >> maxShellfishSize [
@@ -43,6 +56,19 @@ EcoPannFisher class >> minShellfishSize [
 EcoPannFisher class >> minShellfishSize: anObject [
 
 	minShellfishSize := anObject
+]
+
+{ #category : 'accessing' }
+EcoPannFisher class >> numberOfFishingDayPerMbissa [
+	<parameterIntegerDefault: 6>
+
+	^ numberOfFishingDayPerMbissa
+]
+
+{ #category : 'accessing' }
+EcoPannFisher class >> numberOfFishingDayPerMbissa: anObject [
+
+	numberOfFishingDayPerMbissa := anObject
 ]
 
 { #category : 'charts' }
@@ -108,7 +134,7 @@ EcoPannFisher >> extractShellfish [
 
 	cohorts := self cell shellfishPopulation cohorts.     
 
-	numberOfSquareMetersToFish := fishingHoursPerDay * fishedAreaPerHour.
+	numberOfSquareMetersToFish := self class fishingHoursPerDay * fishedAreaPerHour.
 	
 	freshBiomassOfExtractedShellfishToday := 0.
 	numberOfExtractedShellfishToday := 0.
@@ -165,8 +191,6 @@ EcoPannFisher >> initialize [
 
 	super initialize.
 	fishedAreaPerHour := 56. "m²/h"
-	numberOfFishingDayPerMbissa := 6.
-	fishingHoursPerDay := 3. "h"
 	numberOfExtractedShellfishToday := 0.
 	earningsHistory := OrderedCollection new.
 ]
@@ -182,7 +206,7 @@ EcoPannFisher >> isMbissa [
     "Return true if the current day is within a mbissa"
  
 	| cycleLength mbissaLength cycleDay |
-	mbissaLength := numberOfFishingDayPerMbissa.
+	mbissaLength := self class numberOfFishingDayPerMbissa.
 	cycleLength := 15.
 	cycleDay := (self cormasModel dayCounter - 1 \\ cycleLength) + 1.
 	^ cycleDay <= mbissaLength
