@@ -22,38 +22,23 @@ EcoPannShellfishPopulation >> actualizeCohortsCounter [
 { #category : 'charts' }
 EcoPannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
 	
-	| chart plot |
+	| x y chart plot |
 	
-	xCollection ifEmpty: [ ^ RSCompositeChart new ].
+	x := xCollection ifEmpty: [ #(0) ].
+	y := yCollection ifEmpty: [ #(0) ].
 	
 	chart := RSCompositeChart new.
 			
-	plot := RSBarPlot new x: xCollection y: yCollection.
-	plot color: CMColor black.
+	plot := RSBarPlot new x: x y: y.
+	plot color: CMColor azure.
 	plot barSize: 10.
 	chart add: plot.
 	
 	chart title: 'Distribution des tailles'.
 	chart xlabel: 'Taille (mm)'.
 	chart ylabel: 'Densité (individus/m²)'.
-
-	chart build.
-	plot bars @ RSPopup.
 	
 	^ chart
-]
-
-{ #category : 'charts' }
-EcoPannShellfishPopulation >> buildSizeDistributionChart [
-
-	| sortedCohorts |
-
-	sortedCohorts := cohorts asSortedCollection:
-		[:a :b | a shellfishSize < b shellfishSize ].
-
-	^ self
-		buildChartBoxPlotX: (sortedCohorts collect: [:c | c shellfishSize])
-		y: (sortedCohorts collect: [:c | c shellfishDensity]).
 ]
 
 { #category : 'ecological methods  ' }
@@ -114,16 +99,6 @@ EcoPannShellfishPopulation >> initialize [
     		yourself ]."
 ]
 
-{ #category : 'charts' }
-EcoPannShellfishPopulation >> inspectorCharts: aBuilder [
-
-	<inspectorPresentationOrder: 10 title: 'Charts'>
-	
-	^ (aBuilder instantiate: SpRoassalInspectorPresenter)
-		canvas: self buildSizeDistributionChart canvas;
-		yourself
-]
-
 { #category : 'cohort counter ' }
 EcoPannShellfishPopulation >> isRecruitDay [
 "send true if its first of december"
@@ -162,6 +137,23 @@ EcoPannShellfishPopulation >> recruit [
 EcoPannShellfishPopulation >> sare [ 
 
 	^ self cell sare.
+]
+
+{ #category : 'charts' }
+EcoPannShellfishPopulation >> showCharts [
+	<action> 
+	
+	| sortedCohorts chart |
+
+	sortedCohorts := cohorts asSortedCollection:
+		[ :a :b | a shellfishSize < b shellfishSize ].
+
+	chart := self
+		buildChartBoxPlotX: (sortedCohorts collect: [ :c | c shellfishSize ] )
+		y: (sortedCohorts collect: [ :c | c shellfishDensity ] ).
+		
+	chart build.
+	chart canvas openWithTitle: self asString
 ]
 
 { #category : 'step    ' }

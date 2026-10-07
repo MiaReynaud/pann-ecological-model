@@ -14,40 +14,24 @@ Class {
 }
 
 { #category : 'charts ' }
-EcoPannSare >> buildStockOverTimeChart [
-	
-    ^ self
-		buildChartBoxPlotX: ((1 to: numberOfShellfishesHistory size ) asArray)
-		y: (numberOfShellfishesHistory asArray).
-]
-
-{ #category : 'charts ' }
 EcoPannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
+	| x y chart plot |
+	
+	x := xCollection ifEmpty: [ #(0) ].
+	y := yCollection ifEmpty: [ #(0) ].
 
-    | chart plot |
+	chart := RSCompositeChart new.
 
-    xCollection ifEmpty: [ ^ RSCompositeChart new ].
+	plot := RSLinePlot new x: x y: y.
+	plot color: CMColor gold.
+	plot width: 1.5.
+	chart add: plot.
 
-    chart := RSCompositeChart new.
+	chart title: 'Évolution du stock de coquillages'.
+	chart xlabel: 'Step'.
+	chart ylabel: 'Stock (nombre de individus)'.
 
-    plot := RSLinePlot new
-        x: xCollection
-        y: yCollection.
-
-    plot color: CMColor black.
-
-    chart add: plot.
-
-    chart title: 'Évolution du stock de coquillages'.
-    chart xlabel: 'Step'.
-    chart ylabel: 'Stock (nombre de individus)'.
-
-    chart build.
-
-
-    plot points @ RSPopup.
-
-    ^ chart
+   ^ chart
 
 ]
 
@@ -75,16 +59,6 @@ EcoPannSare >> initialize [
 	growthRate := 0.
 	maxShellfishLength := 0.
 	numberOfShellfishesHistory := OrderedCollection new.
-]
-
-{ #category : 'charts ' }
-EcoPannSare >> inspectorCharts: aBuilder [
-
-	<inspectorPresentationOrder: 10 title: 'Charts'>
-	
-	^ (aBuilder instantiate: SpRoassalInspectorPresenter)
-		canvas: self buildStockOverTimeChart canvas;
-		yourself
 ]
 
 { #category : 'accessing' }
@@ -154,6 +128,19 @@ EcoPannSare >> recruitCapacity [
 EcoPannSare >> recruitCapacity: anObject [
 
 	recruitCapacity := anObject
+]
+
+{ #category : 'charts ' }
+EcoPannSare >> showCharts [
+	
+    | chart |
+
+	chart := self
+		buildStockOverTimeChartPlotX: ((1 to: numberOfShellfishesHistory size ) asArray)
+		y: (numberOfShellfishesHistory asArray).
+		
+	chart build.
+	chart canvas openWithTitle: self asString
 ]
 
 { #category : 'step     ' }

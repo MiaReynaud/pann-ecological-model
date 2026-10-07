@@ -161,6 +161,13 @@ EcoPannPlot >> shellfishPopulation [
 		
 ]
 
+{ #category : 'as yet unclassified' }
+EcoPannPlot >> showSareCharts [
+	<action>
+	
+	self sare ifNotNil: [ :sare | sare showCharts ]
+]
+
 { #category : 'accessing' }
 EcoPannPlot >> state [
 
