@@ -281,7 +281,7 @@ EcoPannFisher >> workInVillage [
 	<action>
 	| village earningFromAWorkingDayInVillage |
 	
-	earningFromAWorkingDayInVillage := 1000.
+	earningFromAWorkingDayInVillage := 500.
 	
 	village := self selectRandomlyFrom: 
 		(cormasModel cells select: [ :c | c state = #village ]).
