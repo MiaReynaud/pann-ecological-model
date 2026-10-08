@@ -7,7 +7,9 @@ Class {
 		'naturalDeathRate',
 		'growthRate',
 		'maxShellfishLength',
-		'numberOfShellfishesHistory'
+		'numberOfShellfishesHistory',
+		'closed',
+		'closureStartDay'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -35,6 +37,12 @@ EcoPannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
 
 ]
 
+{ #category : 'closure' }
+EcoPannSare >> close [
+    closed := true.
+    closureStartDay := self cormasModel dayCounter.
+]
+
 { #category : 'accessing' }
 EcoPannSare >> growthRate [
 
@@ -47,7 +55,7 @@ EcoPannSare >> growthRate: anObject [
 	growthRate := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : 'init' }
 EcoPannSare >> initialize [ 
 
 	super initialize. 
@@ -59,6 +67,13 @@ EcoPannSare >> initialize [
 	growthRate := 0.
 	maxShellfishLength := 0.
 	numberOfShellfishesHistory := OrderedCollection new.
+	closed := false.
+   closureStartDay := 0.
+]
+
+{ #category : 'closure' }
+EcoPannSare >> isClosed [
+    ^ closed
 ]
 
 { #category : 'accessing' }
@@ -101,6 +116,12 @@ EcoPannSare >> naturalDeathRate: anObject [
 EcoPannSare >> numberOfShellfishes [ 
 
 	^ self plots sum: [ : plot | plot numberOfShellfishes ].
+]
+
+{ #category : 'closure' }
+EcoPannSare >> open [
+    closed := false.
+    closureStartDay := 0.
 ]
 
 { #category : 'accessing' }
@@ -147,4 +168,13 @@ EcoPannSare >> showCharts [
 EcoPannSare >> step [
 
 	numberOfShellfishesHistory add: self numberOfShellfishes.
+]
+
+{ #category : 'closure' }
+EcoPannSare >> updateClosure [
+    closed
+        ifTrue: [
+            self cormasModel dayCounter
+                >= closureStartDay + self cormasModel closureDuration
+                    ifTrue: [ self open ] ].
 ]

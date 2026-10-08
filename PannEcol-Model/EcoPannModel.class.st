@@ -4,7 +4,10 @@ Class {
 	#instVars : [
 		'currentDayOfMonth',
 		'currentMonth',
-		'dayCounter'
+		'dayCounter',
+		'closureDuration',
+		'closureEnabled',
+		'closureSareId'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -156,6 +159,58 @@ EcoPannModel >> buildSareOfSingleSareGrid [
 	
 	self initialiseSareAttributesOfSingleSareGrid.
 	
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closeSelectedSare [
+    | sare |
+
+    self class closureEnabled ifFalse: [ ^ self ].
+
+    sare := (self @@ EcoPannSare)
+        detect: [ :each | each id = self class closureSareId ]
+        ifNone: [ ^ self ].
+
+    sare close.
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDuration [
+	<parameterIntegerDefault: 30>
+
+	^ closureDuration 
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDuration: anObject [
+
+	closureDuration := anObject
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureEnabled [ 
+	<parameterBooleanDefault: false>
+
+	^ closureEnabled
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureEnabled: anObject [ 
+	
+	closureEnabled := anObject
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureSareId [
+	<parameterIntegerDefault: 0>
+
+	^ closureSareId
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureSareId: anObject [
+
+	closureSareId := anObject
 ]
 
 { #category : 'accessing' }
