@@ -540,35 +540,21 @@ EcoPannModel >> initialiseSareAttributesOfGameGrid [
 	| sare |
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
-	sare name: 'amacala 1'.
+	sare name: '1'.
 	sare recruitCapacity: 100. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
-	sare name: 'anewanew 1'.
-	sare recruitCapacity: 50. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: 0.00203.
-	sare maxShellfishLength: 38.
-	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
-	sare name: 'mbina'.
+	sare name: '2'.
 	sare recruitCapacity: 40. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 4]. 
-	sare name: 'anewanew 2'.
-	sare recruitCapacity: 25. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: 0.00203.
-	sare maxShellfishLength: 38.
-	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 5]. 
-	sare name: 'amacala 2'.
+	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
+	sare name: '3'.
 	sare recruitCapacity: 10. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
@@ -840,9 +826,9 @@ EcoPannModel >> stateMatrixOfGameGrid [
 		(0 0 0 0 0 0 0 0 0)
 		(0 2 0 0 0 0 0 0 0)
 		(0 0 0 0 0 0 0 0 3)
-		(0 0 2 0 0 0 0 0 3)
+		(0 0 0 0 0 0 0 0 3)
 		(0 0 0 0 1 0 0 3 3)
-		(0 0 0 2 0 2 0 3 3)
+		(0 0 0 2 0 0 0 3 3)
 		(0 0 0 0 0 0 0 0 3)
 		(0 0 0 0 3 0 2 0 3)
 		(0 0 0 3 3 3 0 0 3)
