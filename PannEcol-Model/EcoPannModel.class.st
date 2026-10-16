@@ -7,7 +7,10 @@ Class {
 		'dayCounter',
 		'closureDuration',
 		'closureEnabled',
-		'closureSareId'
+		'closureSareId',
+		'annualPopulationGrowthRate',
+		'initialNumberOfFishers',
+		'numberOfFishers'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -29,7 +32,7 @@ EcoPannModel class >> prefix [
 EcoPannModel >> addFishers [
 
 	self
-		create: 100
+		create: initialNumberOfFishers 
 		randomlyLocatedEntitiesOfClass: EcoPannFisher
 		constrainedBy: [ :aCell | aCell state = #village ]
 ]
@@ -39,6 +42,49 @@ EcoPannModel >> addShellfishes [
 
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
 		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> annualPopulationGrowthRate [
+    <parameterFloatDefault: 0.00> "for instance 0.02 = +2 % per year"
+
+    ^ annualPopulationGrowthRate
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> annualPopulationGrowthRate: aValue [
+
+	annualPopulationGrowthRate := aValue
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> applyAnnualPopulationGrowth [
+    | currentPopulation newPopulation numberOfNewFishersToCreate |
+
+    currentPopulation := self numberOfFishers.
+
+    newPopulation :=
+        (currentPopulation
+            * (1 + self annualPopulationGrowthRate))
+            rounded.
+
+    numberOfNewFishersToCreate := newPopulation - currentPopulation.
+
+    numberOfNewFishersToCreate > 0
+        ifTrue: [
+            self createNewFishers: numberOfNewFishersToCreate
+        ].
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> applyAnnualPopulationGrowthIfNeeded [
+    currentMonth = 1
+        ifTrue: [
+            currentDayOfMonth = 1
+                ifTrue: [
+                    self applyAnnualPopulationGrowth
+                ]
+        ].
 ]
 
 { #category : 'init  ' }
@@ -217,6 +263,18 @@ EcoPannModel >> closureSareId: anObject [
 EcoPannModel >> cohorts [
 
 	^ self @@ EcoPannShellfishCohort
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> createNewFishers: aValue [
+
+ aValue > 0
+        ifTrue: [
+            self
+                create: aValue
+                randomlyLocatedEntitiesOfClass: EcoPannFisher
+                constrainedBy: [ :aCell | aCell state = #village ]
+        ].
 ]
 
 { #category : 'accessing' }
@@ -452,6 +510,19 @@ EcoPannModel >> initSingleSareGrid [
 
 ]
 
+{ #category : 'init  ' }
+EcoPannModel >> initialNumberOfFishers [
+	<parameterFloatDefault: 100>
+
+    ^ initialNumberOfFishers
+]
+
+{ #category : 'init  ' }
+EcoPannModel >> initialNumberOfFishers: aValue [
+
+	initialNumberOfFishers := aValue
+]
+
 { #category : 'init 30x30 cells grid' }
 EcoPannModel >> initialiseSareAttributesOf30x30CellsGrid [
 
@@ -625,6 +696,26 @@ EcoPannModel >> numberOfExtractedShellfish [
     fishers := self @@ EcoPannFisher.
 
     ^ fishers sum: [ :f | f numberOfExtractedShellfishToday ifNil: [ 0 ] ]
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> numberOfFishers [
+
+    ^ (self @@ EcoPannFisher) size
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> numberOfFishers: aValue [
+
+	numberOfFishers := aValue
+]
+
+{ #category : 'probes ' }
+EcoPannModel >> numberOfFishersProbe [
+
+	<probeNamed: 'Number of fishers' color: '00B44C'>
+	
+    ^ self numberOfFishers
 ]
 
 { #category : 'probes ' }
@@ -871,13 +962,21 @@ EcoPannModel >> step [
 	"one simulation day"
 
 	<control>
-	self updateDate.
 	
+	"time steps"
+	self updateDate.
+	self updatePopulation.
+	
+	"managment steps"
+	"self updateSareClosures."
+	
+	"agents steps"	
 	self cohorts do: [ :cohort | cohort step ].
 	self populations do: [ :population | population step ].
 	self sares do: [ :sare | sare step ].
 	(self shuffled: self fishers) do: [ :fisher | fisher step ].
 	
+	"collect data"
 	self mudflats do: [ :each | each collectData ]
 ]
 
@@ -895,4 +994,9 @@ EcoPannModel >> updateDate [
 		currentDayOfMonth := 1.
 		currentMonth := (currentMonth \\ 12) + 1.
     ].
+]
+
+{ #category : 'population growth' }
+EcoPannModel >> updatePopulation [
+    self applyAnnualPopulationGrowthIfNeeded.
 ]
