@@ -38,9 +38,21 @@ EcoPannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
 ]
 
 { #category : 'closure' }
-EcoPannSare >> close [
+EcoPannSare >> closeAtDay: aDay [
     closed := true.
-    closureStartDay := self cormasModel dayCounter.
+    closureStartDay := aDay
+]
+
+{ #category : 'closure' }
+EcoPannSare >> closed: anObject [
+
+	closed := anObject
+]
+
+{ #category : 'closure' }
+EcoPannSare >> closureStartDay [
+
+	^ closureStartDay
 ]
 
 { #category : 'accessing' }
@@ -67,6 +79,8 @@ EcoPannSare >> initialize [
 	growthRate := 0.
 	maxShellfishLength := 0.
 	numberOfShellfishesHistory := OrderedCollection new.
+	
+	"managment init"
 	closed := false.
    closureStartDay := 0.
 ]
@@ -168,13 +182,4 @@ EcoPannSare >> showCharts [
 EcoPannSare >> step [
 
 	numberOfShellfishesHistory add: self numberOfShellfishes.
-]
-
-{ #category : 'closure' }
-EcoPannSare >> updateClosure [
-    closed
-        ifTrue: [
-            self cormasModel dayCounter
-                >= closureStartDay + self cormasModel closureDuration
-                    ifTrue: [ self open ] ].
 ]

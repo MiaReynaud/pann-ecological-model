@@ -10,7 +10,8 @@ Class {
 		'closureSareId',
 		'annualPopulationGrowthRate',
 		'initialNumberOfFishers',
-		'numberOfFishers'
+		'numberOfFishers',
+		'lastClosureSareId'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -211,13 +212,21 @@ EcoPannModel >> buildSareOfSingleSareGrid [
 EcoPannModel >> closeSelectedSare [
     | sare |
 
-    self class closureEnabled ifFalse: [ ^ self ].
+    self closureEnabled ifFalse: [
+        lastClosureSareId := nil.
+        ^ self
+    ].
 
     sare := (self @@ EcoPannSare)
-        detect: [ :each | each id = self class closureSareId ]
+        detect: [ :each | each id = self closureSareId ]
         ifNone: [ ^ self ].
 
-    sare close.
+    lastClosureSareId = self closureSareId
+        ifTrue: [ ^ self ].
+
+    sare closeAtDay: dayCounter.
+    self closureEnabled: false.
+    lastClosureSareId := self closureSareId.
 ]
 
 { #category : 'closure' }
@@ -228,9 +237,9 @@ EcoPannModel >> closureDuration [
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDuration: anObject [
+EcoPannModel >> closureDuration: aNumber [
 
-	closureDuration := anObject
+	closureDuration := aNumber
 ]
 
 { #category : 'closure' }
@@ -289,7 +298,7 @@ EcoPannModel >> currentMonth [
 	^ currentMonth
 ]
 
-{ #category : 'accessing' }
+{ #category : 'time   ' }
 EcoPannModel >> dayCounter [
 
 	^ dayCounter
@@ -939,10 +948,11 @@ EcoPannModel >> step [
 	
 	"time steps"
 	self updateDate.
-	self updatePopulation.
+	self updateFishersPopulation.
 	
 	"managment steps"
-	"self updateSareClosures."
+	self updateClosures.
+	self closeSelectedSare.
 	
 	"agents steps"	
 	self cohorts do: [ :cohort | cohort step ].
@@ -952,6 +962,17 @@ EcoPannModel >> step [
 	
 	"collect data"
 	self mudflats do: [ :each | each collectData ]
+]
+
+{ #category : 'closure' }
+EcoPannModel >> updateClosures [
+    (self @@ EcoPannSare) do: [ :sare |
+        sare isClosed ifTrue: [
+            self dayCounter
+                >= (sare closureStartDay + self closureDuration)
+                    ifTrue: [ sare open ]
+        ]
+    ]
 ]
 
 { #category : 'time   ' }
@@ -971,6 +992,6 @@ EcoPannModel >> updateDate [
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> updatePopulation [
+EcoPannModel >> updateFishersPopulation [
     self applyAnnualPopulationGrowthIfNeeded.
 ]

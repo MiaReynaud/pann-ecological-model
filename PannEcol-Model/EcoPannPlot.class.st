@@ -22,25 +22,25 @@ EcoPannPlot >> area: anObject [
 	area := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> beMangrove [
 
 	state := #mangrove
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> beMudflat [
 
 	state := #mudflat
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> beSea [
 
 	state := #sea
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> beVillage [
 
 	state := #village
@@ -83,7 +83,7 @@ EcoPannPlot >> collectData [
     data add: record.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'init' }
 EcoPannPlot >> initialize [ 
 
 	super initialize.
@@ -91,25 +91,25 @@ EcoPannPlot >> initialize [
    data := OrderedCollection new.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> isMangrove [
 
 	^ state = #mangrove
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> isMudflat [
 
 	^ state = #mudflat
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> isSea [
 
 	^ state = #sea
 ]
 
-{ #category : 'accessing' }
+{ #category : 'state' }
 EcoPannPlot >> isVillage [
 
 	^ state = #village
@@ -121,7 +121,7 @@ EcoPannPlot >> numberOfShellfishes [
 	^ self shellfishPopulation numberOfShellfishes.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'pov' }
 EcoPannPlot >> pov [ 
 
 	<pov>

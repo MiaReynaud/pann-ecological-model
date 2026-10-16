@@ -93,8 +93,14 @@ EcoPannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
 
 { #category : 'decisions' }
 EcoPannFisher >> chooseSareToFishOn [
+
 	<playableAction>
-	^ self selectRandomlyFrom: cormasModel sares
+	| openSares |
+	openSares := cormasModel sares reject: [ :sare | sare isClosed ].
+
+	openSares ifEmpty: [ ^ nil ].
+
+	^ self selectRandomlyFrom: openSares
 ]
 
 { #category : 'accessing' }
@@ -176,12 +182,21 @@ EcoPannFisher >> freshBiomassOfExtractedShellfishToday [
 
 { #category : 'fishing activity' }
 EcoPannFisher >> goToFishingSpot [
-	"The fisher go to the fishing spot where she think she will earn the most"
+	"The fisher goes to an available fishing spot"
+	"Need to code : The fisher go to the fishing spot where she think she will earn the most"
 
 	<action>
-	| sare fishingSpot |
-	sare := self chooseSareToFishOn.
-	fishingSpot := self selectRandomlyFrom: sare plots.
+	
+	| openSare fishingSpot |
+	
+	openSare := self chooseSareToFishOn.
+	
+	openSare ifNil: [
+        self workInVillage.
+        ^ self
+    ].
+	
+	fishingSpot := self selectRandomlyFrom: openSare plots.
 
 	self moveTo: fishingSpot
 ]
