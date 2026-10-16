@@ -212,8 +212,8 @@ EcoPannFisher >> initialize [
 
 { #category : 'time    ' }
 EcoPannFisher >> isFishingPeriod [
-    "Return true if the current month is within the fishing period (Nov–Jun)"
-    ^ (self cormasModel currentMonth >= 11) or: [self cormasModel currentMonth <= 6]
+
+    ^ self cormasModel isFishingPeriod
 ]
 
 { #category : 'time    ' }

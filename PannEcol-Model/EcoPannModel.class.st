@@ -5,19 +5,18 @@ Class {
 		'currentDayOfMonth',
 		'currentMonth',
 		'dayCounter',
-		'closureDuration',
-		'closureEnabled',
-		'closureSareId',
 		'annualPopulationGrowthRate',
 		'initialNumberOfFishers',
 		'numberOfFishers',
-		'lastClosureSareId',
 		'closeSare1',
 		'closeSare2',
 		'closeSare3',
 		'closureDurationSare1',
 		'closureDurationSare2',
-		'closureDurationSare3'
+		'closureDurationSare3',
+		'biologicalRestEnabled',
+		'biologicalRestStartMonth',
+		'biologicalRestDuration'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -136,6 +135,58 @@ EcoPannModel >> applyStatesFromMatrix: aMatrix [
             value = 1 ifTrue: [ cell beVillage ].
 				value = 2 ifTrue: [ cell beMudflat ].
 				value = 3 ifTrue: [ cell beMangrove ] ] ].
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> biologicalRestDuration [
+    <parameterIntegerDefault: 4>
+    ^ biologicalRestDuration
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> biologicalRestDuration: anObject [
+
+	biologicalRestDuration := anObject
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> biologicalRestEnabled [
+    <parameterBooleanDefault: true>
+
+    ^ biologicalRestEnabled
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> biologicalRestEnabled: anObject [
+
+	biologicalRestEnabled := anObject
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> biologicalRestEndMonth [
+    | endMonth |
+
+    endMonth :=
+        self biologicalRestStartMonth
+            + self biologicalRestDuration
+            - 1.
+
+    ^ endMonth > 12
+        ifTrue: [ endMonth - 12 ]
+        ifFalse: [ endMonth ]
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> biologicalRestStartMonth [
+    <parameterIntegerDefault: 7>
+
+    ^ biologicalRestStartMonth
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> biologicalRestStartMonth: anObject [
+
+	biologicalRestStartMonth := anObject
 ]
 
 { #category : 'init 30x30 cells grid' }
@@ -326,32 +377,6 @@ EcoPannModel >> closureDurationSare3 [
 EcoPannModel >> closureDurationSare3: anInteger [
 
 	closureDurationSare3 := anInteger
-]
-
-{ #category : 'closure' }
-EcoPannModel >> closureEnabled [ 
-	<parameterBooleanDefault: false>
-
-	^ closureEnabled
-]
-
-{ #category : 'closure' }
-EcoPannModel >> closureEnabled: anObject [ 
-	
-	closureEnabled := anObject
-]
-
-{ #category : 'closure' }
-EcoPannModel >> closureSareId [
-	<parameterIntegerDefault: 0>
-
-	^ closureSareId
-]
-
-{ #category : 'closure' }
-EcoPannModel >> closureSareId: anObject [
-
-	closureSareId := anObject
 ]
 
 { #category : 'accessing' }
@@ -738,6 +763,24 @@ EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
+]
+
+{ #category : 'biological resting period' }
+EcoPannModel >> isFishingPeriod [
+    | restStart restEnd |
+
+    restStart := self biologicalRestStartMonth.
+    restEnd := self biologicalRestEndMonth.
+
+    restStart <= restEnd
+        ifTrue: [
+            ^ (currentMonth < restStart)
+                or: [ currentMonth > restEnd ]
+        ]
+        ifFalse: [
+            ^ (currentMonth > restEnd)
+                and: [ currentMonth < restStart ]
+        ]
 ]
 
 { #category : 'accessing' }
