@@ -82,7 +82,8 @@ EcoPannSare >> initialize [
 	
 	"managment init"
 	closed := false.
-   closureStartDay := 0.
+   closed := false.
+   closureStartDay := 0
 ]
 
 { #category : 'closure' }

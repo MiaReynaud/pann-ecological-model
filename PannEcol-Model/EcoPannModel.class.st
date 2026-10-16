@@ -11,7 +11,13 @@ Class {
 		'annualPopulationGrowthRate',
 		'initialNumberOfFishers',
 		'numberOfFishers',
-		'lastClosureSareId'
+		'lastClosureSareId',
+		'closeSare1',
+		'closeSare2',
+		'closeSare3',
+		'closureDurationSare1',
+		'closureDurationSare2',
+		'closureDurationSare3'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -86,6 +92,32 @@ EcoPannModel >> applyAnnualPopulationGrowthIfNeeded [
                     self applyAnnualPopulationGrowth
                 ]
         ].
+]
+
+{ #category : 'closure' }
+EcoPannModel >> applyClosureForSareId: anId [
+
+    | sare |
+
+    sare := (self @@ EcoPannSare)
+        detect: [ :each | each id = anId ]
+        ifNone: [ ^ self ].
+
+    sare isClosed ifTrue: [ ^ self ].
+
+    sare closeAtDay: dayCounter.
+]
+
+{ #category : 'closure' }
+EcoPannModel >> applyRequestedClosures [
+
+    1 to: 5 do: [ :id |
+        (self shouldCloseSareId: id)
+            ifTrue: [
+                self applyClosureForSareId: id.
+                self setCloseSareId: id to: false
+            ]
+    ]
 ]
 
 { #category : 'init  ' }
@@ -209,37 +241,91 @@ EcoPannModel >> buildSareOfSingleSareGrid [
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closeSelectedSare [
-    | sare |
+EcoPannModel >> closeSare1 [
+	<parameterBooleanDefault: false>
 
-    self closureEnabled ifFalse: [
-        lastClosureSareId := nil.
-        ^ self
-    ].
-
-    sare := (self @@ EcoPannSare)
-        detect: [ :each | each id = self closureSareId ]
-        ifNone: [ ^ self ].
-
-    lastClosureSareId = self closureSareId
-        ifTrue: [ ^ self ].
-
-    sare closeAtDay: dayCounter.
-    self closureEnabled: false.
-    lastClosureSareId := self closureSareId.
+	^ closeSare1
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDuration [
+EcoPannModel >> closeSare1: aBoolean [
+
+	closeSare1 := aBoolean
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closeSare2 [
+	<parameterBooleanDefault: false>
+
+	^ closeSare2
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closeSare2: aBoolean [
+
+	closeSare2 := aBoolean
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closeSare3 [
+	<parameterBooleanDefault: false>
+
+	^ closeSare3
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closeSare3: aBoolean [
+
+	closeSare3 := aBoolean
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDurationForSareId: anId [
+
+    anId = 1 ifTrue: [ ^ self closureDurationSare1 ].
+    anId = 2 ifTrue: [ ^ self closureDurationSare2 ].
+    anId = 3 ifTrue: [ ^ self closureDurationSare3 ].
+
+    ^ 0
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDurationSare1 [
 	<parameterIntegerDefault: 30>
 
-	^ closureDuration 
+	^ closureDurationSare1
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDuration: aNumber [
+EcoPannModel >> closureDurationSare1: anInteger [
 
-	closureDuration := aNumber
+	closureDurationSare1 := anInteger
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDurationSare2 [
+	<parameterIntegerDefault: 30>
+
+	^ closureDurationSare2
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDurationSare2: anInteger [
+
+	closureDurationSare2 := anInteger
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDurationSare3 [
+	<parameterIntegerDefault: 30>
+
+	^ closureDurationSare3
+]
+
+{ #category : 'closure' }
+EcoPannModel >> closureDurationSare3: anInteger [
+
+	closureDurationSare3 := anInteger
 ]
 
 { #category : 'closure' }
@@ -762,6 +848,35 @@ EcoPannModel >> saveCellDataToCsv [
             each saveDataToCsv: file ].
 ]
 
+{ #category : 'closure' }
+EcoPannModel >> setCloseSareId: anId to: aBoolean [
+
+    anId = 1 ifTrue: [
+        self closeSare1: aBoolean.
+        ^ self
+    ].
+
+    anId = 2 ifTrue: [
+        self closeSare2: aBoolean.
+        ^ self
+    ].
+
+    anId = 3 ifTrue: [
+        self closeSare3: aBoolean.
+        ^ self
+    ].
+]
+
+{ #category : 'closure' }
+EcoPannModel >> shouldCloseSareId: anId [
+
+    anId = 1 ifTrue: [ ^ self closeSare1 ].
+    anId = 2 ifTrue: [ ^ self closeSare2 ].
+    anId = 3 ifTrue: [ ^ self closeSare3 ].
+
+    ^ false
+]
+
 { #category : 'probes ' }
 EcoPannModel >> sizeOfCohorts [
 
@@ -951,8 +1066,8 @@ EcoPannModel >> step [
 	self updateFishersPopulation.
 	
 	"managment steps"
-	self updateClosures.
-	self closeSelectedSare.
+	self applyRequestedClosures.
+    self updateClosures.
 	
 	"agents steps"	
 	self cohorts do: [ :cohort | cohort step ].
@@ -966,11 +1081,16 @@ EcoPannModel >> step [
 
 { #category : 'closure' }
 EcoPannModel >> updateClosures [
+
     (self @@ EcoPannSare) do: [ :sare |
         sare isClosed ifTrue: [
-            self dayCounter
-                >= (sare closureStartDay + self closureDuration)
-                    ifTrue: [ sare open ]
+            self dayCounter >= (
+                sare closureStartDay
+                    + (self closureDurationForSareId: sare id)
+            )
+                ifTrue: [
+                    sare open
+                ]
         ]
     ]
 ]
