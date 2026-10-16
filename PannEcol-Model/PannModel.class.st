@@ -1,5 +1,5 @@
 Class {
-	#name : 'EcoPannModel',
+	#name : 'PannModel',
 	#superclass : 'CMAbstractModel',
 	#instVars : [
 		'currentDayOfMonth',
@@ -16,26 +16,32 @@ Class {
 		'closureDurationSare3',
 		'biologicalRestEnabled',
 		'biologicalRestStartMonth',
-		'biologicalRestDuration'
+		'biologicalRestDuration',
+		'seedingEnabled',
+		'seedingSourceSareId',
+		'seedingDestinationSareId',
+		'seedingPending',
+		'seedingActive',
+		'seedingExecutionDay'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
 
 { #category : 'as yet unclassified' }
-EcoPannModel class >> modelName [
+PannModel class >> modelName [
 
 	^ 'PannEcol'
 ]
 
 { #category : 'accessing' }
-EcoPannModel class >> prefix [
+PannModel class >> prefix [
 
 	^ 'PE'
 ]
 
 { #category : 'init  ' }
-EcoPannModel >> addFishers [
+PannModel >> addFishers [
 
 	self
 		create: initialNumberOfFishers 
@@ -44,27 +50,27 @@ EcoPannModel >> addFishers [
 ]
 
 { #category : 'init  ' }
-EcoPannModel >> addShellfishes [
+PannModel >> addShellfishes [
 
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
 		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> annualPopulationGrowthRate [
+PannModel >> annualPopulationGrowthRate [
     <parameterFloatDefault: 0.00> "for instance 0.02 = +2 % per year"
 
     ^ annualPopulationGrowthRate
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> annualPopulationGrowthRate: aValue [
+PannModel >> annualPopulationGrowthRate: aValue [
 
 	annualPopulationGrowthRate := aValue
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> applyAnnualPopulationGrowth [
+PannModel >> applyAnnualPopulationGrowth [
     | currentPopulation newPopulation numberOfNewFishersToCreate |
 
     currentPopulation := self numberOfFishers.
@@ -83,7 +89,7 @@ EcoPannModel >> applyAnnualPopulationGrowth [
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> applyAnnualPopulationGrowthIfNeeded [
+PannModel >> applyAnnualPopulationGrowthIfNeeded [
     currentMonth = 1
         ifTrue: [
             currentDayOfMonth = 1
@@ -94,7 +100,7 @@ EcoPannModel >> applyAnnualPopulationGrowthIfNeeded [
 ]
 
 { #category : 'closure' }
-EcoPannModel >> applyClosureForSareId: anId [
+PannModel >> applyClosureForSareId: anId [
 
     | sare |
 
@@ -108,9 +114,9 @@ EcoPannModel >> applyClosureForSareId: anId [
 ]
 
 { #category : 'closure' }
-EcoPannModel >> applyRequestedClosures [
+PannModel >> applyRequestedClosures [
 
-    1 to: 5 do: [ :id |
+    1 to: 3 do: [ :id |
         (self shouldCloseSareId: id)
             ifTrue: [
                 self applyClosureForSareId: id.
@@ -120,7 +126,7 @@ EcoPannModel >> applyRequestedClosures [
 ]
 
 { #category : 'init  ' }
-EcoPannModel >> applyStatesFromMatrix: aMatrix [
+PannModel >> applyStatesFromMatrix: aMatrix [
 
 	| rows cols value cell |
     rows := aMatrix size.
@@ -138,32 +144,32 @@ EcoPannModel >> applyStatesFromMatrix: aMatrix [
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> biologicalRestDuration [
+PannModel >> biologicalRestDuration [
     <parameterIntegerDefault: 4>
     ^ biologicalRestDuration
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> biologicalRestDuration: anObject [
+PannModel >> biologicalRestDuration: anObject [
 
 	biologicalRestDuration := anObject
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> biologicalRestEnabled [
+PannModel >> biologicalRestEnabled [
     <parameterBooleanDefault: true>
 
     ^ biologicalRestEnabled
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> biologicalRestEnabled: anObject [
+PannModel >> biologicalRestEnabled: anObject [
 
 	biologicalRestEnabled := anObject
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> biologicalRestEndMonth [
+PannModel >> biologicalRestEndMonth [
     | endMonth |
 
     endMonth :=
@@ -177,20 +183,20 @@ EcoPannModel >> biologicalRestEndMonth [
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> biologicalRestStartMonth [
+PannModel >> biologicalRestStartMonth [
     <parameterIntegerDefault: 7>
 
     ^ biologicalRestStartMonth
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> biologicalRestStartMonth: anObject [
+PannModel >> biologicalRestStartMonth: anObject [
 
 	biologicalRestStartMonth := anObject
 ]
 
 { #category : 'init 30x30 cells grid' }
-EcoPannModel >> buildSareOf30x30CellsGrid [
+PannModel >> buildSareOf30x30CellsGrid [
 	
 	self releaseAggregateType: EcoPannSare .
 	self
@@ -207,7 +213,7 @@ EcoPannModel >> buildSareOf30x30CellsGrid [
 ]
 
 { #category : 'init 70x70 cells grid' }
-EcoPannModel >> buildSareOf70x70CellsGrid [
+PannModel >> buildSareOf70x70CellsGrid [
 	
 	self releaseAggregateType: EcoPannSare .
 	self
@@ -224,7 +230,7 @@ EcoPannModel >> buildSareOf70x70CellsGrid [
 ]
 
 { #category : 'init game grid' }
-EcoPannModel >> buildSareOfGameGrid [
+PannModel >> buildSareOfGameGrid [
 	
 	self releaseAggregateType: EcoPannSare .
 	self
@@ -241,7 +247,7 @@ EcoPannModel >> buildSareOfGameGrid [
 ]
 
 { #category : 'init single cell grid' }
-EcoPannModel >> buildSareOfSingleCellGrid [
+PannModel >> buildSareOfSingleCellGrid [
 	
 	self releaseAggregateType: EcoPannSare .
 	self
@@ -258,7 +264,7 @@ EcoPannModel >> buildSareOfSingleCellGrid [
 ]
 
 { #category : 'init single cell with village grid' }
-EcoPannModel >> buildSareOfSingleCellWithVillageGrid [
+PannModel >> buildSareOfSingleCellWithVillageGrid [
 	
 	self releaseAggregateType: EcoPannSare .
 	self
@@ -275,7 +281,7 @@ EcoPannModel >> buildSareOfSingleCellWithVillageGrid [
 ]
 
 { #category : 'init single sare grid' }
-EcoPannModel >> buildSareOfSingleSareGrid [
+PannModel >> buildSareOfSingleSareGrid [
 	
 	self releaseAggregateType: EcoPannSare .
 	self
@@ -291,47 +297,56 @@ EcoPannModel >> buildSareOfSingleSareGrid [
 	
 ]
 
+{ #category : 'seeding' }
+PannModel >> checkForSeedingRequest [
+
+    self seedingEnabled
+        ifTrue: [
+            seedingPending := true
+        ].
+]
+
 { #category : 'closure' }
-EcoPannModel >> closeSare1 [
+PannModel >> closeSare1 [
 	<parameterBooleanDefault: false>
 
 	^ closeSare1
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closeSare1: aBoolean [
+PannModel >> closeSare1: aBoolean [
 
 	closeSare1 := aBoolean
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closeSare2 [
+PannModel >> closeSare2 [
 	<parameterBooleanDefault: false>
 
 	^ closeSare2
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closeSare2: aBoolean [
+PannModel >> closeSare2: aBoolean [
 
 	closeSare2 := aBoolean
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closeSare3 [
+PannModel >> closeSare3 [
 	<parameterBooleanDefault: false>
 
 	^ closeSare3
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closeSare3: aBoolean [
+PannModel >> closeSare3: aBoolean [
 
 	closeSare3 := aBoolean
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDurationForSareId: anId [
+PannModel >> closureDurationForSareId: anId [
 
     anId = 1 ifTrue: [ ^ self closureDurationSare1 ].
     anId = 2 ifTrue: [ ^ self closureDurationSare2 ].
@@ -341,52 +356,52 @@ EcoPannModel >> closureDurationForSareId: anId [
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDurationSare1 [
+PannModel >> closureDurationSare1 [
 	<parameterIntegerDefault: 30>
 
 	^ closureDurationSare1
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDurationSare1: anInteger [
+PannModel >> closureDurationSare1: anInteger [
 
 	closureDurationSare1 := anInteger
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDurationSare2 [
+PannModel >> closureDurationSare2 [
 	<parameterIntegerDefault: 30>
 
 	^ closureDurationSare2
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDurationSare2: anInteger [
+PannModel >> closureDurationSare2: anInteger [
 
 	closureDurationSare2 := anInteger
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDurationSare3 [
+PannModel >> closureDurationSare3 [
 	<parameterIntegerDefault: 30>
 
 	^ closureDurationSare3
 ]
 
 { #category : 'closure' }
-EcoPannModel >> closureDurationSare3: anInteger [
+PannModel >> closureDurationSare3: anInteger [
 
 	closureDurationSare3 := anInteger
 ]
 
 { #category : 'accessing' }
-EcoPannModel >> cohorts [
+PannModel >> cohorts [
 
 	^ self @@ EcoPannShellfishCohort
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> createNewFishers: aValue [
+PannModel >> createNewFishers: aValue [
 
  aValue > 0
         ifTrue: [
@@ -398,25 +413,25 @@ EcoPannModel >> createNewFishers: aValue [
 ]
 
 { #category : 'accessing' }
-EcoPannModel >> currentDayOfMonth [
+PannModel >> currentDayOfMonth [
 
 	^ currentDayOfMonth
 ]
 
 { #category : 'accessing' }
-EcoPannModel >> currentMonth [
+PannModel >> currentMonth [
 
 	^ currentMonth
 ]
 
 { #category : 'time   ' }
-EcoPannModel >> dayCounter [
+PannModel >> dayCounter [
 
 	^ dayCounter
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> densityOfShellfishInCohort [
+PannModel >> densityOfShellfishInCohort [
 
 <probeNamed: 'Density of shellfish in the first cohort of the first population (ind/m²)' color: 'B784FF'>
     
@@ -429,7 +444,7 @@ EcoPannModel >> densityOfShellfishInCohort [
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> densityOfShellfishInPopulation [
+PannModel >> densityOfShellfishInPopulation [
 
 <probeNamed: 'Density of shellfish in the first population ind/m²' color: 'F3A5FF'>
     
@@ -442,13 +457,13 @@ EcoPannModel >> densityOfShellfishInPopulation [
 ]
 
 { #category : 'accessing' }
-EcoPannModel >> fishers [
+PannModel >> fishers [
 
 	^ self @@ EcoPannFisher
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> freshBiomassOfExtractedShellfish [
+PannModel >> freshBiomassOfExtractedShellfish [
 
 <probeNamed: ' Fresh biomass extracted today by all the fishers (g)' color: 'CC2E85'>
     
@@ -459,7 +474,7 @@ EcoPannModel >> freshBiomassOfExtractedShellfish [
 ]
 
 { #category : 'init 30x30 cells grid' }
-EcoPannModel >> init30x30CellsGrid [
+PannModel >> init30x30CellsGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
 	"In this grid, one cell is 1m²"
@@ -488,7 +503,7 @@ EcoPannModel >> init30x30CellsGrid [
 ]
 
 { #category : 'init 70x70 cells grid' }
-EcoPannModel >> init70x70CellsGrid [
+PannModel >> init70x70CellsGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
 	"In this grid, one cell is 1m²"
@@ -517,7 +532,7 @@ EcoPannModel >> init70x70CellsGrid [
 ]
 
 { #category : 'init game grid' }
-EcoPannModel >> initGameGrid [
+PannModel >> initGameGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
 	"In this grid, one cell is 1m²"
@@ -527,6 +542,11 @@ EcoPannModel >> initGameGrid [
 	currentDayOfMonth := 1.
 	currentMonth := 11. "simulation starts in nov"
 	dayCounter  := 0.
+	
+	"managment init"
+	seedingPending := false.
+	seedingActive := false.
+	seedingExecutionDay := -1.
 	
 	"create grid"
 	self
@@ -546,7 +566,7 @@ EcoPannModel >> initGameGrid [
 ]
 
 { #category : 'init single cell grid' }
-EcoPannModel >> initSingleCellGrid [
+PannModel >> initSingleCellGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
 	"In this grid, one cell is 1m²"
@@ -573,7 +593,7 @@ EcoPannModel >> initSingleCellGrid [
 ]
 
 { #category : 'init single cell with village grid' }
-EcoPannModel >> initSingleCellWithVillageGrid [
+PannModel >> initSingleCellWithVillageGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
 	"In this grid, one cell is 1m²"
@@ -602,7 +622,7 @@ EcoPannModel >> initSingleCellWithVillageGrid [
 ]
 
 { #category : 'init single sare grid' }
-EcoPannModel >> initSingleSareGrid [
+PannModel >> initSingleSareGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
 	"In this grid, one cell is 1m²"
@@ -631,20 +651,20 @@ EcoPannModel >> initSingleSareGrid [
 ]
 
 { #category : 'init  ' }
-EcoPannModel >> initialNumberOfFishers [
+PannModel >> initialNumberOfFishers [
 	<parameterFloatDefault: 100>
 
     ^ initialNumberOfFishers
 ]
 
 { #category : 'init  ' }
-EcoPannModel >> initialNumberOfFishers: aValue [
+PannModel >> initialNumberOfFishers: aValue [
 
 	initialNumberOfFishers := aValue
 ]
 
 { #category : 'init 30x30 cells grid' }
-EcoPannModel >> initialiseSareAttributesOf30x30CellsGrid [
+PannModel >> initialiseSareAttributesOf30x30CellsGrid [
 
 	| sare |
 	
@@ -672,7 +692,7 @@ EcoPannModel >> initialiseSareAttributesOf30x30CellsGrid [
 ]
 
 { #category : 'init 70x70 cells grid' }
-EcoPannModel >> initialiseSareAttributesOf70x70CellsGrid [
+PannModel >> initialiseSareAttributesOf70x70CellsGrid [
 
 	| sare |
 	
@@ -700,7 +720,7 @@ EcoPannModel >> initialiseSareAttributesOf70x70CellsGrid [
 ]
 
 { #category : 'init game grid' }
-EcoPannModel >> initialiseSareAttributesOfGameGrid [
+PannModel >> initialiseSareAttributesOfGameGrid [
 
 	| sare |
 	
@@ -727,7 +747,7 @@ EcoPannModel >> initialiseSareAttributesOfGameGrid [
 ]
 
 { #category : 'init single cell grid' }
-EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
+PannModel >> initialiseSareAttributesOfSingleCellGrid [
 
 	| sare |
 	
@@ -740,7 +760,7 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellGrid [
 ]
 
 { #category : 'init single cell with village grid' }
-EcoPannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
+PannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
 
 	| sare |
 	
@@ -753,7 +773,7 @@ EcoPannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
 ]
 
 { #category : 'init single sare grid' }
-EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
+PannModel >> initialiseSareAttributesOfSingleSareGrid [
 
 	| sare |
 	
@@ -766,7 +786,7 @@ EcoPannModel >> initialiseSareAttributesOfSingleSareGrid [
 ]
 
 { #category : 'biological resting period' }
-EcoPannModel >> isFishingPeriod [
+PannModel >> isFishingPeriod [
     | restStart restEnd |
 
     restStart := self biologicalRestStartMonth.
@@ -784,13 +804,13 @@ EcoPannModel >> isFishingPeriod [
 ]
 
 { #category : 'accessing' }
-EcoPannModel >> mudflats [
+PannModel >> mudflats [
 
 	^ self cells select: [ :each | each isMudflat ]
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> numberOfCohorts [ 
+PannModel >> numberOfCohorts [ 
 
 	<probeNamed: 'Average number of cohorts' color: '00B44C'>
 	
@@ -800,7 +820,7 @@ EcoPannModel >> numberOfCohorts [
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> numberOfExtractedShellfish [
+PannModel >> numberOfExtractedShellfish [
 
 <probeNamed: 'Number of extracted shellfish' color: '00FFF3'>
     
@@ -811,19 +831,19 @@ EcoPannModel >> numberOfExtractedShellfish [
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> numberOfFishers [
+PannModel >> numberOfFishers [
 
     ^ (self @@ EcoPannFisher) size
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> numberOfFishers: aValue [
+PannModel >> numberOfFishers: aValue [
 
 	numberOfFishers := aValue
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> numberOfFishersProbe [
+PannModel >> numberOfFishersProbe [
 
 	<probeNamed: 'Number of fishers' color: '00B44C'>
 	
@@ -831,7 +851,7 @@ EcoPannModel >> numberOfFishersProbe [
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> numberOfShellfishInCohort [
+PannModel >> numberOfShellfishInCohort [
 
 <probeNamed: 'Number of shellfish in the first cohort of the first population' color: '0000FF'>
     
@@ -844,7 +864,7 @@ EcoPannModel >> numberOfShellfishInCohort [
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> numberOfShellfishInPopulation [
+PannModel >> numberOfShellfishInPopulation [
 
 <probeNamed: 'Number of shellfish in the first population' color: 'E67E22'>
     
@@ -857,26 +877,26 @@ EcoPannModel >> numberOfShellfishInPopulation [
 ]
 
 { #category : 'accessing' }
-EcoPannModel >> populations [
+PannModel >> populations [
 
 	^ self @@ EcoPannShellfishPopulation
 ]
 
 { #category : 'init  ' }
-EcoPannModel >> sareNamed: aString [
+PannModel >> sareNamed: aString [
 "to access a sare by his name"
 
 	^ self sares detect: [ :each | each name = aString ]
 ]
 
 { #category : 'init  ' }
-EcoPannModel >> sares [
+PannModel >> sares [
 
 	^ self @@ EcoPannSare
 ]
 
 { #category : 'collect data' }
-EcoPannModel >> saveCellDataToCsv [
+PannModel >> saveCellDataToCsv [
     | folder file |
      "Provide the path to a folder where you want to save your data"
     folder := 'D:\data_pann' asFileReference.
@@ -891,8 +911,90 @@ EcoPannModel >> saveCellDataToCsv [
             each saveDataToCsv: file ].
 ]
 
+{ #category : 'seeding' }
+PannModel >> seedingActive [
+
+	^ seedingActive
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingActive: anObject [
+
+	seedingActive := anObject
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingDestinationSareId [
+    <parameterIntegerDefault: 0>
+
+	^ seedingDestinationSareId
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingDestinationSareId: anInteger [
+
+	seedingDestinationSareId := anInteger
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingEnabled [
+    <parameterBooleanDefault: false>
+
+    ^ seedingEnabled
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingEnabled: aBoolean [
+
+    seedingEnabled := aBoolean
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingExecutionDay [
+
+	^ seedingExecutionDay
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingExecutionDay: anObject [
+
+	seedingExecutionDay := anObject
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingPending [
+
+	^ seedingPending
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingPending: anObject [
+
+	seedingPending := anObject
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingSareForId: aSareId [
+    ^ (self @@ EcoPannSare)
+        detect: [ :each | each id = aSareId ]
+        ifNone: [ nil ]
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingSourceSareId [
+    <parameterIntegerDefault: 0>
+
+    ^ seedingSourceSareId
+]
+
+{ #category : 'seeding' }
+PannModel >> seedingSourceSareId: anInteger [
+
+    seedingSourceSareId := anInteger
+]
+
 { #category : 'closure' }
-EcoPannModel >> setCloseSareId: anId to: aBoolean [
+PannModel >> setCloseSareId: anId to: aBoolean [
 
     anId = 1 ifTrue: [
         self closeSare1: aBoolean.
@@ -911,7 +1013,7 @@ EcoPannModel >> setCloseSareId: anId to: aBoolean [
 ]
 
 { #category : 'closure' }
-EcoPannModel >> shouldCloseSareId: anId [
+PannModel >> shouldCloseSareId: anId [
 
     anId = 1 ifTrue: [ ^ self closeSare1 ].
     anId = 2 ifTrue: [ ^ self closeSare2 ].
@@ -921,7 +1023,7 @@ EcoPannModel >> shouldCloseSareId: anId [
 ]
 
 { #category : 'probes ' }
-EcoPannModel >> sizeOfCohorts [
+PannModel >> sizeOfCohorts [
 
 <probeNamed: 'Size of the super individual of the cohort (mm)' color: '0000FF'>
     
@@ -934,7 +1036,7 @@ EcoPannModel >> sizeOfCohorts [
 ]
 
 { #category : 'init 30x30 cells grid' }
-EcoPannModel >> stateMatrixOf30x30CellsGrid [
+PannModel >> stateMatrixOf30x30CellsGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(
@@ -972,7 +1074,7 @@ EcoPannModel >> stateMatrixOf30x30CellsGrid [
 ]
 
 { #category : 'init 70x70 cells grid' }
-EcoPannModel >> stateMatrixOf70x70CellsGrid [
+PannModel >> stateMatrixOf70x70CellsGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(
@@ -1050,7 +1152,7 @@ EcoPannModel >> stateMatrixOf70x70CellsGrid [
 ]
 
 { #category : 'init game grid' }
-EcoPannModel >> stateMatrixOfGameGrid [
+PannModel >> stateMatrixOfGameGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 	"9x9 grid"
 
@@ -1068,7 +1170,7 @@ EcoPannModel >> stateMatrixOfGameGrid [
 ]
 
 { #category : 'init single cell grid' }
-EcoPannModel >> stateMatrixOfSingleCellGrid [
+PannModel >> stateMatrixOfSingleCellGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(
@@ -1077,7 +1179,7 @@ EcoPannModel >> stateMatrixOfSingleCellGrid [
 ]
 
 { #category : 'init single cell with village grid' }
-EcoPannModel >> stateMatrixOfSingleCellWithVillageGrid [
+PannModel >> stateMatrixOfSingleCellWithVillageGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(
@@ -1086,7 +1188,7 @@ EcoPannModel >> stateMatrixOfSingleCellWithVillageGrid [
 ]
 
 { #category : 'init single sare grid' }
-EcoPannModel >> stateMatrixOfSingleSareGrid [
+PannModel >> stateMatrixOfSingleSareGrid [
     "Returns a sample map : 0 = sea, 1 = village, 2 = mudflat, 3 = mangrove."
 
     ^ #(
@@ -1099,8 +1201,7 @@ EcoPannModel >> stateMatrixOfSingleSareGrid [
 ]
 
 { #category : 'step  ' }
-EcoPannModel >> step [
-	"one simulation day"
+PannModel >> step [
 
 	<control>
 	
@@ -1109,6 +1210,7 @@ EcoPannModel >> step [
 	self updateFishersPopulation.
 	
 	"managment steps"
+	self updateSeeding.
 	self applyRequestedClosures.
     self updateClosures.
 	
@@ -1123,7 +1225,7 @@ EcoPannModel >> step [
 ]
 
 { #category : 'closure' }
-EcoPannModel >> updateClosures [
+PannModel >> updateClosures [
 
     (self @@ EcoPannSare) do: [ :sare |
         sare isClosed ifTrue: [
@@ -1139,7 +1241,7 @@ EcoPannModel >> updateClosures [
 ]
 
 { #category : 'time   ' }
-EcoPannModel >> updateDate [
+PannModel >> updateDate [
     "Move forward one day and update the month accordingly"
     | daysInMonth |
 
@@ -1155,6 +1257,44 @@ EcoPannModel >> updateDate [
 ]
 
 { #category : 'population growth' }
-EcoPannModel >> updateFishersPopulation [
+PannModel >> updateFishersPopulation [
     self applyAnnualPopulationGrowthIfNeeded.
+]
+
+{ #category : 'seeding' }
+PannModel >> updateSeeding [
+    | source destination |
+
+    "Enregistrer la demande de l'utilisateur"
+    self seedingEnabled ifTrue: [
+        seedingPending := true.
+        self seedingEnabled: false
+    ].
+
+    "Une opération déjà commencée reste active pendant sa journée"
+    seedingActive ifTrue: [
+        dayCounter > seedingExecutionDay ifTrue: [
+            seedingActive := false.
+            seedingPending := false
+        ].
+        ^ self
+    ].
+
+    seedingPending ifFalse: [ ^ self ].
+
+    "Attendre un jour où la pêche est autorisée"
+    self isFishingPeriod ifFalse: [ ^ self ].
+
+    source := self seedingSareForId: self seedingSourceSareId.
+    destination := self seedingSareForId: self seedingDestinationSareId.
+
+    source ifNil: [ ^ self ].
+    destination ifNil: [ ^ self ].
+
+    source = destination ifTrue: [ ^ self ].
+    source isClosed ifTrue: [ ^ self ].
+
+    "Déclencher l'opération pour cette journée"
+    seedingActive := true.
+    seedingExecutionDay := dayCounter.
 ]

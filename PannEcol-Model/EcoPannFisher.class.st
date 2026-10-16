@@ -189,6 +189,34 @@ EcoPannFisher >> goToFishingSpot [
 	
 	| openSare fishingSpot |
 	
+	self cormasModel seedingActive
+        ifTrue: [
+            openSare := self cormasModel
+                seedingSareForId:
+                    self cormasModel seedingSourceSareId.
+
+            openSare ifNil: [
+                self workInVillage.
+                ^ self
+            ].
+
+            openSare isClosed ifTrue: [
+                self workInVillage.
+                ^ self
+            ].
+
+            openSare plots isEmpty ifTrue: [
+                self workInVillage.
+                ^ self
+            ].
+
+            fishingSpot := self
+                selectRandomlyFrom: openSare plots.
+
+            self moveTo: fishingSpot.
+            ^ self
+        ].
+	
 	openSare := self chooseSareToFishOn.
 	
 	openSare ifNil: [
@@ -196,7 +224,8 @@ EcoPannFisher >> goToFishingSpot [
         ^ self
     ].
 	
-	fishingSpot := self selectRandomlyFrom: openSare plots.
+	fishingSpot := self 
+			selectRandomlyFrom: openSare plots.
 
 	self moveTo: fishingSpot
 ]
