@@ -93,14 +93,18 @@ PannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
 
 { #category : 'decisions' }
 PannFisher >> chooseSareToFishOn [
+    <playableAction>
+    | openSares |
 
-	<playableAction>
-	| openSares |
-	openSares := cormasModel sares reject: [ :sare | sare isClosed ].
+    openSares := cormasModel sares
+        select: [ :sare |
+            (sare isClosed not)
+                and: [ sare plots notEmpty ]
+        ].
 
-	openSares ifEmpty: [ ^ nil ].
+    openSares ifEmpty: [ ^ nil ].
 
-	^ self selectRandomlyFrom: openSares
+    ^ self selectRandomlyFrom: openSares
 ]
 
 { #category : 'accessing' }
@@ -189,7 +193,7 @@ PannFisher >> goToFishingSpot [
 	
 	| openSare fishingSpot |
 	
-	self cormasModel seedingActive
+	"self cormasModel seedingActive
         ifTrue: [
             openSare := self cormasModel
                 seedingSareForId:
@@ -215,7 +219,7 @@ PannFisher >> goToFishingSpot [
 
             self moveTo: fishingSpot.
             ^ self
-        ].
+        ]."
 	
 	openSare := self chooseSareToFishOn.
 	

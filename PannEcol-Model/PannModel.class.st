@@ -492,12 +492,11 @@ PannModel >> init30x30CellsGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 5000]. "define the size of a cell to 1m²"
-		
  	self applyStatesFromMatrix: self stateMatrixOf30x30CellsGrid .
 	
 		self addShellfishes.	
 		self buildSareOf30x30CellsGrid.
+		self setCellAreaFromLargestSare.
 		self addFishers.
 
 ]
@@ -521,12 +520,11 @@ PannModel >> init70x70CellsGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 5000]. "define the size of a cell to 1m²"
-		
  	self applyStatesFromMatrix: self stateMatrixOf70x70CellsGrid .
 	
 		self addShellfishes.	
 		self buildSareOf70x70CellsGrid.
+		self setCellAreaFromLargestSare.
 		self addFishers.
 
 ]
@@ -555,12 +553,11 @@ PannModel >> initGameGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 200000]. "define the size of a cell to 20 ha"
-		
  	self applyStatesFromMatrix: self stateMatrixOfGameGrid .
 	
 	self addShellfishes.
 	self buildSareOfGameGrid.
+	self setCellAreaFromLargestSare.
 	self addFishers.
 
 ]
@@ -584,12 +581,11 @@ PannModel >> initSingleCellGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 500000]. "define the size of a cell to 500 000 m²"
-		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellGrid.
 	
 	self addShellfishes.	
 	self buildSareOfSingleCellGrid.
+	self setCellAreaFromLargestSare.
 ]
 
 { #category : 'init single cell with village grid' }
@@ -611,12 +607,11 @@ PannModel >> initSingleCellWithVillageGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 70000]. "define the size of a cell to 1 m²"
-		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellWithVillageGrid.
 	
 		self addShellfishes.
 		self buildSareOfSingleCellWithVillageGrid. 
+		self setCellAreaFromLargestSare.
 		self addFishers.
 
 ]
@@ -640,12 +635,11 @@ PannModel >> initSingleSareGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 1]. "define the size of a cell to 1m²"
-		
  	self applyStatesFromMatrix: self stateMatrixOfSingleSareGrid.
 	
 		self addShellfishes.	
 		self buildSareOfSingleSareGrid. 
+		self setCellAreaFromLargestSare.
 		self addFishers.
 
 ]
@@ -993,6 +987,22 @@ PannModel >> seedingSourceSareId: anInteger [
     seedingSourceSareId := anInteger
 ]
 
+{ #category : 'init  ' }
+PannModel >> setCellAreaFromLargestSare [
+    | largestSare numberOfCells cellArea |
+
+	largestSare := (self @@ PannSare)
+    detectMax: [ :sare | sare plots size ].
+
+    numberOfCells := largestSare plots size.
+
+    cellArea := 400000 / numberOfCells. "According to our field data, we want the biggest mudflat to be 40 ha"
+
+    self cells do: [ :cell |
+        cell area: cellArea
+    ].
+]
+
 { #category : 'closure' }
 PannModel >> setCloseSareId: anId to: aBoolean [
 
@@ -1210,7 +1220,7 @@ PannModel >> step [
 	self updateFishersPopulation.
 	
 	"managment steps"
-	self updateSeeding.
+	"self updateSeeding."
 	self applyRequestedClosures.
     self updateClosures.
 	

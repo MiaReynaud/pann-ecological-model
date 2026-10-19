@@ -82,7 +82,6 @@ PannSare >> initialize [
 	
 	"managment init"
 	closed := false.
-   closed := false.
    closureStartDay := 0
 ]
 
