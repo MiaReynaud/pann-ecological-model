@@ -4,9 +4,26 @@ Class {
 	#instVars : [
 		'cohorts'
 	],
+	#classInstVars : [
+		'initialNumberOfCohorts'
+	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
+
+{ #category : 'accessing' }
+PannShellfishPopulation class >> initialNumberOfCohorts [
+
+	< parameterIntegerMin: 0 max: 35 default: 3 >
+
+	^ initialNumberOfCohorts
+]
+
+{ #category : 'accessing' }
+PannShellfishPopulation class >> initialNumberOfCohorts: anObject [
+
+	initialNumberOfCohorts := anObject
+]
 
 { #category : 'cohort counter ' }
 PannShellfishPopulation >> averageNumberOfCohorts [
@@ -55,6 +72,37 @@ PannShellfishPopulation >> cohorts [
 	^ cohorts
 ]
 
+{ #category : 'initialization' }
+PannShellfishPopulation >> createInitialCohorts [
+
+	| newCohort recruitDensity n minNewCohortSize maxNewCohortSize minNewCohortAge maxNewCohortAge |
+	
+	n := self class initialNumberOfCohorts.
+	
+	minNewCohortSize := 3.
+	maxNewCohortSize := 500.
+	
+	minNewCohortAge := 41.
+	maxNewCohortAge := 12410.
+	
+	cohorts := OrderedCollection new. 
+
+	recruitDensity := self sare recruitCapacity.
+	
+
+	1 to: n do: [ :i |
+		newCohort := ( self cormasModel newEntity: PannShellfishCohort )
+			population: self;
+			shellfishDensity: recruitDensity; "in ind/m²"
+			yourself.
+			
+		newCohort shellfishSize: ((i-1) * ((maxNewCohortSize - minNewCohortSize) / n) asInteger + minNewCohortSize).
+		
+		newCohort shellfishAge: ((i-1) * ((maxNewCohortAge - minNewCohortAge) / n) asInteger + minNewCohortAge).
+		
+		cohorts add: newCohort. ].
+]
+
 { #category : 'ecological methods  ' }
 PannShellfishPopulation >> dailyFishableQuantity [ 
 
@@ -70,22 +118,6 @@ PannShellfishPopulation >> densityOfShellfishes [
 	^ self numberOfShellfishes / self cell area .
 ]
 
-{ #category : 'initialization' }
-PannShellfishPopulation >> initialize [ 
-
-	super initialize .
-
-	cohorts := OrderedCollection new.
-
-
-
-"	cohorts := (1 to: 7 by: 1) asOrderedCollection collect: [ :size |
-  		( self cormasModel newEntity: PannShellfishCohort )
-    		shellfishSize: size;
-    		shellfishDensity: 2500000; ""we estimate that there is one shellfish of each cohort in 20cm², so it's 2 500 000 shellfish of each cohort in 0,5 ha""
-    		yourself ]."
-]
-
 { #category : 'cohort counter ' }
 PannShellfishPopulation >> isRecruitDay [
 "send true if its first of december"
@@ -98,6 +130,14 @@ PannShellfishPopulation >> isRecruitDay [
 isRecruitDay
 
 	^ (currentDayOfMonth = 1)  and: (currentMonth = 12)"
+]
+
+{ #category : 'moving' }
+PannShellfishPopulation >> moveTo: aCell [
+
+	super moveTo: aCell.
+	
+	self createInitialCohorts. 
 ]
 
 { #category : 'accessing' }

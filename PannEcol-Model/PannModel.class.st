@@ -52,8 +52,11 @@ PannModel >> addFishers [
 { #category : 'init  ' }
 PannModel >> addShellfishes [
 
+
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: PannShellfishPopulation locatedAt: cell ].
+		 self newEntity: PannShellfishPopulation locatedAt: cell].
+	
+
 ]
 
 { #category : 'population growth' }
@@ -149,6 +152,7 @@ PannModel >> averageDailyEarnings [
 <probeNamed: 'Average daily earnings' color: '0000FF'>
 
 	(self currentTimeStep = 0) ifTrue: [ ^ 0 ].
+	(self numberOfFishers = 0) ifTrue: [ ^ 0 ].
     
    ^ (totalEarnings / self numberOfFishers / self currentTimeStep) asFloat.
 ]
@@ -514,8 +518,8 @@ PannModel >> init30x30CellsGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOf30x30CellsGrid .
 	
-		self addShellfishes.	
 		self buildSareOf30x30CellsGrid.
+		self addShellfishes.	
 		self setCellAreaFromLargestSare.
 		self addFishers.
 
@@ -541,9 +545,9 @@ PannModel >> init70x70CellsGrid [
 		closed: true.
 		
  	self applyStatesFromMatrix: self stateMatrixOf70x70CellsGrid .
-	
-		self addShellfishes.	
+		
 		self buildSareOf70x70CellsGrid.
+		self addShellfishes.	
 		self setCellAreaFromLargestSare.
 		self addFishers.
 
@@ -574,9 +578,9 @@ PannModel >> initGameGrid [
 		closed: true.
 		
  	self applyStatesFromMatrix: self stateMatrixOfGameGrid .
-	
-	self addShellfishes.
+
 	self buildSareOfGameGrid.
+	self addShellfishes.
 	self setCellAreaFromLargestSare.
 	self addFishers.
 
@@ -603,8 +607,8 @@ PannModel >> initSingleCellGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellGrid.
 	
-	self addShellfishes.	
 	self buildSareOfSingleCellGrid.
+	self addShellfishes.	
 	self setCellAreaFromLargestSare.
 ]
 
@@ -629,8 +633,8 @@ PannModel >> initSingleCellWithVillageGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleCellWithVillageGrid.
 	
-		self addShellfishes.
 		self buildSareOfSingleCellWithVillageGrid. 
+		self addShellfishes.	
 		self setCellAreaFromLargestSare.
 		self addFishers.
 
@@ -657,8 +661,8 @@ PannModel >> initSingleSareGrid [
 		
  	self applyStatesFromMatrix: self stateMatrixOfSingleSareGrid.
 	
-		self addShellfishes.	
 		self buildSareOfSingleSareGrid. 
+		self addShellfishes.	
 		self setCellAreaFromLargestSare.
 		self addFishers.
 
