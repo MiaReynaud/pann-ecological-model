@@ -2,21 +2,16 @@ Class {
 	#name : 'PannShellfishPopulation',
 	#superclass : 'CMAgent',
 	#instVars : [
-		'cohorts',
-		'cohortsCounter'
+		'cohorts'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
 
 { #category : 'cohort counter ' }
-PannShellfishPopulation >> actualizeCohortsCounter [
-	
-	| aliveCohorts |
-	
-	cohortsCounter := 0.
-	aliveCohorts := (self cohorts) select: [ :c | c shellfishDensity > 2 ].
-	aliveCohorts do: [ :c | cohortsCounter := cohortsCounter + 1	].
+PannShellfishPopulation >> averageNumberOfCohorts [
+
+	^ self cohorts size.
 ]
 
 { #category : 'charts' }
@@ -60,12 +55,6 @@ PannShellfishPopulation >> cohorts [
 	^ cohorts
 ]
 
-{ #category : 'accessing' }
-PannShellfishPopulation >> cohortsCounter [
-
-	^ cohortsCounter
-]
-
 { #category : 'ecological methods  ' }
 PannShellfishPopulation >> dailyFishableQuantity [ 
 
@@ -87,8 +76,6 @@ PannShellfishPopulation >> initialize [
 	super initialize .
 
 	cohorts := OrderedCollection new.
-	
-	cohortsCounter := 0 .
 
 
 
@@ -161,5 +148,4 @@ PannShellfishPopulation >> step [
 
 	self recruit.
 	self cohortDeath.
-	self actualizeCohortsCounter.
 ]

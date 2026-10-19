@@ -7,7 +7,6 @@ Class {
 		'dayCounter',
 		'annualPopulationGrowthRate',
 		'initialNumberOfFishers',
-		'numberOfFishers',
 		'closeSare1',
 		'closeSare2',
 		'closeSare3',
@@ -22,7 +21,8 @@ Class {
 		'seedingDestinationSareId',
 		'seedingPending',
 		'seedingActive',
-		'seedingExecutionDay'
+		'seedingExecutionDay',
+		'totalEarnings'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -141,6 +141,26 @@ PannModel >> applyStatesFromMatrix: aMatrix [
             value = 1 ifTrue: [ cell beVillage ].
 				value = 2 ifTrue: [ cell beMudflat ].
 				value = 3 ifTrue: [ cell beMangrove ] ] ].
+]
+
+{ #category : 'probes ' }
+PannModel >> averageDailyEarnings [
+
+<probeNamed: 'Average daily earnings' color: '0000FF'>
+
+	(self currentTimeStep = 0) ifTrue: [ ^ 0 ].
+    
+   ^ (totalEarnings / self numberOfFishers / self currentTimeStep) asFloat.
+]
+
+{ #category : 'probes ' }
+PannModel >> averageNumberOfCohorts [ 
+
+	<probeNamed: 'Average number of cohorts' color: '00B44C'>
+	
+    | pops |
+    pops := self @@ PannShellfishPopulation.
+    ^ (pops collect: [:pop | pop averageNumberOfCohorts]) average
 ]
 
 { #category : 'biological resting period' }
@@ -779,6 +799,14 @@ PannModel >> initialiseSareAttributesOfSingleSareGrid [
 	sare maxShellfishLength: 38.
 ]
 
+{ #category : 'initialization' }
+PannModel >> initialize [
+
+	super initialize. 
+	
+	totalEarnings := 0.
+]
+
 { #category : 'biological resting period' }
 PannModel >> isFishingPeriod [
     | restStart restEnd |
@@ -804,16 +832,6 @@ PannModel >> mudflats [
 ]
 
 { #category : 'probes ' }
-PannModel >> numberOfCohorts [ 
-
-	<probeNamed: 'Average number of cohorts' color: '00B44C'>
-	
-    | pops |
-    pops := self @@ PannShellfishPopulation.
-    ^ (pops collect: [:pop | pop cohortsCounter]) average
-]
-
-{ #category : 'probes ' }
 PannModel >> numberOfExtractedShellfish [
 
 <probeNamed: 'Number of extracted shellfish' color: '00FFF3'>
@@ -828,12 +846,6 @@ PannModel >> numberOfExtractedShellfish [
 PannModel >> numberOfFishers [
 
     ^ (self @@ PannFisher) size
-]
-
-{ #category : 'population growth' }
-PannModel >> numberOfFishers: aValue [
-
-	numberOfFishers := aValue
 ]
 
 { #category : 'probes ' }
@@ -1231,7 +1243,8 @@ PannModel >> step [
 	(self shuffled: self fishers) do: [ :fisher | fisher step ].
 	
 	"collect data"
-	self mudflats do: [ :each | each collectData ]
+	self mudflats do: [ :each | each collectData ].
+	totalEarnings := totalEarnings + (self fishers sum: #dailyEarnings).
 ]
 
 { #category : 'closure' }
