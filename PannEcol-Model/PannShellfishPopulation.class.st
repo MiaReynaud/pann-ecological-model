@@ -4,26 +4,9 @@ Class {
 	#instVars : [
 		'cohorts'
 	],
-	#classInstVars : [
-		'initialNumberOfCohorts'
-	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
 }
-
-{ #category : 'accessing' }
-PannShellfishPopulation class >> initialNumberOfCohorts [
-
-	< parameterIntegerMin: 0 max: 35 default: 3 >
-
-	^ initialNumberOfCohorts
-]
-
-{ #category : 'accessing' }
-PannShellfishPopulation class >> initialNumberOfCohorts: anObject [
-
-	initialNumberOfCohorts := anObject
-]
 
 { #category : 'cohort counter ' }
 PannShellfishPopulation >> averageNumberOfCohorts [
@@ -75,32 +58,49 @@ PannShellfishPopulation >> cohorts [
 { #category : 'initialization' }
 PannShellfishPopulation >> createInitialCohorts [
 
-	| newCohort recruitDensity n minNewCohortSize maxNewCohortSize minNewCohortAge maxNewCohortAge |
-	
-	n := self class initialNumberOfCohorts.
-	
-	minNewCohortSize := 3.
-	maxNewCohortSize := 500.
-	
-	minNewCohortAge := 41.
-	maxNewCohortAge := 12410.
-	
-	cohorts := OrderedCollection new. 
+    | newCohort n minSize maxSize minAge maxAge
+      maxDensity densityStep sizeStep ageStep |
 
-	recruitDensity := self sare recruitCapacity.
-	
+    n := 3. "3 cohorts before starting the simulation"
 
-	1 to: n do: [ :i |
-		newCohort := ( self cormasModel newEntity: PannShellfishCohort )
-			population: self;
-			shellfishDensity: recruitDensity; "in ind/m²"
-			yourself.
-			
-		newCohort shellfishSize: ((i-1) * ((maxNewCohortSize - minNewCohortSize) / n) asInteger + minNewCohortSize).
-		
-		newCohort shellfishAge: ((i-1) * ((maxNewCohortAge - minNewCohortAge) / n) asInteger + minNewCohortAge).
-		
-		cohorts add: newCohort. ].
+    minSize := 21.
+    maxSize := 63.
+
+    minAge := 365.
+    maxAge := 1095.
+
+    maxDensity := self sare recruitCapacity.
+
+    cohorts := OrderedCollection new.
+
+    n = 1
+        ifTrue: [
+            sizeStep := 0.
+            ageStep := 0.
+            densityStep := 0
+        ]
+        ifFalse: [
+            sizeStep := (maxSize - minSize) / (n - 1).
+            ageStep := (maxAge - minAge) / (n - 1).
+            densityStep := maxDensity / (n - 1)
+        ].
+
+    1 to: n do: [ :i |
+
+        newCohort :=
+            self cormasModel newEntity: PannShellfishCohort.
+
+        newCohort
+            population: self;
+            shellfishSize:
+                (minSize + ((i - 1) * sizeStep)) rounded;
+            shellfishAge:
+                (minAge + ((i - 1) * ageStep)) rounded;
+            shellfishDensity:
+                (maxDensity - ((i - 1) * densityStep)).
+
+        cohorts add: newCohort
+    ].
 ]
 
 { #category : 'ecological methods  ' }
