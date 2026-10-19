@@ -31,7 +31,7 @@ Class {
 { #category : 'as yet unclassified' }
 PannModel class >> modelName [
 
-	^ 'PannEcol'
+	^ 'Pann'
 ]
 
 { #category : 'accessing' }
@@ -45,7 +45,7 @@ PannModel >> addFishers [
 
 	self
 		create: initialNumberOfFishers 
-		randomlyLocatedEntitiesOfClass: EcoPannFisher
+		randomlyLocatedEntitiesOfClass: PannFisher
 		constrainedBy: [ :aCell | aCell state = #village ]
 ]
 
@@ -53,7 +53,7 @@ PannModel >> addFishers [
 PannModel >> addShellfishes [
 
 	(self cells select: [ :c | c state = #mudflat ]) do: [ :cell |
-		self newEntity: EcoPannShellfishPopulation locatedAt: cell ].
+		self newEntity: PannShellfishPopulation locatedAt: cell ].
 ]
 
 { #category : 'population growth' }
@@ -104,7 +104,7 @@ PannModel >> applyClosureForSareId: anId [
 
     | sare |
 
-    sare := (self @@ EcoPannSare)
+    sare := (self @@ PannSare)
         detect: [ :each | each id = anId ]
         ifNone: [ ^ self ].
 
@@ -198,14 +198,14 @@ PannModel >> biologicalRestStartMonth: anObject [
 { #category : 'init 30x30 cells grid' }
 PannModel >> buildSareOf30x30CellsGrid [
 	
-	self releaseAggregateType: EcoPannSare .
+	self releaseAggregateType: PannSare .
 	self
-		createAggregates: EcoPannSare 
-		from: EcoPannPlot
+		createAggregates: PannSare 
+		from: PannPlot
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ PannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributesOf30x30CellsGrid .
@@ -215,14 +215,14 @@ PannModel >> buildSareOf30x30CellsGrid [
 { #category : 'init 70x70 cells grid' }
 PannModel >> buildSareOf70x70CellsGrid [
 	
-	self releaseAggregateType: EcoPannSare .
+	self releaseAggregateType: PannSare .
 	self
-		createAggregates: EcoPannSare 
-		from: EcoPannPlot
+		createAggregates: PannSare 
+		from: PannPlot
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ PannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributesOf70x70CellsGrid .
@@ -232,14 +232,14 @@ PannModel >> buildSareOf70x70CellsGrid [
 { #category : 'init game grid' }
 PannModel >> buildSareOfGameGrid [
 	
-	self releaseAggregateType: EcoPannSare .
+	self releaseAggregateType: PannSare .
 	self
-		createAggregates: EcoPannSare 
-		from: EcoPannPlot
+		createAggregates: PannSare 
+		from: PannPlot
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ PannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributesOfGameGrid .
@@ -249,14 +249,14 @@ PannModel >> buildSareOfGameGrid [
 { #category : 'init single cell grid' }
 PannModel >> buildSareOfSingleCellGrid [
 	
-	self releaseAggregateType: EcoPannSare .
+	self releaseAggregateType: PannSare .
 	self
-		createAggregates: EcoPannSare 
-		from: EcoPannPlot
+		createAggregates: PannSare 
+		from: PannPlot
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ PannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributesOfSingleCellGrid.
@@ -266,14 +266,14 @@ PannModel >> buildSareOfSingleCellGrid [
 { #category : 'init single cell with village grid' }
 PannModel >> buildSareOfSingleCellWithVillageGrid [
 	
-	self releaseAggregateType: EcoPannSare .
+	self releaseAggregateType: PannSare .
 	self
-		createAggregates: EcoPannSare 
-		from: EcoPannPlot
+		createAggregates: PannSare 
+		from: PannPlot
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ PannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributesOfSingleCellWithVillageGrid.
@@ -283,14 +283,14 @@ PannModel >> buildSareOfSingleCellWithVillageGrid [
 { #category : 'init single sare grid' }
 PannModel >> buildSareOfSingleSareGrid [
 	
-	self releaseAggregateType: EcoPannSare .
+	self releaseAggregateType: PannSare .
 	self
-		createAggregates: EcoPannSare 
-		from: EcoPannPlot
+		createAggregates: PannSare 
+		from: PannPlot
 		verifying: [ :aCell | aCell isMudflat ]
 		minimumSize: 1.
 		
-	(self @@ EcoPannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
+	(self @@ PannSare) do: [ :agg | "self spaceModel meanCompactness: PannSare"
 		agg initNeighbourhood ].
 	
 	self initialiseSareAttributesOfSingleSareGrid.
@@ -397,7 +397,7 @@ PannModel >> closureDurationSare3: anInteger [
 { #category : 'accessing' }
 PannModel >> cohorts [
 
-	^ self @@ EcoPannShellfishCohort
+	^ self @@ PannShellfishCohort
 ]
 
 { #category : 'population growth' }
@@ -407,7 +407,7 @@ PannModel >> createNewFishers: aValue [
         ifTrue: [
             self
                 create: aValue
-                randomlyLocatedEntitiesOfClass: EcoPannFisher
+                randomlyLocatedEntitiesOfClass: PannFisher
                 constrainedBy: [ :aCell | aCell state = #village ]
         ].
 ]
@@ -436,7 +436,7 @@ PannModel >> densityOfShellfishInCohort [
 <probeNamed: 'Density of shellfish in the first cohort of the first population (ind/m²)' color: 'B784FF'>
     
     | cohorts |
-    cohorts := (self @@ EcoPannShellfishCohort).
+    cohorts := (self @@ PannShellfishCohort).
  
  	^ cohorts
         ifEmpty: [ 0 ]
@@ -449,7 +449,7 @@ PannModel >> densityOfShellfishInPopulation [
 <probeNamed: 'Density of shellfish in the first population ind/m²' color: 'F3A5FF'>
     
     | population |
-    population := (self @@ EcoPannShellfishPopulation ).
+    population := (self @@ PannShellfishPopulation ).
  
  	^ population 
         ifEmpty: [ 0 ]
@@ -459,7 +459,7 @@ PannModel >> densityOfShellfishInPopulation [
 { #category : 'accessing' }
 PannModel >> fishers [
 
-	^ self @@ EcoPannFisher
+	^ self @@ PannFisher
 ]
 
 { #category : 'probes ' }
@@ -468,7 +468,7 @@ PannModel >> freshBiomassOfExtractedShellfish [
 <probeNamed: ' Fresh biomass extracted today by all the fishers (g)' color: 'CC2E85'>
     
     | fishers |
-    fishers := self @@ EcoPannFisher.
+    fishers := self @@ PannFisher.
 
     ^ fishers sum: [ :f | f freshBiomassOfExtractedShellfishToday ifNil: [ 0 ] ]
 ]
@@ -668,21 +668,21 @@ PannModel >> initialiseSareAttributesOf30x30CellsGrid [
 
 	| sare |
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
 	sare recruitCapacity: 100. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
 	sare recruitCapacity: 40. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
 	sare recruitCapacity: 10. 
 	sare naturalDeathRate: 0.00219.
@@ -696,21 +696,21 @@ PannModel >> initialiseSareAttributesOf70x70CellsGrid [
 
 	| sare |
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
 	sare recruitCapacity: 100. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
 	sare recruitCapacity: 40. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
 	sare recruitCapacity: 10. 
 	sare naturalDeathRate: 0.00219.
@@ -724,21 +724,21 @@ PannModel >> initialiseSareAttributesOfGameGrid [
 
 	| sare |
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
 	sare recruitCapacity: 100. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 2]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
 	sare recruitCapacity: 40. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: 0.00203.
 	sare maxShellfishLength: 38.
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 3]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
 	sare recruitCapacity: 10. 
 	sare naturalDeathRate: 0.00219.
@@ -751,7 +751,7 @@ PannModel >> initialiseSareAttributesOfSingleCellGrid [
 
 	| sare |
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 50.
 	sare naturalDeathRate: 0.00219.
@@ -764,7 +764,7 @@ PannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
 
 	| sare |
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 50. 
 	sare naturalDeathRate: 0.00219.
@@ -777,7 +777,7 @@ PannModel >> initialiseSareAttributesOfSingleSareGrid [
 
 	| sare |
 	
-	sare := ( self @@ EcoPannSare ) detect: [ :each | each id = 1]. 
+	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 50.
 	sare naturalDeathRate: 0.00219.
@@ -815,7 +815,7 @@ PannModel >> numberOfCohorts [
 	<probeNamed: 'Average number of cohorts' color: '00B44C'>
 	
     | pops |
-    pops := self @@ EcoPannShellfishPopulation.
+    pops := self @@ PannShellfishPopulation.
     ^ (pops collect: [:pop | pop cohortsCounter]) average
 ]
 
@@ -825,7 +825,7 @@ PannModel >> numberOfExtractedShellfish [
 <probeNamed: 'Number of extracted shellfish' color: '00FFF3'>
     
     | fishers |
-    fishers := self @@ EcoPannFisher.
+    fishers := self @@ PannFisher.
 
     ^ fishers sum: [ :f | f numberOfExtractedShellfishToday ifNil: [ 0 ] ]
 ]
@@ -833,7 +833,7 @@ PannModel >> numberOfExtractedShellfish [
 { #category : 'population growth' }
 PannModel >> numberOfFishers [
 
-    ^ (self @@ EcoPannFisher) size
+    ^ (self @@ PannFisher) size
 ]
 
 { #category : 'population growth' }
@@ -856,7 +856,7 @@ PannModel >> numberOfShellfishInCohort [
 <probeNamed: 'Number of shellfish in the first cohort of the first population' color: '0000FF'>
     
     | cohorts |
-    cohorts := (self @@ EcoPannShellfishCohort).
+    cohorts := (self @@ PannShellfishCohort).
  
  	^ cohorts
         ifEmpty: [ 0 ]
@@ -869,7 +869,7 @@ PannModel >> numberOfShellfishInPopulation [
 <probeNamed: 'Number of shellfish in the first population' color: 'E67E22'>
     
     | population |
-    population := (self @@ EcoPannShellfishPopulation ).
+    population := (self @@ PannShellfishPopulation ).
  
  	^ population 
         ifEmpty: [ 0 ]
@@ -879,7 +879,7 @@ PannModel >> numberOfShellfishInPopulation [
 { #category : 'accessing' }
 PannModel >> populations [
 
-	^ self @@ EcoPannShellfishPopulation
+	^ self @@ PannShellfishPopulation
 ]
 
 { #category : 'init  ' }
@@ -892,7 +892,7 @@ PannModel >> sareNamed: aString [
 { #category : 'init  ' }
 PannModel >> sares [
 
-	^ self @@ EcoPannSare
+	^ self @@ PannSare
 ]
 
 { #category : 'collect data' }
@@ -975,7 +975,7 @@ PannModel >> seedingPending: anObject [
 
 { #category : 'seeding' }
 PannModel >> seedingSareForId: aSareId [
-    ^ (self @@ EcoPannSare)
+    ^ (self @@ PannSare)
         detect: [ :each | each id = aSareId ]
         ifNone: [ nil ]
 ]
@@ -1028,7 +1028,7 @@ PannModel >> sizeOfCohorts [
 <probeNamed: 'Size of the super individual of the cohort (mm)' color: '0000FF'>
     
     | cohorts |
-    cohorts := (self @@ EcoPannShellfishCohort).
+    cohorts := (self @@ PannShellfishCohort).
  
  	^ cohorts
         ifEmpty: [ 0 ]
@@ -1227,7 +1227,7 @@ PannModel >> step [
 { #category : 'closure' }
 PannModel >> updateClosures [
 
-    (self @@ EcoPannSare) do: [ :sare |
+    (self @@ PannSare) do: [ :sare |
         sare isClosed ifTrue: [
             self dayCounter >= (
                 sare closureStartDay

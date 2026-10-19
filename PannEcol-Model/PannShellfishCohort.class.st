@@ -1,5 +1,5 @@
 Class {
-	#name : 'EcoPannShellfishCohort',
+	#name : 'PannShellfishCohort',
 	#superclass : 'CMAgent',
 	#instVars : [
 		'shellfishAge',
@@ -13,13 +13,13 @@ Class {
 }
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishCohort >> aging [ 
+PannShellfishCohort >> aging [ 
 
 	shellfishAge := shellfishAge + 1.
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishCohort >> growBiomass [
+PannShellfishCohort >> growBiomass [
 
 	| a b |
 	
@@ -31,7 +31,7 @@ EcoPannShellfishCohort >> growBiomass [
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishCohort >> growSize [
+PannShellfishCohort >> growSize [
 
 	| maxLength growthRate theoriticalInitialAge |
 	
@@ -44,7 +44,7 @@ EcoPannShellfishCohort >> growSize [
 ]
 
 { #category : 'initialize  ' }
-EcoPannShellfishCohort >> initialize [ 
+PannShellfishCohort >> initialize [ 
 
 	| a b |
 
@@ -58,7 +58,7 @@ EcoPannShellfishCohort >> initialize [
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishCohort >> naturalDeath [
+PannShellfishCohort >> naturalDeath [
 
 	| dailyMortalityRate |
 	
@@ -77,24 +77,24 @@ shellfishDensity := initialDensity * ((dailyMortalityRate * cohortAge) negated e
 ]
 
 { #category : 'initialize  ' }
-EcoPannShellfishCohort >> numberOfShellfishes [
+PannShellfishCohort >> numberOfShellfishes [
 	^ population cell area * shellfishDensity.
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> oneIndividualTotalBiomass [
+PannShellfishCohort >> oneIndividualTotalBiomass [
 
 	^ oneIndividualTotalBiomass
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> population: anObject [
+PannShellfishCohort >> population: anObject [
 
 	population := anObject
 ]
 
 { #category : 'fishing methods ' }
-EcoPannShellfishCohort >> removeShellfish: aNumber [
+PannShellfishCohort >> removeShellfish: aNumber [
  "remove this number of shellfishes from the cohort"
 
 	shellfishDensity := shellfishDensity - (aNumber / population cell area).
@@ -102,49 +102,49 @@ EcoPannShellfishCohort >> removeShellfish: aNumber [
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishCohort >> sare [ 
+PannShellfishCohort >> sare [ 
 
 	^ population cell sare.
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> shellfishAge [
+PannShellfishCohort >> shellfishAge [
 
 	^ shellfishAge
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> shellfishAge: anObject [
+PannShellfishCohort >> shellfishAge: anObject [
 
 	shellfishAge := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> shellfishDensity [
+PannShellfishCohort >> shellfishDensity [
 
 	^ shellfishDensity
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> shellfishDensity: anObject [
+PannShellfishCohort >> shellfishDensity: anObject [
 
 	shellfishDensity := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> shellfishSize [
+PannShellfishCohort >> shellfishSize [
 
 	^ shellfishSize
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishCohort >> shellfishSize: anObject [
+PannShellfishCohort >> shellfishSize: anObject [
 
 	shellfishSize := anObject
 ]
 
 { #category : 'step   ' }
-EcoPannShellfishCohort >> step [ 
+PannShellfishCohort >> step [ 
 
 	self aging.
 	self growSize.

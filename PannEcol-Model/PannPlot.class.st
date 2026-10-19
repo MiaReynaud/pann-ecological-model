@@ -1,5 +1,5 @@
 Class {
-	#name : 'EcoPannPlot',
+	#name : 'PannPlot',
 	#superclass : 'CMCell',
 	#instVars : [
 		'state',
@@ -11,43 +11,43 @@ Class {
 }
 
 { #category : 'accessing' }
-EcoPannPlot >> area [
+PannPlot >> area [
 
 	^ area
 ]
 
 { #category : 'accessing' }
-EcoPannPlot >> area: anObject [
+PannPlot >> area: anObject [
 
 	area := anObject
 ]
 
 { #category : 'state' }
-EcoPannPlot >> beMangrove [
+PannPlot >> beMangrove [
 
 	state := #mangrove
 ]
 
 { #category : 'state' }
-EcoPannPlot >> beMudflat [
+PannPlot >> beMudflat [
 
 	state := #mudflat
 ]
 
 { #category : 'state' }
-EcoPannPlot >> beSea [
+PannPlot >> beSea [
 
 	state := #sea
 ]
 
 { #category : 'state' }
-EcoPannPlot >> beVillage [
+PannPlot >> beVillage [
 
 	state := #village
 ]
 
 { #category : 'save data' }
-EcoPannPlot >> collectData [
+PannPlot >> collectData [
     | record sortedCohorts numbersAsWords |
     "Each record represents a row in a data table. It is a dictionary where key is a column name and value is the value (measurement) for that column. Using an OrderedDictionary ensures that columns are in the same order as we add them"
     record := OrderedDictionary new.
@@ -78,13 +78,13 @@ EcoPannPlot >> collectData [
 
     record
         at: 'Number of fishers on the cell'
-        put: (self occupantsOfClass: EcoPannFisher) size.
+        put: (self occupantsOfClass: PannFisher) size.
 
     data add: record.
 ]
 
 { #category : 'init' }
-EcoPannPlot >> initialize [ 
+PannPlot >> initialize [ 
 
 	super initialize.
 	area := 5000. "m²" "just to avoid problems, but will be overwriten by the grid init method using the accessor area:"
@@ -92,37 +92,37 @@ EcoPannPlot >> initialize [
 ]
 
 { #category : 'state' }
-EcoPannPlot >> isMangrove [
+PannPlot >> isMangrove [
 
 	^ state = #mangrove
 ]
 
 { #category : 'state' }
-EcoPannPlot >> isMudflat [
+PannPlot >> isMudflat [
 
 	^ state = #mudflat
 ]
 
 { #category : 'state' }
-EcoPannPlot >> isSea [
+PannPlot >> isSea [
 
 	^ state = #sea
 ]
 
 { #category : 'state' }
-EcoPannPlot >> isVillage [
+PannPlot >> isVillage [
 
 	^ state = #village
 ]
 
 { #category : 'accessing' }
-EcoPannPlot >> numberOfShellfishes [ 
+PannPlot >> numberOfShellfishes [ 
 
 	^ self shellfishPopulation numberOfShellfishes.
 ]
 
 { #category : 'pov' }
-EcoPannPlot >> pov [ 
+PannPlot >> pov [ 
 
 	<pov>
 	
@@ -135,13 +135,13 @@ EcoPannPlot >> pov [
 ]
 
 { #category : 'accessing' }
-EcoPannPlot >> sare [
+PannPlot >> sare [
     "Return a sare to which this plot belongs"
-    ^ self getAggregateType: EcoPannSare
+    ^ self getAggregateType: PannSare
 ]
 
 { #category : 'save data' }
-EcoPannPlot >> saveDataToCsv: aFileReference [
+PannPlot >> saveDataToCsv: aFileReference [
     | columnNames |
     data ifEmpty: [ self error: 'Data is empty!' ].
     
@@ -154,28 +154,28 @@ EcoPannPlot >> saveDataToCsv: aFileReference [
 ]
 
 { #category : 'accessing' }
-EcoPannPlot >> shellfishPopulation [
+PannPlot >> shellfishPopulation [
 	"this method returns you the shellfish population in the cell "
 
-	^ (self occupantsOfClass: EcoPannShellfishPopulation) first. "there can only be 1 population of shellfish on the cell, not more, not 0"
+	^ (self occupantsOfClass: PannShellfishPopulation) first. "there can only be 1 population of shellfish on the cell, not more, not 0"
 		
 ]
 
 { #category : 'as yet unclassified' }
-EcoPannPlot >> showSareCharts [
+PannPlot >> showSareCharts [
 	<action>
 	
 	self sare ifNotNil: [ :sare | sare showCharts ]
 ]
 
 { #category : 'accessing' }
-EcoPannPlot >> state [
+PannPlot >> state [
 
 	^ state
 ]
 
 { #category : 'accessing' }
-EcoPannPlot >> state: anObject [
+PannPlot >> state: anObject [
 
 	state := anObject
 ]

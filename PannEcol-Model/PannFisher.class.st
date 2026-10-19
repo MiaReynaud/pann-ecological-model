@@ -1,5 +1,5 @@
 Class {
-	#name : 'EcoPannFisher',
+	#name : 'PannFisher',
 	#superclass : 'CMAgent',
 	#instVars : [
 		'dailyEarnings',
@@ -20,59 +20,59 @@ Class {
 }
 
 { #category : 'accessing' }
-EcoPannFisher class >> fishingHoursPerDay [
+PannFisher class >> fishingHoursPerDay [
 	<parameterIntegerDefault: 3>
 
 	^ fishingHoursPerDay
 ]
 
 { #category : 'accessing' }
-EcoPannFisher class >> fishingHoursPerDay: anObject [
+PannFisher class >> fishingHoursPerDay: anObject [
 
 	fishingHoursPerDay := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannFisher class >> maxShellfishSize [
+PannFisher class >> maxShellfishSize [
 	<parameterIntegerDefault: 1000>
 
 	^ maxShellfishSize
 ]
 
 { #category : 'accessing' }
-EcoPannFisher class >> maxShellfishSize: anObject [
+PannFisher class >> maxShellfishSize: anObject [
 
 	maxShellfishSize := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannFisher class >> minShellfishSize [
+PannFisher class >> minShellfishSize [
 	<parameterIntegerDefault: 0>
 
 	^ minShellfishSize
 ]
 
 { #category : 'accessing' }
-EcoPannFisher class >> minShellfishSize: anObject [
+PannFisher class >> minShellfishSize: anObject [
 
 	minShellfishSize := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannFisher class >> numberOfFishingDayPerMbissa [
+PannFisher class >> numberOfFishingDayPerMbissa [
 	<parameterIntegerDefault: 6>
 
 	^ numberOfFishingDayPerMbissa
 ]
 
 { #category : 'accessing' }
-EcoPannFisher class >> numberOfFishingDayPerMbissa: anObject [
+PannFisher class >> numberOfFishingDayPerMbissa: anObject [
 
 	numberOfFishingDayPerMbissa := anObject
 ]
 
 { #category : 'charts' }
-EcoPannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
+PannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
 	| x y chart plot |
 
 	x := xCollection ifEmpty: [ #(0) ].
@@ -92,7 +92,7 @@ EcoPannFisher >> buildChartBoxPlotX: xCollection y: yCollection [
 ]
 
 { #category : 'decisions' }
-EcoPannFisher >> chooseSareToFishOn [
+PannFisher >> chooseSareToFishOn [
 
 	<playableAction>
 	| openSares |
@@ -104,13 +104,13 @@ EcoPannFisher >> chooseSareToFishOn [
 ]
 
 { #category : 'accessing' }
-EcoPannFisher >> dailyEarnings [
+PannFisher >> dailyEarnings [
 
 	^ dailyEarnings
 ]
 
 { #category : 'fishing activity' }
-EcoPannFisher >> earnMoneyOutOfFishing [
+PannFisher >> earnMoneyOutOfFishing [
 
 	| weightOfAShellfish weightOfShellfishForOneDriedKilogramOfFlesh priceOfAKgOfDriedShellfishFlesh |
 	
@@ -122,19 +122,19 @@ EcoPannFisher >> earnMoneyOutOfFishing [
 ]
 
 { #category : 'fishing activity' }
-EcoPannFisher >> earningsHistory [
+PannFisher >> earningsHistory [
 
 	^ earningsHistory
 ]
 
 { #category : 'fishing activity' }
-EcoPannFisher >> earningsHistory: anObject [
+PannFisher >> earningsHistory: anObject [
 
 	earningsHistory := anObject
 ]
 
 { #category : 'fishing activity' }
-EcoPannFisher >> extractShellfish [ 
+PannFisher >> extractShellfish [ 
 
     | cohorts selectedCohorts numberOfSquareMetersToFish numberOfShellfishToExtractFromThatCohort |
 
@@ -167,7 +167,7 @@ EcoPannFisher >> extractShellfish [
 ]
 
 { #category : 'fishing activity' }
-EcoPannFisher >> fish [
+PannFisher >> fish [
 	self goToFishingSpot.
 	self extractShellfish.
 	self earnMoneyOutOfFishing.
@@ -175,13 +175,13 @@ EcoPannFisher >> fish [
 ]
 
 { #category : 'accessing' }
-EcoPannFisher >> freshBiomassOfExtractedShellfishToday [
+PannFisher >> freshBiomassOfExtractedShellfishToday [
 
 	^ freshBiomassOfExtractedShellfishToday
 ]
 
 { #category : 'fishing activity' }
-EcoPannFisher >> goToFishingSpot [
+PannFisher >> goToFishingSpot [
 	"The fisher goes to an available fishing spot"
 	"Need to code : The fisher go to the fishing spot where she think she will earn the most"
 
@@ -231,7 +231,7 @@ EcoPannFisher >> goToFishingSpot [
 ]
 
 { #category : 'initialization' }
-EcoPannFisher >> initialize [ 
+PannFisher >> initialize [ 
 
 	super initialize.
 	fishedAreaPerHour := 56. "m²/h"
@@ -240,13 +240,13 @@ EcoPannFisher >> initialize [
 ]
 
 { #category : 'time    ' }
-EcoPannFisher >> isFishingPeriod [
+PannFisher >> isFishingPeriod [
 
     ^ self cormasModel isFishingPeriod
 ]
 
 { #category : 'time    ' }
-EcoPannFisher >> isMbissa [
+PannFisher >> isMbissa [
     "Return true if the current day is within a mbissa"
  
 	| cycleLength mbissaLength cycleDay |
@@ -257,19 +257,19 @@ EcoPannFisher >> isMbissa [
 ]
 
 { #category : 'time    ' }
-EcoPannFisher >> isNotFishingPeriod [
+PannFisher >> isNotFishingPeriod [
     "Return true if the current month is within the no-fishing period (Jul–Oct)"
     ^ (self cormasModel currentMonth between: 7 and: 10)
 ]
 
 { #category : 'accessing' }
-EcoPannFisher >> numberOfExtractedShellfishToday [
+PannFisher >> numberOfExtractedShellfishToday [
 
 	^ numberOfExtractedShellfishToday
 ]
 
 { #category : 'initialization' }
-EcoPannFisher >> pov [ 
+PannFisher >> pov [ 
 	<pov>
 	^ CMPointOfView 
 		color: 'FF9D00'
@@ -278,20 +278,20 @@ EcoPannFisher >> pov [
 ]
 
 { #category : 'fishing activity' }
-EcoPannFisher >> recordEarnings [
+PannFisher >> recordEarnings [
 
     earningsHistory add:
         (self cormasModel dayCounter -> dailyEarnings).
 ]
 
 { #category : 'decisions' }
-EcoPannFisher >> shouldFish [
+PannFisher >> shouldFish [
 	<playableAction>
 	^ self isFishingPeriod and: [ self isMbissa ]
 ]
 
 { #category : 'charts' }
-EcoPannFisher >> showCharts [
+PannFisher >> showCharts [
 	<action>
 	
 	| chart |
@@ -305,7 +305,7 @@ EcoPannFisher >> showCharts [
 ]
 
 { #category : 'step      ' }
-EcoPannFisher >> step [
+PannFisher >> step [
 	
 	freshBiomassOfExtractedShellfishToday := 0.
    numberOfExtractedShellfishToday := 0.
@@ -319,7 +319,7 @@ EcoPannFisher >> step [
 ]
 
 { #category : 'village activity' }
-EcoPannFisher >> workInVillage [
+PannFisher >> workInVillage [
 	"The fisher go to the fishing spot where she think she will earn the most"
 	
 	<action>

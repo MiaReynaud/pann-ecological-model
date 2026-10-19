@@ -1,5 +1,5 @@
 Class {
-	#name : 'EcoPannSare',
+	#name : 'PannSare',
 	#superclass : 'CMSpatialEntityAggregate',
 	#instVars : [
 		'name',
@@ -16,7 +16,7 @@ Class {
 }
 
 { #category : 'charts ' }
-EcoPannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
+PannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
 	| x y chart plot |
 	
 	x := xCollection ifEmpty: [ #(0) ].
@@ -38,37 +38,37 @@ EcoPannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
 ]
 
 { #category : 'closure' }
-EcoPannSare >> closeAtDay: aDay [
+PannSare >> closeAtDay: aDay [
     closed := true.
     closureStartDay := aDay
 ]
 
 { #category : 'closure' }
-EcoPannSare >> closed: anObject [
+PannSare >> closed: anObject [
 
 	closed := anObject
 ]
 
 { #category : 'closure' }
-EcoPannSare >> closureStartDay [
+PannSare >> closureStartDay [
 
 	^ closureStartDay
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> growthRate [
+PannSare >> growthRate [
 
 	^ growthRate
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> growthRate: anObject [
+PannSare >> growthRate: anObject [
 
 	growthRate := anObject
 ]
 
 { #category : 'init' }
-EcoPannSare >> initialize [ 
+PannSare >> initialize [ 
 
 	super initialize. 
 	
@@ -87,66 +87,66 @@ EcoPannSare >> initialize [
 ]
 
 { #category : 'closure' }
-EcoPannSare >> isClosed [
+PannSare >> isClosed [
     ^ closed
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> maxShellfishLength [
+PannSare >> maxShellfishLength [
 
 	^ maxShellfishLength
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> maxShellfishLength: anObject [
+PannSare >> maxShellfishLength: anObject [
 
 	maxShellfishLength := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> name [
+PannSare >> name [
 
 	^ name
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> name: anObject [
+PannSare >> name: anObject [
 
 	name := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> naturalDeathRate [
+PannSare >> naturalDeathRate [
 
 	^ naturalDeathRate
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> naturalDeathRate: anObject [
+PannSare >> naturalDeathRate: anObject [
 
 	naturalDeathRate := anObject
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> numberOfShellfishes [ 
+PannSare >> numberOfShellfishes [ 
 
 	^ self plots sum: [ : plot | plot numberOfShellfishes ].
 ]
 
 { #category : 'closure' }
-EcoPannSare >> open [
+PannSare >> open [
     closed := false.
     closureStartDay := 0.
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> plots [ 
+PannSare >> plots [ 
 
 	^ self components.
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> populations [
+PannSare >> populations [
 
 	| populations |
 	populations := self plots collect: #shellfishPopulation.
@@ -155,19 +155,19 @@ EcoPannSare >> populations [
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> recruitCapacity [
+PannSare >> recruitCapacity [
 
 	^ recruitCapacity
 ]
 
 { #category : 'accessing' }
-EcoPannSare >> recruitCapacity: anObject [
+PannSare >> recruitCapacity: anObject [
 
 	recruitCapacity := anObject
 ]
 
 { #category : 'charts ' }
-EcoPannSare >> showCharts [
+PannSare >> showCharts [
 	
     | chart |
 
@@ -180,7 +180,7 @@ EcoPannSare >> showCharts [
 ]
 
 { #category : 'step     ' }
-EcoPannSare >> step [
+PannSare >> step [
 
 	numberOfShellfishesHistory add: self numberOfShellfishes.
 ]

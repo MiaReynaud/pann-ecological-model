@@ -1,5 +1,5 @@
 Class {
-	#name : 'EcoPannShellfishPopulation',
+	#name : 'PannShellfishPopulation',
 	#superclass : 'CMAgent',
 	#instVars : [
 		'cohorts',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'cohort counter ' }
-EcoPannShellfishPopulation >> actualizeCohortsCounter [
+PannShellfishPopulation >> actualizeCohortsCounter [
 	
 	| aliveCohorts |
 	
@@ -20,7 +20,7 @@ EcoPannShellfishPopulation >> actualizeCohortsCounter [
 ]
 
 { #category : 'charts' }
-EcoPannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
+PannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
 	
 	| x y chart plot |
 	
@@ -42,7 +42,7 @@ EcoPannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishPopulation >> cohortDeath [
+PannShellfishPopulation >> cohortDeath [
 
 	| cohortsToBeKilled densityLimitToKillCohort |
 	
@@ -55,19 +55,19 @@ EcoPannShellfishPopulation >> cohortDeath [
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishPopulation >> cohorts [
+PannShellfishPopulation >> cohorts [
 
 	^ cohorts
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishPopulation >> cohortsCounter [
+PannShellfishPopulation >> cohortsCounter [
 
 	^ cohortsCounter
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishPopulation >> dailyFishableQuantity [ 
+PannShellfishPopulation >> dailyFishableQuantity [ 
 
 	 "^ 10000." 
 	"we estimate that each woman can only cover 400m² per day. She only collects 50% of available shellfish in this area. Since the total area of a mudflat cell is 5000m², the total number of available shellfish in the cell (or in the population, it's the same because a cell has only one population and a population is on only one cell) should be multiplied by (400/5000)*0.5 = 1/25  "
@@ -76,13 +76,13 @@ EcoPannShellfishPopulation >> dailyFishableQuantity [
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishPopulation >> densityOfShellfishes [ 
+PannShellfishPopulation >> densityOfShellfishes [ 
 
 	^ self numberOfShellfishes / self cell area .
 ]
 
 { #category : 'initialization' }
-EcoPannShellfishPopulation >> initialize [ 
+PannShellfishPopulation >> initialize [ 
 
 	super initialize .
 
@@ -100,7 +100,7 @@ EcoPannShellfishPopulation >> initialize [
 ]
 
 { #category : 'cohort counter ' }
-EcoPannShellfishPopulation >> isRecruitDay [
+PannShellfishPopulation >> isRecruitDay [
 "send true if its first of december"
 
 	^ (self cormasModel currentDayOfMonth = 1)  
@@ -114,18 +114,18 @@ isRecruitDay
 ]
 
 { #category : 'accessing' }
-EcoPannShellfishPopulation >> numberOfShellfishes [ 
+PannShellfishPopulation >> numberOfShellfishes [ 
 
 	^ cohorts sum: [ : each | each numberOfShellfishes ].
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishPopulation >> recruit [ 
+PannShellfishPopulation >> recruit [ 
 
 	self isRecruitDay ifTrue: [
 		| newCohort recruitDensity |
 		recruitDensity := self sare recruitCapacity.
-		newCohort := ( self cormasModel newEntity: EcoPannShellfishCohort )
+		newCohort := ( self cormasModel newEntity: PannShellfishCohort )
 			population: self;
 			shellfishDensity: recruitDensity; "in ind/m²"
 			yourself.
@@ -134,13 +134,13 @@ EcoPannShellfishPopulation >> recruit [
 ]
 
 { #category : 'ecological methods  ' }
-EcoPannShellfishPopulation >> sare [ 
+PannShellfishPopulation >> sare [ 
 
 	^ self cell sare.
 ]
 
 { #category : 'charts' }
-EcoPannShellfishPopulation >> showCharts [
+PannShellfishPopulation >> showCharts [
 	<action> 
 	
 	| sortedCohorts chart |
@@ -157,7 +157,7 @@ EcoPannShellfishPopulation >> showCharts [
 ]
 
 { #category : 'step    ' }
-EcoPannShellfishPopulation >> step [ 
+PannShellfishPopulation >> step [ 
 
 	self recruit.
 	self cohortDeath.
