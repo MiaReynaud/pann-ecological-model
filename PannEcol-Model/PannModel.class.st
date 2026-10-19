@@ -555,7 +555,7 @@ PannModel >> initGameGrid [
 		neighbourhood: 6
 		closed: true.
 		
-	self cells do: [ : each | each area: 500000]. "define the size of a cell to 1m²"
+	self cells do: [ : each | each area: 200000]. "define the size of a cell to 20 ha"
 		
  	self applyStatesFromMatrix: self stateMatrixOfGameGrid .
 	
