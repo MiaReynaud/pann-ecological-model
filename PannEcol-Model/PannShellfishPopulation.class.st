@@ -55,51 +55,40 @@ PannShellfishPopulation >> cohorts [
 	^ cohorts
 ]
 
-{ #category : 'initialization' }
+{ #category : 'initial cohorts' }
 PannShellfishPopulation >> createInitialCohorts [
 
-    | newCohort n minSize maxSize minAge maxAge
-      maxDensity densityStep sizeStep ageStep |
+    | cohortSizes cohortAges cohortDensities |
 
-    n := 3. "3 cohorts before starting the simulation"
+    cohortSizes := #(36.20 34.21 30.06 21.33).
+    cohortAges := #(1501 1136 771 406).
 
-    minSize := 21.
-    maxSize := 63.
-
-    minAge := 365.
-    maxAge := 1095.
-
-    maxDensity := self sare recruitCapacity.
+    cohortDensities := self initialCohortDensitiesForSare.
 
     cohorts := OrderedCollection new.
 
-    n = 1
-        ifTrue: [
-            sizeStep := 0.
-            ageStep := 0.
-            densityStep := 0
+    1 to: cohortSizes size do: [ :i |
+
+        | density newCohort |
+
+        density := cohortDensities at: i.
+
+        "A density of 0 means that this cohort is not present
+        in the initial population."
+
+        density > 0 ifTrue: [
+
+            newCohort :=
+                self cormasModel newEntity: PannShellfishCohort.
+
+            newCohort
+                population: self;
+                shellfishSize: (cohortSizes at: i);
+                shellfishAge: (cohortAges at: i);
+                shellfishDensity: density.
+
+            cohorts add: newCohort
         ]
-        ifFalse: [
-            sizeStep := (maxSize - minSize) / (n - 1).
-            ageStep := (maxAge - minAge) / (n - 1).
-            densityStep := maxDensity / (n - 1)
-        ].
-
-    1 to: n do: [ :i |
-
-        newCohort :=
-            self cormasModel newEntity: PannShellfishCohort.
-
-        newCohort
-            population: self;
-            shellfishSize:
-                (minSize + ((i - 1) * sizeStep)) rounded;
-            shellfishAge:
-                (minAge + ((i - 1) * ageStep)) rounded;
-            shellfishDensity:
-                (maxDensity - ((i - 1) * densityStep)).
-
-        cohorts add: newCohort
     ].
 ]
 
@@ -116,6 +105,24 @@ PannShellfishPopulation >> dailyFishableQuantity [
 PannShellfishPopulation >> densityOfShellfishes [ 
 
 	^ self numberOfShellfishes / self cell area .
+]
+
+{ #category : 'initial cohorts' }
+PannShellfishPopulation >> initialCohortDensitiesForSare [
+
+    self sare id = 1 ifTrue: [
+        ^ #(0.06 0.53 4.47 38.42)
+    ].
+
+    self sare id = 2 ifTrue: [
+        ^ #(0.02 0.20 1.68 14.84)
+    ].
+
+    self sare id = 3 ifTrue: [
+        ^ #(0 0.05 0.42 3.84)
+    ].
+
+    ^ #(0 0 0 0)
 ]
 
 { #category : 'cohort counter ' }
@@ -137,7 +144,7 @@ PannShellfishPopulation >> moveTo: aCell [
 
 	super moveTo: aCell.
 	
-	self createInitialCohorts. 
+	self createInitialCohorts.
 ]
 
 { #category : 'accessing' }
