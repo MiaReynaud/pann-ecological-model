@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : 'cohort counter ' }
-PannShellfishPopulation >> averageNumberOfCohorts [
+PannShellfishPopulation >> averageNumberOfCohortsProbe [
 
 	^ self cohorts size.
 ]
