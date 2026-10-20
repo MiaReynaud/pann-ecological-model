@@ -1251,6 +1251,27 @@ PannModel >> step [
 	totalEarnings := totalEarnings + (self fishers sum: #dailyEarnings).
 ]
 
+{ #category : 'probes ' }
+PannModel >> totalAvailableFreshBiomass [
+    <probeNamed: 'Total available fresh biomass (g)' color: '2E86C1'>
+
+    | populations |
+
+    populations := self @@ PannShellfishPopulation.
+
+    ^ populations sum: [ :population |
+        | cell |
+        cell := population cell.
+
+        population cohorts sum: [ :cohort |
+            cohort oneIndividualTotalBiomass
+                * cohort shellfishDensity
+                * cell area
+        ]
+    ]
+
+]
+
 { #category : 'closure' }
 PannModel >> updateClosures [
 
