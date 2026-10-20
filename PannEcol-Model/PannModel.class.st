@@ -455,7 +455,7 @@ PannModel >> dayCounter [
 ]
 
 { #category : 'probes ' }
-PannModel >> densityOfShellfishInCohort [
+PannModel >> densityOfShellfishInFirstCohort [
 
 <probeNamed: 'Density of shellfish in the first cohort of the first population (ind/m²)' color: 'B784FF'>
     
@@ -468,7 +468,7 @@ PannModel >> densityOfShellfishInCohort [
 ]
 
 { #category : 'probes ' }
-PannModel >> densityOfShellfishInPopulation [
+PannModel >> densityOfShellfishInFirstPopulation [
 
 <probeNamed: 'Density of shellfish in the first population ind/m²' color: 'F3A5FF'>
     
@@ -861,7 +861,7 @@ PannModel >> numberOfFishersProbe [
 ]
 
 { #category : 'probes ' }
-PannModel >> numberOfShellfishInCohort [
+PannModel >> numberOfShellfishInFirstCohort [
 
 <probeNamed: 'Number of shellfish in the first cohort of the first population' color: '0000FF'>
     
@@ -874,7 +874,7 @@ PannModel >> numberOfShellfishInCohort [
 ]
 
 { #category : 'probes ' }
-PannModel >> numberOfShellfishInPopulation [
+PannModel >> numberOfShellfishInFirstPopulation [
 
 <probeNamed: 'Number of shellfish in the first population' color: 'E67E22'>
     
@@ -1049,7 +1049,7 @@ PannModel >> shouldCloseSareId: anId [
 ]
 
 { #category : 'probes ' }
-PannModel >> sizeOfCohorts [
+PannModel >> sizeOfShellfishInFirstCohort [
 
 <probeNamed: 'Size of the super individual of the cohort (mm)' color: '0000FF'>
     
