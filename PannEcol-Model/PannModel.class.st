@@ -151,10 +151,14 @@ PannModel >> averageDailyEarningsProbe [
 
 <probeNamed: 'Average daily earnings' color: '0000FF'>
 
+	| result |
+
 	(self currentTimeStep = 0) ifTrue: [ ^ 0 ].
 	(self numberOfFishers = 0) ifTrue: [ ^ 0 ].
     
-   ^ (totalEarnings / self numberOfFishers / self currentTimeStep) asFloat.
+   result := (totalEarnings / self numberOfFishers / self currentTimeStep) asFloat.
+
+	^ result rounded
 ]
 
 { #category : 'probes ' }
@@ -162,9 +166,12 @@ PannModel >> averageNumberOfCohortsProbe [
 
 	<probeNamed: 'Average number of cohorts' color: '00B44C'>
 	
-    | pops |
+    | pops result |
+
     pops := self @@ PannShellfishPopulation.
-    ^ (pops collect: [:pop | pop averageNumberOfCohortsProbe]) average
+    result := (pops collect: [:pop | pop averageNumberOfCohortsProbe]) average.
+
+	^ result roundTo: 0.1
 ]
 
 { #category : 'biological resting period' }
@@ -459,12 +466,14 @@ PannModel >> densityOfShellfishInFirstCohortProbe [
 
 <probeNamed: 'Density of shellfish in the first cohort of the first population (ind/m²)' color: 'B784FF'>
     
-    | cohorts |
+    | cohorts result |
     cohorts := (self @@ PannShellfishCohort).
  
- 	^ cohorts
+ 	result := cohorts
         ifEmpty: [ 0 ]
-        ifNotEmpty: [ cohorts first shellfishDensity ]
+        ifNotEmpty: [ cohorts first shellfishDensity ].
+
+	^result roundTo: 0.01
 ]
 
 { #category : 'probes ' }
@@ -472,12 +481,14 @@ PannModel >> densityOfShellfishInFirstPopulationProbe [
 
 <probeNamed: 'Density of shellfish in the first population ind/m²' color: 'F3A5FF'>
     
-    | population |
+    | population result |
     population := (self @@ PannShellfishPopulation ).
  
- 	^ population 
+ 	result := population 
         ifEmpty: [ 0 ]
-        ifNotEmpty: [ population first densityOfShellfishes ]
+        ifNotEmpty: [ population first densityOfShellfishes ].
+
+	^result roundTo: 0.01
 ]
 
 { #category : 'accessing' }
@@ -491,10 +502,12 @@ PannModel >> freshBiomassOfExtractedShellfishProbe [
 
 <probeNamed: ' Fresh biomass extracted today by all the fishers (g)' color: 'CC2E85'>
     
-    | fishers |
+    | fishers result |
     fishers := self @@ PannFisher.
 
-    ^ fishers sum: [ :f | f freshBiomassOfExtractedShellfishToday ifNil: [ 0 ] ]
+    result := fishers sum: [ :f | f freshBiomassOfExtractedShellfishToday ifNil: [ 0 ] ].
+
+	^result roundTo: 0.01
 ]
 
 { #category : 'init 30x30 cells grid' }
@@ -840,10 +853,12 @@ PannModel >> numberOfExtractedShellfishProbe [
 
 <probeNamed: 'Number of extracted shellfish' color: '00FFF3'>
     
-    | fishers |
+    | fishers result |
     fishers := self @@ PannFisher.
 
-    ^ fishers sum: [ :f | f numberOfExtractedShellfishToday ifNil: [ 0 ] ]
+    result := fishers sum: [ :f | f numberOfExtractedShellfishToday ifNil: [ 0 ] ].
+
+	^result rounded
 ]
 
 { #category : 'population growth' }
@@ -865,12 +880,14 @@ PannModel >> numberOfShellfishInFirstCohortProbe [
 
 <probeNamed: 'Number of shellfish in the first cohort of the first population' color: '0000FF'>
     
-    | cohorts |
+    | cohorts result |
     cohorts := (self @@ PannShellfishCohort).
  
- 	^ cohorts
+ 	result := cohorts
         ifEmpty: [ 0 ]
-        ifNotEmpty: [ cohorts first numberOfShellfishes ]
+        ifNotEmpty: [ cohorts first numberOfShellfishes ].
+
+	^ result rounded
 ]
 
 { #category : 'probes ' }
@@ -878,12 +895,14 @@ PannModel >> numberOfShellfishInFirstPopulationProbe [
 
 <probeNamed: 'Number of shellfish in the first population' color: 'E67E22'>
     
-    | population |
+    | population result |
     population := (self @@ PannShellfishPopulation ).
  
- 	^ population 
+ 	result := population 
         ifEmpty: [ 0 ]
-        ifNotEmpty: [ population first numberOfShellfishes ]
+        ifNotEmpty: [ population first numberOfShellfishes ].
+
+	^result rounded
 ]
 
 { #category : 'accessing' }
@@ -1042,7 +1061,7 @@ PannModel >> setCloseSareId: anId to: aBoolean [
 PannModel >> shellfishDensitySare1Probe [
     <probeNamed: 'Shellfish density - Mudflat 1 (ind/m²)' color: 'ef0018'>
 
-    | sare totalIndividuals totalArea |
+    | sare totalIndividuals totalArea result |
 
     sare := (self @@ PannSare)
         detect: [ :each | each id = 1 ]
@@ -1066,7 +1085,10 @@ PannModel >> shellfishDensitySare1Probe [
     ].
 
     totalArea = 0 ifTrue: [ ^ 0 ].
-    ^ totalIndividuals / totalArea
+    
+	result := totalIndividuals / totalArea.
+	
+	^result roundTo: 0.01
 
 ]
 
@@ -1074,7 +1096,7 @@ PannModel >> shellfishDensitySare1Probe [
 PannModel >> shellfishDensitySare2Probe [
     <probeNamed: 'Shellfish density - Mudflat 2 (ind/m²)' color: '00ef60'>
 
-    | sare totalIndividuals totalArea |
+    | sare totalIndividuals totalArea result |
 
     sare := (self @@ PannSare)
         detect: [ :each | each id = 2 ]
@@ -1098,7 +1120,10 @@ PannModel >> shellfishDensitySare2Probe [
     ].
 
     totalArea = 0 ifTrue: [ ^ 0 ].
-    ^ totalIndividuals / totalArea
+    
+	result := totalIndividuals / totalArea.
+	
+	^result roundTo: 0.01
 
 ]
 
@@ -1106,7 +1131,7 @@ PannModel >> shellfishDensitySare2Probe [
 PannModel >> shellfishDensitySare3Probe [
     <probeNamed: 'Shellfish density - Mudflat 3 (ind/m²)' color: 'e6e600'>
 
-    | sare totalIndividuals totalArea |
+    | sare totalIndividuals totalArea result |
 
     sare := (self @@ PannSare)
         detect: [ :each | each id = 3 ]
@@ -1130,7 +1155,10 @@ PannModel >> shellfishDensitySare3Probe [
     ].
 
     totalArea = 0 ifTrue: [ ^ 0 ].
-    ^ totalIndividuals / totalArea
+    
+	result := totalIndividuals / totalArea.
+
+	^result roundTo: 0.01
 
 ]
 
@@ -1149,12 +1177,14 @@ PannModel >> sizeOfShellfishInFirstCohortProbe [
 
 <probeNamed: 'Size of the super individual of the cohort (mm)' color: '0000FF'>
     
-    | cohorts |
+    | cohorts result |
     cohorts := (self @@ PannShellfishCohort).
  
- 	^ cohorts
+ 	result := cohorts
         ifEmpty: [ 0 ]
-        ifNotEmpty: [ cohorts first shellfishSize ]
+        ifNotEmpty: [ cohorts first shellfishSize ].
+
+	^result rounded
 ]
 
 { #category : 'init 30x30 cells grid' }
@@ -1351,11 +1381,11 @@ PannModel >> step [
 PannModel >> totalAvailableFreshBiomassProbe [
     <probeNamed: 'Total available fresh biomass (g)' color: '2E86C1'>
 
-    | populations |
+    | populations result |
 
     populations := self @@ PannShellfishPopulation.
 
-    ^ populations sum: [ :population |
+    result := populations sum: [ :population |
         | cell |
         cell := population cell.
 
@@ -1364,8 +1394,9 @@ PannModel >> totalAvailableFreshBiomassProbe [
                 * cohort shellfishDensity
                 * cell area
         ]
-    ]
+    ].
 
+	^result rounded
 ]
 
 { #category : 'closure' }
