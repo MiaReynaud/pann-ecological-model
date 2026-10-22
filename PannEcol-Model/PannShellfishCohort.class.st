@@ -28,6 +28,7 @@ PannShellfishCohort >> growBiomass [
 
 	oneIndividualTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
 
+	oneIndividualTotalBiomass := oneIndividualTotalBiomass rounded.
 ]
 
 { #category : 'ecological methods  ' }
@@ -41,6 +42,7 @@ PannShellfishCohort >> growSize [
 	
 	shellfishSize := maxLength * (1 - ((growthRate negated * (shellfishAge - theoriticalInitialAge)) exp)).
 
+	shellfishSize := shellfishSize rounded.
 ]
 
 { #category : 'initialize  ' }
@@ -66,14 +68,7 @@ PannShellfishCohort >> naturalDeath [
 
     shellfishDensity := shellfishDensity * (dailyMortalityRate negated exp).
 
-
-"	| initialDensity dailyMortalityRate cohortAge |
-	
-	dailyMortalityRate := self sare naturalDeathRate.	""M"" 	""Comes from Abdou Karim data analysed with TropFishR""
-	cohortAge := shellfishAge.         ""t""
-	initialDensity :=  self sare recruitCapacity.    ""N0""
-	
-shellfishDensity := initialDensity * ((dailyMortalityRate * cohortAge) negated exp). "
+	shellfishDensity := shellfishDensity roundTo: 0.0001.
 ]
 
 { #category : 'initialize  ' }
@@ -99,6 +94,7 @@ PannShellfishCohort >> removeShellfish: aNumber [
 
 	shellfishDensity := shellfishDensity - (aNumber / population cell area).
 
+	shellfishDensity := shellfishDensity roundTo: 0.0001
 ]
 
 { #category : 'ecological methods  ' }

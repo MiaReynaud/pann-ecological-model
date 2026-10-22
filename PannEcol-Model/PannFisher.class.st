@@ -116,13 +116,17 @@ PannFisher >> dailyEarnings [
 { #category : 'fishing activity' }
 PannFisher >> earnMoneyOutOfFishing [
 
-	| weightOfAShellfish weightOfShellfishForOneDriedKilogramOfFlesh priceOfAKgOfDriedShellfishFlesh |
+	| weightOfAShellfish weightOfShellfishForOneDriedKilogramOfFlesh priceOfAKgOfDriedShellfishFlesh earnings |
 	
 	weightOfAShellfish := 10. "g"
 	weightOfShellfishForOneDriedKilogramOfFlesh := 40000. "g"
 	priceOfAKgOfDriedShellfishFlesh := 3000. "FCFA"
 	
-	dailyEarnings := ((numberOfExtractedShellfishToday * weightOfAShellfish) / weightOfShellfishForOneDriedKilogramOfFlesh) * priceOfAKgOfDriedShellfishFlesh. "FCFA"
+	earnings := ((numberOfExtractedShellfishToday * weightOfAShellfish) / weightOfShellfishForOneDriedKilogramOfFlesh) * priceOfAKgOfDriedShellfishFlesh. "FCFA"
+	
+	dailyEarnings := earnings rounded.
+	
+	^ dailyEarnings
 ]
 
 { #category : 'fishing activity' }
@@ -167,7 +171,11 @@ PannFisher >> extractShellfish [
 			numberOfShellfishToExtractFromThatCohort.
 			
 		cohort removeShellfish: numberOfShellfishToExtractFromThatCohort.
-		]
+		].
+	
+	freshBiomassOfExtractedShellfishToday := freshBiomassOfExtractedShellfishToday rounded.
+
+    numberOfExtractedShellfishToday := numberOfExtractedShellfishToday rounded.
 ]
 
 { #category : 'fishing activity' }

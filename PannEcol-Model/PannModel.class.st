@@ -23,7 +23,8 @@ Class {
 		'seedingActive',
 		'seedingExecutionDay',
 		'totalEarnings',
-		'growthRate'
+		'growthRate',
+		'recruitmentRateMultiplier'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -521,7 +522,10 @@ PannModel >> growthRate [
 { #category : 'shellfish growth' }
 PannModel >> growthRate: aValue [
 
-	growthRate := aValue
+	growthRate := aValue.
+	
+	self updateSareBiologicalParameters.
+	
 ]
 
 { #category : 'init 30x30 cells grid' }
@@ -715,21 +719,21 @@ PannModel >> initialiseSareAttributesOf30x30CellsGrid [
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
-	sare recruitCapacity: 100. 
+	sare recruitCapacity: 100 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
-	sare recruitCapacity: 40. 
+	sare recruitCapacity: 40 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
-	sare recruitCapacity: 10. 
+	sare recruitCapacity: 10 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
@@ -743,21 +747,21 @@ PannModel >> initialiseSareAttributesOf70x70CellsGrid [
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
-	sare recruitCapacity: 100. 
+	sare recruitCapacity: 100 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
-	sare recruitCapacity: 40. 
+	sare recruitCapacity: 40 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
-	sare recruitCapacity: 10. 
+	sare recruitCapacity: 10 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
@@ -771,21 +775,21 @@ PannModel >> initialiseSareAttributesOfGameGrid [
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
-	sare recruitCapacity: 100. 
+	sare recruitCapacity: 100 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
-	sare recruitCapacity: 40. 
+	sare recruitCapacity: 40 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
-	sare recruitCapacity: 10. 
+	sare recruitCapacity: 10 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
@@ -798,7 +802,7 @@ PannModel >> initialiseSareAttributesOfSingleCellGrid [
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 50.
+	sare recruitCapacity: 50 * recruitmentRateMultiplier.
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
@@ -811,7 +815,7 @@ PannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 50. 
+	sare recruitCapacity: 50 * recruitmentRateMultiplier. 
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
@@ -824,7 +828,7 @@ PannModel >> initialiseSareAttributesOfSingleSareGrid [
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
-	sare recruitCapacity: 50.
+	sare recruitCapacity: 50 * recruitmentRateMultiplier.
 	sare naturalDeathRate: 0.00219.
 	sare growthRate: growthRate.
 	sare maxShellfishLength: 38.
@@ -923,6 +927,21 @@ PannModel >> numberOfShellfishInFirstPopulationProbe [
 PannModel >> populations [
 
 	^ self @@ PannShellfishPopulation
+]
+
+{ #category : 'recruitment rate' }
+PannModel >> recruitmentRateMultiplier [
+    <parameterFloatDefault: 1>
+
+	^ recruitmentRateMultiplier
+]
+
+{ #category : 'recruitment rate' }
+PannModel >> recruitmentRateMultiplier: aValue [
+
+	recruitmentRateMultiplier := aValue.
+	
+	self updateSareBiologicalParameters.
 ]
 
 { #category : 'init  ' }
@@ -1448,6 +1467,23 @@ PannModel >> updateDate [
 { #category : 'population growth' }
 PannModel >> updateFishersPopulation [
     self applyAnnualPopulationGrowthIfNeeded.
+]
+
+{ #category : 'recruitment rate' }
+PannModel >> updateSareBiologicalParameters [
+
+    self sares do: [ :sare |
+        sare growthRate: self growthRate.
+
+        sare recruitCapacity:
+            (sare id = 1
+                ifTrue: [ 100 ]
+                ifFalse: [
+                    sare id = 2
+                        ifTrue: [ 40 ]
+                        ifFalse: [ 10 ]
+                ]) * self recruitmentRateMultiplier
+    ].
 ]
 
 { #category : 'seeding' }
