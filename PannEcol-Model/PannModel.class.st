@@ -23,8 +23,9 @@ Class {
 		'seedingActive',
 		'seedingExecutionDay',
 		'totalEarnings',
-		'growthRate',
-		'recruitmentRateMultiplier'
+		'shellfishGrowthRate',
+		'recruitmentRateMultiplier',
+		'naturalDeathRate'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -61,20 +62,20 @@ PannModel >> addShellfishes [
 
 ]
 
-{ #category : 'population growth' }
+{ #category : 'social - population growth' }
 PannModel >> annualPopulationGrowthRate [
     <parameterFloatDefault: 0.00> "for instance 0.02 = +2 % per year"
 
     ^ annualPopulationGrowthRate
 ]
 
-{ #category : 'population growth' }
+{ #category : 'social - population growth' }
 PannModel >> annualPopulationGrowthRate: aValue [
 
 	annualPopulationGrowthRate := aValue
 ]
 
-{ #category : 'population growth' }
+{ #category : 'social - population growth' }
 PannModel >> applyAnnualPopulationGrowth [
     | currentPopulation newPopulation numberOfNewFishersToCreate |
 
@@ -93,7 +94,7 @@ PannModel >> applyAnnualPopulationGrowth [
         ].
 ]
 
-{ #category : 'population growth' }
+{ #category : 'social - population growth' }
 PannModel >> applyAnnualPopulationGrowthIfNeeded [
     currentMonth = 1
         ifTrue: [
@@ -104,7 +105,7 @@ PannModel >> applyAnnualPopulationGrowthIfNeeded [
         ].
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> applyClosureForSareId: anId [
 
     | sare |
@@ -118,7 +119,7 @@ PannModel >> applyClosureForSareId: anId [
     sare closeAtDay: dayCounter.
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> applyRequestedClosures [
 
     1 to: 3 do: [ :id |
@@ -176,32 +177,32 @@ PannModel >> averageNumberOfCohortsProbe [
 	^ result roundTo: 0.1
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> biologicalRestDuration [
     <parameterIntegerDefault: 4>
     ^ biologicalRestDuration
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> biologicalRestDuration: anObject [
 
 	biologicalRestDuration := anObject
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> biologicalRestEnabled [
     <parameterBooleanDefault: true>
 
     ^ biologicalRestEnabled
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> biologicalRestEnabled: anObject [
 
 	biologicalRestEnabled := anObject
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> biologicalRestEndMonth [
     | endMonth |
 
@@ -215,14 +216,14 @@ PannModel >> biologicalRestEndMonth [
         ifFalse: [ endMonth ]
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> biologicalRestStartMonth [
     <parameterIntegerDefault: 7>
 
     ^ biologicalRestStartMonth
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> biologicalRestStartMonth: anObject [
 
 	biologicalRestStartMonth := anObject
@@ -330,7 +331,7 @@ PannModel >> buildSareOfSingleSareGrid [
 	
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> checkForSeedingRequest [
 
     self seedingEnabled
@@ -339,46 +340,46 @@ PannModel >> checkForSeedingRequest [
         ].
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closeSare1 [
 	<parameterBooleanDefault: false>
 
 	^ closeSare1
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closeSare1: aBoolean [
 
 	closeSare1 := aBoolean
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closeSare2 [
 	<parameterBooleanDefault: false>
 
 	^ closeSare2
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closeSare2: aBoolean [
 
 	closeSare2 := aBoolean
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closeSare3 [
 	<parameterBooleanDefault: false>
 
 	^ closeSare3
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closeSare3: aBoolean [
 
 	closeSare3 := aBoolean
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closureDurationForSareId: anId [
 
     anId = 1 ifTrue: [ ^ self closureDurationSare1 ].
@@ -388,40 +389,40 @@ PannModel >> closureDurationForSareId: anId [
     ^ 0
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closureDurationSare1 [
 	<parameterIntegerDefault: 30>
 
 	^ closureDurationSare1
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closureDurationSare1: anInteger [
 
 	closureDurationSare1 := anInteger
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closureDurationSare2 [
 	<parameterIntegerDefault: 30>
 
 	^ closureDurationSare2
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closureDurationSare2: anInteger [
 
 	closureDurationSare2 := anInteger
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closureDurationSare3 [
 	<parameterIntegerDefault: 30>
 
 	^ closureDurationSare3
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> closureDurationSare3: anInteger [
 
 	closureDurationSare3 := anInteger
@@ -433,7 +434,7 @@ PannModel >> cohorts [
 	^ self @@ PannShellfishCohort
 ]
 
-{ #category : 'population growth' }
+{ #category : 'social - population growth' }
 PannModel >> createNewFishers: aValue [
 
  aValue > 0
@@ -510,22 +511,6 @@ PannModel >> freshBiomassOfExtractedShellfishProbe [
     result := fishers sum: [ :f | f freshBiomassOfExtractedShellfishToday ifNil: [ 0 ] ].
 
 	^result roundTo: 0.01
-]
-
-{ #category : 'shellfish growth' }
-PannModel >> growthRate [
-    <parameterFloatDefault: 0.00203>
-
-    ^ annualPopulationGrowthRate
-]
-
-{ #category : 'shellfish growth' }
-PannModel >> growthRate: aValue [
-
-	growthRate := aValue.
-	
-	self updateSareBiologicalParameters.
-	
 ]
 
 { #category : 'init 30x30 cells grid' }
@@ -720,22 +705,22 @@ PannModel >> initialiseSareAttributesOf30x30CellsGrid [
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
 	sare recruitCapacity: 100 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
 	sare recruitCapacity: 40 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
 	sare recruitCapacity: 10 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 
 ]
@@ -748,22 +733,22 @@ PannModel >> initialiseSareAttributesOf70x70CellsGrid [
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
 	sare recruitCapacity: 100 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
 	sare recruitCapacity: 40 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
 	sare recruitCapacity: 10 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 	
 ]
@@ -776,22 +761,22 @@ PannModel >> initialiseSareAttributesOfGameGrid [
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: '1'.
 	sare recruitCapacity: 100 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 2]. 
 	sare name: '2'.
 	sare recruitCapacity: 40 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 	
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 3]. 
 	sare name: '3'.
 	sare recruitCapacity: 10 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 ]
 
@@ -803,8 +788,8 @@ PannModel >> initialiseSareAttributesOfSingleCellGrid [
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 50 * recruitmentRateMultiplier.
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 ]
 
@@ -816,8 +801,8 @@ PannModel >> initialiseSareAttributesOfSingleCellWithVillageGrid [
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 50 * recruitmentRateMultiplier. 
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 ]
 
@@ -829,8 +814,8 @@ PannModel >> initialiseSareAttributesOfSingleSareGrid [
 	sare := ( self @@ PannSare ) detect: [ :each | each id = 1]. 
 	sare name: 'amacala 1'.
 	sare recruitCapacity: 50 * recruitmentRateMultiplier.
-	sare naturalDeathRate: 0.00219.
-	sare growthRate: growthRate.
+	sare naturalDeathRate: naturalDeathRate.
+	sare growthRate: shellfishGrowthRate.
 	sare maxShellfishLength: 38.
 ]
 
@@ -842,7 +827,7 @@ PannModel >> initialize [
 	totalEarnings := 0.
 ]
 
-{ #category : 'biological resting period' }
+{ #category : 'management - biological resting period' }
 PannModel >> isFishingPeriod [
     | restStart restEnd |
 
@@ -866,6 +851,19 @@ PannModel >> mudflats [
 	^ self cells select: [ :each | each isMudflat ]
 ]
 
+{ #category : 'ecol - natural mortality' }
+PannModel >> naturalDeathRate [
+    <parameterFloatDefault: 0.00219>
+
+	^ naturalDeathRate
+]
+
+{ #category : 'ecol - natural mortality' }
+PannModel >> naturalDeathRate: aValue [
+
+	naturalDeathRate := aValue
+]
+
 { #category : 'probes ' }
 PannModel >> numberOfExtractedShellfishProbe [
 
@@ -879,7 +877,7 @@ PannModel >> numberOfExtractedShellfishProbe [
 	^result rounded
 ]
 
-{ #category : 'population growth' }
+{ #category : 'social - population growth' }
 PannModel >> numberOfFishers [
 
     ^ (self @@ PannFisher) size
@@ -929,14 +927,14 @@ PannModel >> populations [
 	^ self @@ PannShellfishPopulation
 ]
 
-{ #category : 'recruitment rate' }
+{ #category : 'ecol - recruitment rate' }
 PannModel >> recruitmentRateMultiplier [
     <parameterFloatDefault: 1>
 
 	^ recruitmentRateMultiplier
 ]
 
-{ #category : 'recruitment rate' }
+{ #category : 'ecol - recruitment rate' }
 PannModel >> recruitmentRateMultiplier: aValue [
 
 	recruitmentRateMultiplier := aValue.
@@ -973,83 +971,83 @@ PannModel >> saveCellDataToCsv [
             each saveDataToCsv: file ].
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingActive [
 
 	^ seedingActive
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingActive: anObject [
 
 	seedingActive := anObject
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingDestinationSareId [
     <parameterIntegerDefault: 0>
 
 	^ seedingDestinationSareId
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingDestinationSareId: anInteger [
 
 	seedingDestinationSareId := anInteger
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingEnabled [
     <parameterBooleanDefault: false>
 
     ^ seedingEnabled
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingEnabled: aBoolean [
 
     seedingEnabled := aBoolean
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingExecutionDay [
 
 	^ seedingExecutionDay
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingExecutionDay: anObject [
 
 	seedingExecutionDay := anObject
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingPending [
 
 	^ seedingPending
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingPending: anObject [
 
 	seedingPending := anObject
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingSareForId: aSareId [
     ^ (self @@ PannSare)
         detect: [ :each | each id = aSareId ]
         ifNone: [ nil ]
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingSourceSareId [
     <parameterIntegerDefault: 0>
 
     ^ seedingSourceSareId
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> seedingSourceSareId: anInteger [
 
     seedingSourceSareId := anInteger
@@ -1071,7 +1069,7 @@ PannModel >> setCellAreaFromLargestSare [
     ].
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> setCloseSareId: anId to: aBoolean [
 
     anId = 1 ifTrue: [
@@ -1195,7 +1193,23 @@ PannModel >> shellfishDensitySare3Probe [
 
 ]
 
-{ #category : 'closure' }
+{ #category : 'ecol - shellfish growth' }
+PannModel >> shellfishGrowthRate [
+    <parameterFloatDefault: 0.00203>
+
+    ^ shellfishGrowthRate
+]
+
+{ #category : 'ecol - shellfish growth' }
+PannModel >> shellfishGrowthRate: aValue [
+
+	shellfishGrowthRate := aValue.
+	
+	self updateSareBiologicalParameters.
+	
+]
+
+{ #category : 'management - closure' }
 PannModel >> shouldCloseSareId: anId [
 
     anId = 1 ifTrue: [ ^ self closeSare1 ].
@@ -1432,7 +1446,7 @@ PannModel >> totalAvailableFreshBiomassProbe [
 	^result rounded
 ]
 
-{ #category : 'closure' }
+{ #category : 'management - closure' }
 PannModel >> updateClosures [
 
     (self @@ PannSare) do: [ :sare |
@@ -1464,16 +1478,18 @@ PannModel >> updateDate [
     ].
 ]
 
-{ #category : 'population growth' }
+{ #category : 'social - population growth' }
 PannModel >> updateFishersPopulation [
     self applyAnnualPopulationGrowthIfNeeded.
 ]
 
-{ #category : 'recruitment rate' }
+{ #category : 'ecol - recruitment rate' }
 PannModel >> updateSareBiologicalParameters [
 
     self sares do: [ :sare |
-        sare growthRate: self growthRate.
+        sare growthRate: self shellfishGrowthRate.
+
+		  sare naturalDeathRate: self naturalDeathRate.
 
         sare recruitCapacity:
             (sare id = 1
@@ -1486,7 +1502,7 @@ PannModel >> updateSareBiologicalParameters [
     ].
 ]
 
-{ #category : 'seeding' }
+{ #category : 'management - seeding' }
 PannModel >> updateSeeding [
     | source destination |
 
