@@ -25,7 +25,8 @@ Class {
 		'totalEarnings',
 		'shellfishGrowthRate',
 		'recruitmentRateMultiplier',
-		'naturalDeathRate'
+		'naturalDeathRate',
+		'totalFisheableArea'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -516,8 +517,6 @@ PannModel >> freshBiomassOfExtractedShellfishProbe [
 { #category : 'init 30x30 cells grid' }
 PannModel >> init30x30CellsGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
-	
-	"In this grid, one cell is 1m²"
 
 	<init>
 	
@@ -536,7 +535,7 @@ PannModel >> init30x30CellsGrid [
 	
 		self buildSareOf30x30CellsGrid.
 		self addShellfishes.	
-		self setCellAreaFromLargestSare.
+		self setCellAreaFromTotalFishableArea.
 		self addFishers.
 
 ]
@@ -544,8 +543,6 @@ PannModel >> init30x30CellsGrid [
 { #category : 'init 70x70 cells grid' }
 PannModel >> init70x70CellsGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
-	
-	"In this grid, one cell is 1m²"
 
 	<init>
 	
@@ -564,7 +561,7 @@ PannModel >> init70x70CellsGrid [
 		
 		self buildSareOf70x70CellsGrid.
 		self addShellfishes.	
-		self setCellAreaFromLargestSare.
+		self setCellAreaFromTotalFishableArea.
 		self addFishers.
 
 ]
@@ -572,8 +569,6 @@ PannModel >> init70x70CellsGrid [
 { #category : 'init game grid' }
 PannModel >> initGameGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
-	
-	"In this grid, one cell is 1m²"
 
 	<init>
 	
@@ -597,7 +592,7 @@ PannModel >> initGameGrid [
 
 	self buildSareOfGameGrid.
 	self addShellfishes.
-	self setCellAreaFromLargestSare.
+	self setCellAreaFromTotalFishableArea.
 	self addFishers.
 
 ]
@@ -605,8 +600,6 @@ PannModel >> initGameGrid [
 { #category : 'init single cell grid' }
 PannModel >> initSingleCellGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
-	
-	"In this grid, one cell is 1m²"
 
 	<init>
 	
@@ -625,14 +618,12 @@ PannModel >> initSingleCellGrid [
 	
 	self buildSareOfSingleCellGrid.
 	self addShellfishes.	
-	self setCellAreaFromLargestSare.
+	self setCellAreaFromTotalFishableArea.
 ]
 
 { #category : 'init single cell with village grid' }
 PannModel >> initSingleCellWithVillageGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
-	
-	"In this grid, one cell is 1m²"
 
 	<init>
 	
@@ -651,7 +642,7 @@ PannModel >> initSingleCellWithVillageGrid [
 	
 		self buildSareOfSingleCellWithVillageGrid. 
 		self addShellfishes.	
-		self setCellAreaFromLargestSare.
+		self setCellAreaFromTotalFishableArea.
 		self addFishers.
 
 ]
@@ -660,8 +651,6 @@ PannModel >> initSingleCellWithVillageGrid [
 PannModel >> initSingleSareGrid [
 	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
 	
-	"In this grid, one cell is 1m²"
-
 	<init>
 	
 	currentDayOfMonth := 1.
@@ -679,7 +668,7 @@ PannModel >> initSingleSareGrid [
 	
 		self buildSareOfSingleSareGrid. 
 		self addShellfishes.	
-		self setCellAreaFromLargestSare.
+		self setCellAreaFromTotalFishableArea.
 		self addFishers.
 
 ]
@@ -1054,17 +1043,19 @@ PannModel >> seedingSourceSareId: anInteger [
 ]
 
 { #category : 'init  ' }
-PannModel >> setCellAreaFromLargestSare [
-    | largestSare numberOfCells cellArea |
+PannModel >> setCellAreaFromTotalFishableArea [
 
-	largestSare := (self @@ PannSare)
-    detectMax: [ :sare | sare plots size ].
+    | mudflatCells cellArea |
 
-    numberOfCells := largestSare plots size.
+    mudflatCells := self cells select: [ :cell |
+        cell isMudflat
+    ].
 
-    cellArea := 400000 / numberOfCells. "According to our field data, we want the biggest mudflat to be 40 ha"
+    mudflatCells ifEmpty: [ ^ self ].
 
-    self cells do: [ :cell |
+    cellArea := totalFisheableArea / mudflatCells size.
+
+    mudflatCells do: [ :cell |
         cell area: cellArea
     ].
 ]
@@ -1444,6 +1435,19 @@ PannModel >> totalAvailableFreshBiomassProbe [
     ].
 
 	^result rounded
+]
+
+{ #category : 'init  ' }
+PannModel >> totalFisheableArea [
+	    <parameterFloatDefault: 1572600>
+
+	^ totalFisheableArea
+]
+
+{ #category : 'init  ' }
+PannModel >> totalFisheableArea: aValue [
+
+	totalFisheableArea := aValue
 ]
 
 { #category : 'management - closure' }
