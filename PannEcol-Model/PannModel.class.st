@@ -26,7 +26,8 @@ Class {
 		'shellfishGrowthRate',
 		'recruitmentRateMultiplier',
 		'naturalDeathRate',
-		'totalFisheableArea'
+		'totalFisheableArea',
+		'numberOfFishersToAdd'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -880,6 +881,18 @@ PannModel >> numberOfFishersProbe [
     ^ self numberOfFishers
 ]
 
+{ #category : 'social - add fishers' }
+PannModel >> numberOfFishersToAdd [
+    <parameterIntegerDefault: 0>
+    ^ numberOfFishersToAdd
+]
+
+{ #category : 'social - add fishers' }
+PannModel >> numberOfFishersToAdd: aValue [
+
+	numberOfFishersToAdd := aValue
+]
+
 { #category : 'probes ' }
 PannModel >> numberOfShellfishInFirstCohortProbe [
 
@@ -1397,9 +1410,9 @@ PannModel >> step [
 	
 	"time steps"
 	self updateDate.
-	self updateFishersPopulation.
 	
 	"managment steps"
+	self updateFishersPopulation.
 	"self updateSeeding."
 	self applyRequestedClosures.
     self updateClosures.
@@ -1484,7 +1497,18 @@ PannModel >> updateDate [
 
 { #category : 'social - population growth' }
 PannModel >> updateFishersPopulation [
-    self applyAnnualPopulationGrowthIfNeeded.
+    
+	| numberToAdd |
+
+   
+    numberToAdd := self numberOfFishersToAdd.
+
+    numberToAdd > 0 ifTrue: [
+        self createNewFishers: numberToAdd.
+        numberOfFishersToAdd := 0
+    ].	
+
+	self applyAnnualPopulationGrowthIfNeeded.
 ]
 
 { #category : 'ecol - recruitment rate' }
