@@ -67,8 +67,6 @@ PannShellfishCohort >> naturalDeath [
 	dailyMortalityRate := self sare naturalDeathRate.	"M" 	"Comes from Abdou Karim data analysed with TropFishR"
 
     shellfishDensity := shellfishDensity * (dailyMortalityRate negated exp).
-
-	shellfishDensity := shellfishDensity roundTo: 0.0001.
 ]
 
 { #category : 'initialize  ' }
@@ -94,7 +92,6 @@ PannShellfishCohort >> removeShellfish: aNumber [
 
 	shellfishDensity := shellfishDensity - (aNumber / population cell area).
 
-	shellfishDensity := shellfishDensity roundTo: 0.0001
 ]
 
 { #category : 'ecological methods  ' }
