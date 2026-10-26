@@ -7,7 +7,8 @@ Class {
 		'numberOfExtractedShellfishToday',
 		'freshBiomassOfExtractedShellfishToday',
 		'driedFleshOfExtractedShellfishToday',
-		'earningsHistory'
+		'earningsHistory',
+		'numberOfBasketsFishedPerHour'
 	],
 	#classInstVars : [
 		'minShellfishSize',
@@ -152,6 +153,7 @@ PannFisher >> extractShellfish [
 	
 	freshBiomassOfExtractedShellfishToday := 0.
 	numberOfExtractedShellfishToday := 0.
+	numberOfBasketsFishedPerHour := 0.
 	
 	selectedCohorts := cohorts select: [ :cohort |
 		cohort shellfishSize 
@@ -172,10 +174,10 @@ PannFisher >> extractShellfish [
 			
 		cohort removeShellfish: numberOfShellfishToExtractFromThatCohort.
 		].
-	
-	freshBiomassOfExtractedShellfishToday := freshBiomassOfExtractedShellfishToday rounded.
 
     numberOfExtractedShellfishToday := numberOfExtractedShellfishToday rounded.
+
+	self updateNumberOfBasketsFishedPerHour.
 ]
 
 { #category : 'fishing activity' }
@@ -275,6 +277,16 @@ PannFisher >> isNotFishingPeriod [
 ]
 
 { #category : 'accessing' }
+PannFisher >> numberOfBasketsFishedPerHour [
+
+    self class fishingHoursPerDay = 0
+        ifTrue: [ ^ 0 ].
+
+    ^ freshBiomassOfExtractedShellfishToday
+        / (40000 * self class fishingHoursPerDay)     "1 basket = 40 kg"
+]
+
+{ #category : 'accessing' }
 PannFisher >> numberOfExtractedShellfishToday [
 
 	^ numberOfExtractedShellfishToday
@@ -321,6 +333,7 @@ PannFisher >> step [
 	
 	freshBiomassOfExtractedShellfishToday := 0.
    numberOfExtractedShellfishToday := 0.
+	numberOfBasketsFishedPerHour := 0.
 	dailyEarnings := 0.
 	
 	self shouldFish
@@ -328,6 +341,22 @@ PannFisher >> step [
 			ifFalse: [ self workInVillage]. 
 			
 	self recordEarnings.
+]
+
+{ #category : 'fishing activity' }
+PannFisher >> updateNumberOfBasketsFishedPerHour [
+
+    self class fishingHoursPerDay = 0
+        ifTrue: [
+            numberOfBasketsFishedPerHour := 0.
+            ^ self
+        ].
+
+    numberOfBasketsFishedPerHour :=
+        freshBiomassOfExtractedShellfishToday
+            / (40000 * self class fishingHoursPerDay).
+
+	freshBiomassOfExtractedShellfishToday := freshBiomassOfExtractedShellfishToday rounded.
 ]
 
 { #category : 'village activity' }
