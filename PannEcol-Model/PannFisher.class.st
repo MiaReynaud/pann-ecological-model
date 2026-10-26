@@ -117,17 +117,21 @@ PannFisher >> dailyEarnings [
 { #category : 'fishing activity' }
 PannFisher >> earnMoneyOutOfFishing [
 
-	| weightOfAShellfish weightOfShellfishForOneDriedKilogramOfFlesh priceOfAKgOfDriedShellfishFlesh earnings |
-	
-	weightOfAShellfish := 10. "g"
-	weightOfShellfishForOneDriedKilogramOfFlesh := 40000. "g"
-	priceOfAKgOfDriedShellfishFlesh := 3000. "FCFA"
-	
-	earnings := ((numberOfExtractedShellfishToday * weightOfAShellfish) / weightOfShellfishForOneDriedKilogramOfFlesh) * priceOfAKgOfDriedShellfishFlesh. "FCFA"
-	
-	dailyEarnings := earnings rounded.
-	
-	^ dailyEarnings
+    | weightOfShellfishForOneDriedKilogramOfFlesh
+      priceOfAKgOfDriedShellfishFlesh
+      earnings |
+
+    weightOfShellfishForOneDriedKilogramOfFlesh := 40000. "g"
+    priceOfAKgOfDriedShellfishFlesh := 3000. "FCFA"
+
+    earnings :=
+        (freshBiomassOfExtractedShellfishToday
+            / weightOfShellfishForOneDriedKilogramOfFlesh)
+            * priceOfAKgOfDriedShellfishFlesh.
+
+    dailyEarnings := earnings rounded.
+
+    ^ dailyEarnings
 ]
 
 { #category : 'fishing activity' }

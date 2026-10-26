@@ -5,6 +5,7 @@ Class {
 		'shellfishAge',
 		'shellfishSize',
 		'oneIndividualTotalBiomass',
+		'oneIndividualDryFleshWeight',
 		'shellfishDensity',
 		'population'
 	],
@@ -32,6 +33,18 @@ PannShellfishCohort >> growBiomass [
 ]
 
 { #category : 'ecological methods  ' }
+PannShellfishCohort >> growDriedFelshWeight [
+
+	| a b |
+	
+	a := 0.0359.
+   b := 3.28.
+
+	 oneIndividualDryFleshWeight := ((a * shellfishSize) raisedTo: b). "g"
+
+]
+
+{ #category : 'ecological methods  ' }
 PannShellfishCohort >> growSize [
 
 	| maxLength growthRate theoriticalInitialAge |
@@ -56,6 +69,7 @@ PannShellfishCohort >> initialize [
 	
 	a := 0.08.
 	b := 2.72.
+
 	oneIndividualTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
 ]
 
@@ -142,5 +156,6 @@ PannShellfishCohort >> step [
 	self aging.
 	self growSize.
 	self growBiomass.
+	self growDriedFelshWeight.
 	self naturalDeath.
 ]
