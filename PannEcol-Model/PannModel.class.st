@@ -27,7 +27,8 @@ Class {
 		'recruitmentRateMultiplier',
 		'naturalDeathRate',
 		'totalFisheableArea',
-		'numberOfFishersToAdd'
+		'numberOfFishersToAdd',
+		'todayTotalEarnings'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -149,6 +150,23 @@ PannModel >> applyStatesFromMatrix: aMatrix [
             value = 1 ifTrue: [ cell beVillage ].
 				value = 2 ifTrue: [ cell beMudflat ].
 				value = 3 ifTrue: [ cell beMangrove ] ] ].
+]
+
+{ #category : 'probes ' }
+PannModel >> averageDailyEarningsOfCurrentTimeStepProbe [
+
+    <probeNamed: 'Evolution of average daily earnings' color: '0000FF'>
+
+    | result |
+
+    self currentTimeStep = 0 ifTrue: [ ^ 0 ].
+    self numberOfFishers = 0 ifTrue: [ ^ 0 ].
+
+    result :=
+        ((todayTotalEarnings ifNil: [ 0 ])
+            / self numberOfFishers) asFloat.
+
+    ^ result rounded
 ]
 
 { #category : 'probes ' }
@@ -815,6 +833,7 @@ PannModel >> initialize [
 	super initialize. 
 	
 	totalEarnings := 0.
+	todayTotalEarnings := 0.
 ]
 
 { #category : 'management - biological resting period' }
@@ -1426,6 +1445,7 @@ PannModel >> step [
 	"collect data"
 	self mudflats do: [ :each | each collectData ].
 	totalEarnings := totalEarnings + (self fishers sum: #dailyEarnings).
+	todayTotalEarnings := self fishers sum: #dailyEarnings.
 ]
 
 { #category : 'probes ' }
