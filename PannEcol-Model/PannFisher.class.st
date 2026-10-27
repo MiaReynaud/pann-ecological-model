@@ -153,6 +153,7 @@ PannFisher >> extractShellfish [
 	freshBiomassOfExtractedShellfishToday := 0.
 	numberOfExtractedShellfishToday := 0.
 	numberOfBasketsFishedPerHour := 0.
+	driedFleshOfExtractedShellfishToday := 0.
 	
 	selectedCohorts := cohorts select: [ :cohort |
 		cohort shellfishSize 
@@ -358,7 +359,7 @@ PannFisher >> updateNumberOfBasketsFishedPerHour [
 
 	| weightOfShellfishForOneBasket |
 
-	weightOfShellfishForOneBasket := 40000. "g"
+	weightOfShellfishForOneBasket := 20000. "g"
 
     self class fishingHoursPerDay = 0
         ifTrue: [
