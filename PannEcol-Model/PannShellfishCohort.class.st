@@ -24,8 +24,8 @@ PannShellfishCohort >> growBiomass [
 
 	| a b |
 	
-	a := 0.08.
-	b := 2.72.
+	a := 0.0921.
+	b := 2.83.
 
 	oneIndividualTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
 
@@ -86,6 +86,12 @@ PannShellfishCohort >> naturalDeath [
 { #category : 'initialize  ' }
 PannShellfishCohort >> numberOfShellfishes [
 	^ population cell area * shellfishDensity.
+]
+
+{ #category : 'accessing' }
+PannShellfishCohort >> oneIndividualDryFleshWeight [
+
+	^ oneIndividualDryFleshWeight
 ]
 
 { #category : 'accessing' }

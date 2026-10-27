@@ -114,39 +114,34 @@ PannFisher >> dailyEarnings [
 	^ dailyEarnings
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing activity - earn money' }
 PannFisher >> earnMoneyOutOfFishing [
 
-    | weightOfShellfishForOneDriedKilogramOfFlesh
-      priceOfAKgOfDriedShellfishFlesh
-      earnings |
+    | priceOfAKgOfDriedShellfishFlesh |
 
-    weightOfShellfishForOneDriedKilogramOfFlesh := 40000. "g"
-    priceOfAKgOfDriedShellfishFlesh := 3000. "FCFA"
+    priceOfAKgOfDriedShellfishFlesh := 3000.   "FCFA/kg"
 
-    earnings :=
-        (freshBiomassOfExtractedShellfishToday
-            / weightOfShellfishForOneDriedKilogramOfFlesh)
-            * priceOfAKgOfDriedShellfishFlesh.
-
-    dailyEarnings := earnings rounded.
+    dailyEarnings :=
+        ((driedFleshOfExtractedShellfishToday / 1000)    "/1000 to go from g to kg"
+            * priceOfAKgOfDriedShellfishFlesh)
+            rounded.
 
     ^ dailyEarnings
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing activity - earn money' }
 PannFisher >> earningsHistory [
 
 	^ earningsHistory
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing activity - earn money' }
 PannFisher >> earningsHistory: anObject [
 
 	earningsHistory := anObject
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing activity - fishing' }
 PannFisher >> extractShellfish [ 
 
     | cohorts selectedCohorts numberOfSquareMetersToFish numberOfShellfishToExtractFromThatCohort |
@@ -173,6 +168,11 @@ PannFisher >> extractShellfish [
 		freshBiomassOfExtractedShellfishToday := freshBiomassOfExtractedShellfishToday +
 			(numberOfShellfishToExtractFromThatCohort * cohort oneIndividualTotalBiomass). "g"
 			
+		driedFleshOfExtractedShellfishToday :=
+            driedFleshOfExtractedShellfishToday +
+            (numberOfShellfishToExtractFromThatCohort
+                * cohort oneIndividualDryFleshWeight).
+		
 		numberOfExtractedShellfishToday := numberOfExtractedShellfishToday +
 			numberOfShellfishToExtractFromThatCohort.
 			
@@ -180,14 +180,13 @@ PannFisher >> extractShellfish [
 		].
 
     numberOfExtractedShellfishToday := numberOfExtractedShellfishToday rounded.
-
-	self updateNumberOfBasketsFishedPerHour.
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing activity - fishing' }
 PannFisher >> fish [
 	self goToFishingSpot.
 	self extractShellfish.
+	self updateFishingIndicators.
 	self earnMoneyOutOfFishing.
 
 ]
@@ -198,7 +197,7 @@ PannFisher >> freshBiomassOfExtractedShellfishToday [
 	^ freshBiomassOfExtractedShellfishToday
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing activity - fishing' }
 PannFisher >> goToFishingSpot [
 	"The fisher goes to an available fishing spot"
 	"Need to code : The fisher go to the fishing spot where she think she will earn the most"
@@ -305,7 +304,7 @@ PannFisher >> pov [
 		size: 0.5
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing activity - earn money' }
 PannFisher >> recordEarnings [
 
     earningsHistory add:
@@ -334,21 +333,32 @@ PannFisher >> showCharts [
 
 { #category : 'step      ' }
 PannFisher >> step [
-	
-	freshBiomassOfExtractedShellfishToday := 0.
-   numberOfExtractedShellfishToday := 0.
-	numberOfBasketsFishedPerHour := 0.
-	dailyEarnings := 0.
-	
-	self shouldFish
-			ifTrue: [ self fish ]
-			ifFalse: [ self workInVillage]. 
-			
-	self recordEarnings.
+
+    freshBiomassOfExtractedShellfishToday := 0.
+    driedFleshOfExtractedShellfishToday := 0.
+    numberOfExtractedShellfishToday := 0.
+    numberOfBasketsFishedPerHour := 0.
+    dailyEarnings := 0.
+
+    self shouldFish
+        ifTrue: [ self fish ]
+        ifFalse: [ self workInVillage ].
+
+    self recordEarnings.
 ]
 
-{ #category : 'fishing activity' }
+{ #category : 'fishing acticity - update indicators' }
+PannFisher >> updateFishingIndicators [
+
+    self updateNumberOfBasketsFishedPerHour.
+]
+
+{ #category : 'fishing acticity - update indicators' }
 PannFisher >> updateNumberOfBasketsFishedPerHour [
+
+	| weightOfShellfishForOneBasket |
+
+	weightOfShellfishForOneBasket := 40000. "g"
 
     self class fishingHoursPerDay = 0
         ifTrue: [
@@ -358,7 +368,7 @@ PannFisher >> updateNumberOfBasketsFishedPerHour [
 
     numberOfBasketsFishedPerHour :=
         freshBiomassOfExtractedShellfishToday
-            / (40000 * self class fishingHoursPerDay).
+            / (weightOfShellfishForOneBasket * self class fishingHoursPerDay).
 
 	freshBiomassOfExtractedShellfishToday := freshBiomassOfExtractedShellfishToday rounded.
 ]
