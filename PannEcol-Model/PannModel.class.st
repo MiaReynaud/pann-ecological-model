@@ -1413,9 +1413,9 @@ PannModel >> step [
 	
 	"managment steps"
 	self updateFishersPopulation.
-	"self updateSeeding."
 	self applyRequestedClosures.
     self updateClosures.
+	self updateSeeding.
 	
 	"agents steps"	
 	self cohorts do: [ :cohort | cohort step ].
@@ -1461,6 +1461,55 @@ PannModel >> totalFisheableArea [
 PannModel >> totalFisheableArea: aValue [
 
 	totalFisheableArea := aValue
+]
+
+{ #category : 'management - seeding' }
+PannModel >> transferShellfish: aNumber fromCohort: sourceCohort [
+
+    | destination destinationPlot destinationPopulation
+      destinationCohort densityToAdd |
+
+    aNumber <= 0 ifTrue: [ ^ self ].
+
+    destination := self
+        seedingSareForId: self seedingDestinationSareId.
+
+    destination ifNil: [ ^ self ].
+
+    destinationPlot := self
+        selectRandomlyFrom: destination plots.
+
+    destinationPopulation := destinationPlot shellfishPopulation.
+
+    densityToAdd := aNumber / destinationPlot area.
+
+    destinationCohort := destinationPopulation cohorts
+        detect: [ :each |
+            each shellfishAge = sourceCohort shellfishAge
+                and: [
+                    each shellfishSize = sourceCohort shellfishSize
+                ]
+        ]
+        ifNone: [ nil ].
+
+    destinationCohort
+        ifNil: [
+            destinationCohort :=
+                self newEntity: PannShellfishCohort.
+
+            destinationCohort
+                population: destinationPopulation;
+                shellfishAge: sourceCohort shellfishAge;
+                shellfishSize: sourceCohort shellfishSize;
+                shellfishDensity: densityToAdd.
+
+            destinationPopulation cohorts
+                add: destinationCohort
+        ]
+        ifNotNil: [
+            destinationCohort shellfishDensity:
+                destinationCohort shellfishDensity + densityToAdd
+        ].
 ]
 
 { #category : 'management - closure' }

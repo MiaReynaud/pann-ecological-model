@@ -8,7 +8,8 @@ Class {
 		'freshBiomassOfExtractedShellfishToday',
 		'driedFleshOfExtractedShellfishToday',
 		'earningsHistory',
-		'numberOfBasketsFishedPerHour'
+		'numberOfBasketsFishedPerHour',
+		'basketsHistory'
 	],
 	#classInstVars : [
 		'minShellfishSize',
@@ -70,6 +71,26 @@ PannFisher class >> numberOfFishingDayPerMbissa [
 PannFisher class >> numberOfFishingDayPerMbissa: anObject [
 
 	numberOfFishingDayPerMbissa := anObject
+]
+
+{ #category : 'charts' }
+PannFisher >> buildBasketsChartX: xCollection y: yCollection [
+    | x y chart plot |
+
+    x := xCollection ifEmpty: [ #(0) ].
+    y := yCollection ifEmpty: [ #(0) ].
+
+    chart := RSCompositeChart new.
+    plot := RSLinePlot new x: x y: y.
+    plot color: CMColor azure.
+    plot width: 1.5.
+    chart add: plot.
+
+    chart title: 'Évolution du nombre de bassines pêchées par heure'.
+    chart xlabel: 'Temps de simulation'.
+    chart ylabel: 'Bassines / heure'.
+
+    ^ chart
 ]
 
 { #category : 'charts' }
@@ -178,6 +199,12 @@ PannFisher >> extractShellfish [
 			numberOfShellfishToExtractFromThatCohort.
 			
 		cohort removeShellfish: numberOfShellfishToExtractFromThatCohort.
+		
+		self cormasModel seedingActive ifTrue: [
+    		self cormasModel
+        		transferShellfish: numberOfShellfishToExtractFromThatCohort
+        		fromCohort: cohort 
+			].
 		].
 
     numberOfExtractedShellfishToday := numberOfExtractedShellfishToday rounded.
@@ -188,7 +215,14 @@ PannFisher >> fish [
 	self goToFishingSpot.
 	self extractShellfish.
 	self updateFishingIndicators.
-	self earnMoneyOutOfFishing.
+
+   self cormasModel seedingActive
+        ifTrue: [
+            dailyEarnings := 0
+        ]
+        ifFalse: [
+            self earnMoneyOutOfFishing
+        ].
 
 ]
 
@@ -205,47 +239,37 @@ PannFisher >> goToFishingSpot [
 
 	<action>
 	
-	| openSare fishingSpot |
-	
-	"self cormasModel seedingActive
-        ifTrue: [
-            openSare := self cormasModel
-                seedingSareForId:
-                    self cormasModel seedingSourceSareId.
+	 | openSare fishingSpot |
 
-            openSare ifNil: [
-                self workInVillage.
-                ^ self
-            ].
+    self cormasModel seedingActive ifTrue: [
+        openSare := self cormasModel
+            seedingSareForId:
+                self cormasModel seedingSourceSareId.
 
-            openSare isClosed ifTrue: [
-                self workInVillage.
-                ^ self
-            ].
+        openSare ifNil: [ ^ self ].
 
-            openSare plots isEmpty ifTrue: [
-                self workInVillage.
-                ^ self
-            ].
+        openSare isClosed ifTrue: [ ^ self ].
 
-            fishingSpot := self
-                selectRandomlyFrom: openSare plots.
+        openSare plots isEmpty ifTrue: [ ^ self ].
 
-            self moveTo: fishingSpot.
-            ^ self
-        ]."
-	
-	openSare := self chooseSareToFishOn.
-	
-	openSare ifNil: [
+        fishingSpot := self
+            selectRandomlyFrom: openSare plots.
+
+        self moveTo: fishingSpot.
+        ^ self
+    ].
+
+    openSare := self chooseSareToFishOn.
+
+    openSare ifNil: [
         self workInVillage.
         ^ self
     ].
-	
-	fishingSpot := self 
-			selectRandomlyFrom: openSare plots.
 
-	self moveTo: fishingSpot
+    fishingSpot := self
+        selectRandomlyFrom: openSare plots.
+
+    self moveTo: fishingSpot.
 ]
 
 { #category : 'initialization' }
@@ -255,6 +279,7 @@ PannFisher >> initialize [
 	fishedAreaPerHour := 56. "m²/h"
 	numberOfExtractedShellfishToday := 0.
 	earningsHistory := OrderedCollection new.
+	basketsHistory := OrderedCollection new.
 ]
 
 { #category : 'time    ' }
@@ -305,6 +330,16 @@ PannFisher >> pov [
 		size: 0.5
 ]
 
+{ #category : 'fishing acticity - update indicators' }
+PannFisher >> recordBaskets [
+    | time |
+
+    time := self cormasModel dayCounter.
+
+    basketsHistory add:
+        time -> numberOfBasketsFishedPerHour.
+]
+
 { #category : 'fishing activity - earn money' }
 PannFisher >> recordEarnings [
 
@@ -322,30 +357,46 @@ PannFisher >> shouldFish [
 PannFisher >> showCharts [
 	<action>
 	
-	| chart |
+	| chart basketsChart |
 	
 	chart := self
 		buildChartBoxPlotX: (earningsHistory collect: [ :point | point key ] )
-		y: (earningsHistory collect: [ :point | point value ] ).
+		y: (earningsHistory collect: [ :point | point value ] ). 
 	
 	chart build.
-	chart canvas openWithTitle: self asString
+	chart canvas openWithTitle: self asString.
+	
+	basketsChart := self
+        buildBasketsChartX:
+            (basketsHistory collect: [ :point | point key ])
+        y:
+            (basketsHistory collect: [ :point | point value ]).
+
+   basketsChart build.
+   basketsChart canvas openWithTitle:
+        self asString , ' - Évolution des bassines'.
 ]
 
 { #category : 'step      ' }
 PannFisher >> step [
-
     freshBiomassOfExtractedShellfishToday := 0.
     driedFleshOfExtractedShellfishToday := 0.
     numberOfExtractedShellfishToday := 0.
     numberOfBasketsFishedPerHour := 0.
     dailyEarnings := 0.
 
-    self shouldFish
-        ifTrue: [ self fish ]
-        ifFalse: [ self workInVillage ].
+    (self cormasModel seedingActive)
+        ifTrue: [
+            self fish
+        ]
+        ifFalse: [
+            self shouldFish
+                ifTrue: [ self fish ]
+                ifFalse: [ self workInVillage ]
+        ].
 
     self recordEarnings.
+    self recordBaskets.
 ]
 
 { #category : 'fishing acticity - update indicators' }

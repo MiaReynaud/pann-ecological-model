@@ -2,7 +2,8 @@ Class {
 	#name : 'PannShellfishPopulation',
 	#superclass : 'CMAgent',
 	#instVars : [
-		'cohorts'
+		'cohorts',
+		'densityHistory'
 	],
 	#category : 'PannEcol-Model',
 	#package : 'PannEcol-Model'
@@ -34,6 +35,26 @@ PannShellfishPopulation >> buildChartBoxPlotX: xCollection y: yCollection [
 	chart ylabel: 'Densité (individus/m²)'.
 	
 	^ chart
+]
+
+{ #category : 'charts' }
+PannShellfishPopulation >> buildDensityEvolutionChartX: xCollection y: yCollection [
+    | x y chart plot |
+
+    x := xCollection ifEmpty: [ #(0) ].
+    y := yCollection ifEmpty: [ #(0) ].
+
+    chart := RSCompositeChart new.
+    plot := RSLinePlot new x: x y: y.
+    plot color: CMColor azure.
+    plot width: 1.5.
+    chart add: plot.
+
+    chart title: 'Évolution de la densité de la population'.
+    chart xlabel: 'Temps de simulation'.
+    chart ylabel: 'Densité (individus/m²)'.
+
+    ^ chart
 ]
 
 { #category : 'ecological methods  ' }
@@ -125,6 +146,13 @@ PannShellfishPopulation >> initialCohortDensitiesForSare [
     ^ #(0 0 0 0)
 ]
 
+{ #category : 'initialisation' }
+PannShellfishPopulation >> initialize [
+    super initialize.
+    cohorts := OrderedCollection new.
+    densityHistory := OrderedCollection new.
+]
+
 { #category : 'cohort counter ' }
 PannShellfishPopulation >> isRecruitDay [
 "send true if its first of december"
@@ -153,6 +181,16 @@ PannShellfishPopulation >> numberOfShellfishes [
 	^ cohorts sum: [ : each | each numberOfShellfishes ].
 ]
 
+{ #category : 'charts' }
+PannShellfishPopulation >> recordDensity [
+    | time density |
+
+    time := self cormasModel dayCounter.
+    density := self densityOfShellfishes.
+
+    densityHistory add: time -> density.
+]
+
 { #category : 'ecological methods  ' }
 PannShellfishPopulation >> recruit [ 
 
@@ -177,7 +215,7 @@ PannShellfishPopulation >> sare [
 PannShellfishPopulation >> showCharts [
 	<action> 
 	
-	| sortedCohorts chart |
+	| sortedCohorts chart densityChart |
 
 	sortedCohorts := cohorts asSortedCollection:
 		[ :a :b | a shellfishSize < b shellfishSize ].
@@ -187,7 +225,17 @@ PannShellfishPopulation >> showCharts [
 		y: (sortedCohorts collect: [ :c | c shellfishDensity ] ).
 		
 	chart build.
-	chart canvas openWithTitle: self asString
+	chart canvas openWithTitle: self asString.
+	
+	densityChart := self
+        buildDensityEvolutionChartX:
+            (densityHistory collect: [ :point | point key ])
+        y:
+            (densityHistory collect: [ :point | point value ]).
+
+    densityChart build.
+    densityChart canvas openWithTitle:
+        self asString , ' - Évolution de la densité'.
 ]
 
 { #category : 'step    ' }
@@ -195,4 +243,5 @@ PannShellfishPopulation >> step [
 
 	self recruit.
 	self cohortDeath.
+	self recordDensity.
 ]
