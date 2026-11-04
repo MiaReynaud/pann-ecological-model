@@ -22,19 +22,6 @@ Class {
 }
 
 { #category : 'accessing' }
-PannFisher class >> fishingHoursPerDay [
-	<parameterIntegerDefault: 3>
-
-	^ fishingHoursPerDay
-]
-
-{ #category : 'accessing' }
-PannFisher class >> fishingHoursPerDay: anObject [
-
-	fishingHoursPerDay := anObject
-]
-
-{ #category : 'accessing' }
 PannFisher class >> maxShellfishSize [
 	<parameterIntegerDefault: 1000>
 
@@ -71,6 +58,19 @@ PannFisher class >> numberOfFishingDayPerMbissa [
 PannFisher class >> numberOfFishingDayPerMbissa: anObject [
 
 	numberOfFishingDayPerMbissa := anObject
+]
+
+{ #category : 'accessing' }
+PannFisher class >> numberOfFishingHoursPerDay [
+	<parameterIntegerDefault: 3>
+
+	^ fishingHoursPerDay
+]
+
+{ #category : 'accessing' }
+PannFisher class >> numberOfFishingHoursPerDay: anObject [
+
+	fishingHoursPerDay := anObject
 ]
 
 { #category : 'charts' }
@@ -169,7 +169,7 @@ PannFisher >> extractShellfish [
 
 	cohorts := self cell shellfishPopulation cohorts.     
 
-	numberOfSquareMetersToFish := self class fishingHoursPerDay * fishedAreaPerHour.
+	numberOfSquareMetersToFish := self class numberOfFishingHoursPerDay * fishedAreaPerHour.
 	
 	freshBiomassOfExtractedShellfishToday := 0.
 	numberOfExtractedShellfishToday := 0.
@@ -308,11 +308,11 @@ PannFisher >> isNotFishingPeriod [
 { #category : 'accessing' }
 PannFisher >> numberOfBasketsFishedPerHour [
 
-    self class fishingHoursPerDay = 0
+    self class numberOfFishingHoursPerDay = 0
         ifTrue: [ ^ 0 ].
 
     ^ freshBiomassOfExtractedShellfishToday
-        / (40000 * self class fishingHoursPerDay)     "1 basket = 40 kg"
+        / (40000 * self class numberOfFishingHoursPerDay)     "1 basket = 40 kg"
 ]
 
 { #category : 'accessing' }
@@ -412,7 +412,7 @@ PannFisher >> updateNumberOfBasketsFishedPerHour [
 
 	weightOfShellfishForOneBasket := 20000. "g"
 
-    self class fishingHoursPerDay = 0
+    self class numberOfFishingHoursPerDay = 0
         ifTrue: [
             numberOfBasketsFishedPerHour := 0.
             ^ self
@@ -420,7 +420,7 @@ PannFisher >> updateNumberOfBasketsFishedPerHour [
 
     numberOfBasketsFishedPerHour :=
         freshBiomassOfExtractedShellfishToday
-            / (weightOfShellfishForOneBasket * self class fishingHoursPerDay).
+            / (weightOfShellfishForOneBasket * self class numberOfFishingHoursPerDay).
 
 	freshBiomassOfExtractedShellfishToday := freshBiomassOfExtractedShellfishToday rounded.
 ]
