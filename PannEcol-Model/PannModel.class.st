@@ -67,7 +67,7 @@ PannModel >> addShellfishes [
 
 { #category : 'social - population growth' }
 PannModel >> annualPopulationGrowthRate [
-    <parameterFloatDefault: 0.00> "for instance 0.02 = +2 % per year"
+    <parameterFloatDefault: 0.02> "for instance 0.02 = +2 % per year"
 
     ^ annualPopulationGrowthRate
 ]
