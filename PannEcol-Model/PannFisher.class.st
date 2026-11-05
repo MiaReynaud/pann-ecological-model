@@ -62,7 +62,7 @@ PannFisher class >> numberOfFishingDayPerMbissa: anObject [
 
 { #category : 'accessing' }
 PannFisher class >> numberOfFishingHoursPerDay [
-	<parameterIntegerDefault: 3>
+	<parameterIntegerDefault: 4>
 
 	^ fishingHoursPerDay
 ]
