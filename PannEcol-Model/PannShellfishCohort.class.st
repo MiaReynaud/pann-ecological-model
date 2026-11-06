@@ -61,16 +61,14 @@ PannShellfishCohort >> growSize [
 { #category : 'initialize  ' }
 PannShellfishCohort >> initialize [ 
 
-	| a b |
-
 	super initialize.
+	
+	oneIndividualTotalBiomass := 0.
 	shellfishAge := 41. "according to the function a shellfish of 3mm is 41 days old"
 	shellfishSize := 3. "in mm"
 	
-	a := 0.08.
-	b := 2.72.
-
-	oneIndividualTotalBiomass := ((a * shellfishSize) raisedTo: b). "g"
+	self growBiomass.
+	self growDriedFelshWeight.
 ]
 
 { #category : 'ecological methods  ' }

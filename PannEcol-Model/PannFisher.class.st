@@ -36,7 +36,7 @@ PannFisher class >> maxShellfishSize: anObject [
 
 { #category : 'accessing' }
 PannFisher class >> minShellfishSize [
-	<parameterIntegerDefault: 0>
+	<parameterIntegerDefault: 1.5>
 
 	^ minShellfishSize
 ]
