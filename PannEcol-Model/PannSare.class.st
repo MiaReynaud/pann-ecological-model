@@ -15,6 +15,15 @@ Class {
 	#package : 'PannEcol-Model'
 }
 
+{ #category : 'pov' }
+PannSare >> aspectDefault: look [
+	<aspect>
+	
+	super aspectDefault: look.
+	look borderThickness: 0.01.
+	
+]
+
 { #category : 'charts ' }
 PannSare >> buildStockOverTimeChartPlotX: xCollection y: yCollection [
 	| x y chart plot |

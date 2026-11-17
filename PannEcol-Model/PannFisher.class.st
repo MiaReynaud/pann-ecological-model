@@ -73,6 +73,16 @@ PannFisher class >> numberOfFishingHoursPerDay: anObject [
 	fishingHoursPerDay := anObject
 ]
 
+{ #category : 'pov' }
+PannFisher >> aspectDefault: look [ 
+	<aspect>
+	super aspectDefault: look.
+	look 
+		color: (CMColor fromHexString: 'FF9D00');
+		shape: #triangle;
+		size: 0.5
+]
+
 { #category : 'charts' }
 PannFisher >> buildBasketsChartX: xCollection y: yCollection [
     | x y chart plot |
@@ -319,15 +329,6 @@ PannFisher >> numberOfBasketsFishedPerHour [
 PannFisher >> numberOfExtractedShellfishToday [
 
 	^ numberOfExtractedShellfishToday
-]
-
-{ #category : 'initialization' }
-PannFisher >> pov [ 
-	<pov>
-	^ CMPointOfView 
-		color: 'FF9D00'
-		shape: #triangle 
-		size: 0.5
 ]
 
 { #category : 'fishing acticity - update indicators' }

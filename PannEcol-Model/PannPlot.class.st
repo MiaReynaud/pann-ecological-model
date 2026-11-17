@@ -22,6 +22,21 @@ PannPlot >> area: anObject [
 	area := anObject
 ]
 
+{ #category : 'pov' }
+PannPlot >> aspectDefault: look [ 
+
+	<aspect>
+	| hex |
+	
+	state = #sea ifTrue: [ hex := '70EAFF' ].
+	state = #village ifTrue: [ hex := '8F1437' ].
+	state = #mudflat ifTrue: [ hex := 'FFFCB3' ].
+	state = #mangrove ifTrue: [ hex := '0DB370' ].
+	
+	super aspectDefault: look.
+	look color: (CMColor fromHexString: hex).
+]
+
 { #category : 'state' }
 PannPlot >> beMangrove [
 
@@ -119,19 +134,6 @@ PannPlot >> isVillage [
 PannPlot >> numberOfShellfishes [ 
 
 	^ self shellfishPopulation numberOfShellfishes.
-]
-
-{ #category : 'pov' }
-PannPlot >> pov [ 
-
-	<pov>
-	
-	state = #sea ifTrue: [ ^ CMPointOfView color: '70EAFF' ].
-	state = #village ifTrue: [ ^ CMPointOfView color: '8F1437' ].
-	state = #mudflat ifTrue: [ ^ CMPointOfView color: 'FFFCB3' ].
-	state = #mangrove ifTrue: [ ^ CMPointOfView color: '0DB370' ].
-	
-	^ super pov. "if no state, super pov by default"
 ]
 
 { #category : 'accessing' }
