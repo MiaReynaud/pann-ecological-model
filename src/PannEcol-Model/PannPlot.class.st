@@ -34,6 +34,7 @@ PannPlot >> aspectDefault: look [
 	state = #mangrove ifTrue: [ hex := '0DB370' ].
 	
 	super aspectDefault: look.
+	look borderThickness: 0.
 	look color: (CMColor fromHexString: hex).
 ]
 
