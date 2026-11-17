@@ -38,6 +38,19 @@ PannPlot >> aspectDefault: look [
 	look color: (CMColor fromHexString: hex).
 ]
 
+{ #category : 'pov' }
+PannPlot >> aspectPopulationSize: look [ 
+
+	<aspect>
+	self aspectDefault: look.
+	
+	self isMudflat ifTrue: [ 
+		look
+			colorShadeOf: (CMColor fromHexString: 'FFFCB3')
+			forValue: self numberOfShellfishes
+			from: 0 to: 10000000 ]
+]
+
 { #category : 'state' }
 PannPlot >> beMangrove [
 
