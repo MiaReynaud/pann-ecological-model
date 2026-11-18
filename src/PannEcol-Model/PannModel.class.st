@@ -832,6 +832,7 @@ PannModel >> initialize [
 
 	super initialize. 
 	
+	seedingActive := false.
 	totalEarnings := 0.
 	todayTotalEarnings := 0.
 ]
